@@ -15,9 +15,9 @@ abstract class Table
     /** @var string[] */
     private $fields;
 
-    public function __construct(string $alias = null)
+    public function __construct(?string $alias = null, ?string $table = null)
     {
-        $this->table = $this->resolveTableName();
+        $this->table = $table ?? $this->resolveTableName();
         $this->fields = $this->resolveTableFields();
         $this->alias = $alias ?? $this->table();
     }

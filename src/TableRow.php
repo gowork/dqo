@@ -2,14 +2,21 @@
 
 namespace GW\DQO;
 
-use GW\Gowork\Generic\DateTimeTo;
+use ArrayAccess;
+use Closure;
+use DateTime;
+use DateTimeImmutable;
+use GW\DQO\Util\DateTimeUtil;
+use InvalidArgumentException;
+use function is_array;
+use function is_object;
 
 abstract class TableRow
 {
     /** @var array|object */
     private $row;
 
-    /** @var \Closure */
+    /** @var Closure */
     private $getter;
 
     /** @var Table */
@@ -63,14 +70,14 @@ abstract class TableRow
         return (bool)$this->get($field);
     }
 
-    protected function getDateTime(string $field): ?\DateTime
+    protected function getDateTime(string $field): ?DateTime
     {
-        return $this->getThrough([DateTimeTo::class, 'mutable'], $field);
+        return $this->getThrough(DateTimeUtil::mutable, $field);
     }
 
-    protected function getDateTimeImmutable(string $field): ?\DateTimeImmutable
+    protected function getDateTimeImmutable(string $field): ?DateTimeImmutable
     {
-        return $this->getThrough([DateTimeTo::class, 'immutable'], $field);
+        return $this->getThrough(DateTimeUtil::immutable, $field);
     }
 
     /**
@@ -86,7 +93,7 @@ abstract class TableRow
 
     private function initGetter($row): void
     {
-        if (is_array($row) || $row instanceof \ArrayAccess) {
+        if (is_array($row) || $row instanceof ArrayAccess) {
             $this->getter = function (string $field) {
                 return $this->row[$this->table->fieldAlias($field)] ?? null;
             };
@@ -102,6 +109,6 @@ abstract class TableRow
             return;
         }
 
-        throw new \InvalidArgumentException('Unsupported database query row format.');
+        throw new InvalidArgumentException('Unsupported database query row format.');
     }
 }
