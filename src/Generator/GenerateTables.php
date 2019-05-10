@@ -24,7 +24,10 @@ class GenerateTables
         $this->renderer = $renderer;
     }
 
-    public function generate(string $filterTables, string $path, bool $overwrite): void
+    /**
+     * @param string[] $filterTables
+     */
+    public function generate(array $filterTables, string $path, bool $overwrite): void
     {
         $models = Wrap::array($this->connection->getSchemaManager()->listTables())
             ->filter(

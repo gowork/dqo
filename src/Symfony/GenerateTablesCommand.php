@@ -31,9 +31,9 @@ class GenerateTablesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $filterTables = $input->getArgument('table');
-        $path = $input->getArgument('path');
-        $overwrite = $input->getOption('overwrite');
+        $filterTables = (array)$input->getArgument('table');
+        $path = (string)$input->getArgument('path');
+        $overwrite = (bool)$input->getOption('overwrite');
 
         $this->generateTables->generate($filterTables, $path, $overwrite);
 
