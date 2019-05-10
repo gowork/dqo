@@ -1,10 +1,10 @@
 <?php
 
-namespace GW\DatabaseAccessGenerator;
+namespace GW\DQO;
 
-use GW\DatabaseAccessGenerator\Render\Block;
-use GW\DatabaseAccessGenerator\Render\Body;
-use GW\DatabaseAccessGenerator\Render\Line;
+use GW\DQO\Render\Block;
+use GW\DQO\Render\Body;
+use GW\DQO\Render\Line;
 
 final class Renderer
 {
@@ -37,7 +37,7 @@ final class Renderer
                 )
             );
 
-        $uses = 'namespace GW\Bundle\GoworkBundle\Database;';
+        $uses = 'namespace GW\DQO;';
 
         return "<?php \n\n{$uses}\n\n" . self::HEADER . "{$render->render()}";
     }
@@ -61,7 +61,7 @@ final class Renderer
                 )
             );
 
-        $uses = 'namespace GW\Bundle\GoworkBundle\Database;';
+        $uses = 'namespace GW\DQO;';
 
         return "<?php \n\n{$uses}\n\n" . self::HEADER . "{$render->render()}";
     }

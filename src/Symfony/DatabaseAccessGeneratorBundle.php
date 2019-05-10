@@ -1,6 +1,6 @@
 <?php
 
-namespace GW\DatabaseAccessGenerator\Bundle;
+namespace GW\DQO\Symfony;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;

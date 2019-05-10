@@ -1,6 +1,6 @@
 <?php
 
-namespace GW\DatabaseAccessGenerator\Render;
+namespace GW\DQO\Render;
 
 use GW\Value\ArrayValue;
 use GW\Value\Wrap;

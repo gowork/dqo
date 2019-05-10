@@ -1,6 +1,6 @@
 <?php
 
-namespace GW\DatabaseAccessGenerator;
+namespace GW\DQO;
 
 use Doctrine\DBAL\Schema\Column as DbalColumn;
 use Doctrine\DBAL\Schema\Table as DbalTable;

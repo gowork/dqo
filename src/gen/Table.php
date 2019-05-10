@@ -1,6 +1,6 @@
 <?php
 
-namespace GW\Bundle\GoworkBundle\Database;
+namespace GW\DQO\gen;
 
 use GW\Value\Wrap;
 

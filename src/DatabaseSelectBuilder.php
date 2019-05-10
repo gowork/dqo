@@ -1,6 +1,6 @@
 <?php
 
-namespace GW\Bundle\GoworkBundle\Database;
+namespace GW\DQO;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;

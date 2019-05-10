@@ -1,6 +1,6 @@
 services:
     database_access_generator.generate_tables:
-        class: GW\DatabaseAccessGenerator\GenerateTables
+        class: GW\DQO\Symfony\GenerateTables
         arguments:
             - '@database_connection'
             - '@database_access_generator.table_factory'
@@ -8,7 +8,7 @@ services:
         tags: [{name: console.command}]
 
     database_access_generator.table_factory:
-        class: GW\DatabaseAccessGenerator\TableFactory
+        class: GW\DQO\TableFactory
 
     database_access_generator.renderer:
-        class: GW\DatabaseAccessGenerator\Renderer
+        class: GW\DQO\Renderer

@@ -1,6 +1,6 @@
 <?php
 
-namespace GW\DatabaseAccessGenerator;
+namespace GW\DQO;
 
 final class Table
 {

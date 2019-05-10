@@ -1,6 +1,6 @@
 <?php
 
-namespace GW\DatabaseAccessGenerator\Render;
+namespace GW\DQO\Render;
 
 final class Body implements Line
 {
