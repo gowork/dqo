@@ -1,14 +1,11 @@
 services:
+    _defaults:
+        autowire: true
+
     database_access_generator.generate_tables:
         class: GW\DQO\Symfony\GenerateTables
-        arguments:
-            - '@database_connection'
-            - '@database_access_generator.table_factory'
-            - '@database_access_generator.renderer'
         tags: [{name: console.command}]
 
-    database_access_generator.table_factory:
-        class: GW\DQO\Generator\TableFactory
-
-    database_access_generator.renderer:
-        class: GW\DQO\Generator\Renderer
+    GW\DQO\Generator\TableFactory: ~
+    GW\DQO\Generator\Renderer: ~
+    GW\DQO\Generator\GenerateTables: ~
