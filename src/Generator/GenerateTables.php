@@ -1,6 +1,6 @@
 <?php
 
-namespace GW\DQO\Symfony;
+namespace GW\DQO\Generator;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Table as DbalTable;
@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class GenerateTables extends Command
+class GenerateTables
 {
     /** @var Connection */
     private $connection;
@@ -28,25 +28,10 @@ class GenerateTables extends Command
         $this->connection = $connection;
         $this->tableFactory = $tableFactory;
         $this->renderer = $renderer;
-
-        parent::__construct('gw:generate-tables');
     }
 
-    protected function configure()
+    public function generate(string $filterTables, string $path, bool $overwrite): void
     {
-        $this->addArgument('table', InputArgument::IS_ARRAY);
-        $this->addOption('path', 'p', InputOption::VALUE_OPTIONAL, '', '../gowork-bundle/src/Database/');
-        $this->addOption('overwrite', 'o', InputOption::VALUE_NONE);
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $output = new SymfonyStyle($input, $output);
-
-        $filterTables = $input->getArgument('table');
-        $path = $input->getOption('path');
-        $overwrite = $input->getOption('overwrite');
-
         $models = Wrap::array($this->connection->getSchemaManager()->listTables())
             ->filter(
                 function (DbalTable $table) use ($filterTables): bool {
@@ -65,15 +50,9 @@ class GenerateTables extends Command
                 }
             );
 
-        $save = function (string $content, string $fileName) use ($output, $path, $overwrite): void {
-            if (file_exists($fileName)) {
-                if (!$overwrite) {
-                    $output->error("{$fileName} exists and not be overwrite");
-
-                    return;
-                }
-
-                $output->note("{$fileName} exists and was overwritten");
+        $save = function (string $content, string $fileName) use ($path, $overwrite): void {
+            if (file_exists($fileName) && !$overwrite) {
+                return;
             }
 
             file_put_contents($path . '/' . $fileName, $content);
