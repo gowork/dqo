@@ -14,6 +14,6 @@ final class Body implements Line
 
     public function render(): string
     {
-        return implode("\n", $this->lines);
+        return \rtrim(implode("\n", $this->lines));
     }
 }

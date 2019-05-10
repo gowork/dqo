@@ -2,15 +2,26 @@
 
 namespace GW\DQO\Generator;
 
-use GW\DQO\Generator\Column;
-use GW\DQO\Generator\Table;
 use GW\DQO\Generator\Render\Block;
 use GW\DQO\Generator\Render\Body;
 use GW\DQO\Generator\Render\Line;
 
 final class Renderer
 {
-    private const HEADER = "/** This class is auto generated */\n";
+    private const HEADER = '';
+
+    /** @var string */
+    private $namespace;
+
+    public function __construct(string $namespace = '\\')
+    {
+        $this->namespace = $namespace;
+    }
+
+    public function onNamespace(string $namespace): self
+    {
+        return new self($namespace);
+    }
 
     public function renderTableFile(Table $table): string
     {
@@ -39,9 +50,9 @@ final class Renderer
                 )
             );
 
-        $uses = 'namespace GW\DQO;';
+        $uses = "namespace {$this->namespace};\n\nuse GW\\DQO\\Table;";
 
-        return "<?php \n\n{$uses}\n\n" . self::HEADER . "{$render->render()}";
+        return "<?php declare(strict_types=1);\n\n{$uses}\n\n" . self::HEADER . "{$render->render()}";
     }
 
     public function renderRowFile(Table $table): string
@@ -65,7 +76,7 @@ final class Renderer
 
         $uses = 'namespace GW\DQO;';
 
-        return "<?php \n\n{$uses}\n\n" . self::HEADER . "{$render->render()}";
+        return "<?php declare(strict_types=1);\n\n{$uses}\n\n" . self::HEADER . "{$render->render()}";
     }
 
     private function typeDef(Column $column): string

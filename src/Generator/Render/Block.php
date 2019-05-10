@@ -32,7 +32,7 @@ final class Block implements Line
             )
             ->map(
                 function (string $line): string {
-                    return $this->indent . $line;
+                    return \rtrim($this->indent . $line);
                 }
             )
             ->implode("\n")
