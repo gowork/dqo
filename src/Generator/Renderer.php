@@ -60,7 +60,6 @@ final class Renderer
         $render =
             new Block(
                 "final class {$table->name()}Row extends TableRow",
-                ...[new Body()],
                 ...array_map(
                     function (Column $column) use ($table): Line {
                         $typeDef = $this->typeDef($column);
@@ -74,7 +73,7 @@ final class Renderer
                 )
             );
 
-        $uses = 'namespace GW\DQO;';
+        $uses = "namespace {$this->namespace};\n\nuse GW\\DQO\\TableRow;";
 
         return "<?php declare(strict_types=1);\n\n{$uses}\n\n" . self::HEADER . "{$render->render()}";
     }

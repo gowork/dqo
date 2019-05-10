@@ -24,4 +24,20 @@ final class RendererTest extends TestCase
 
         self::assertStringEqualsFile(__DIR__ . '/../Example/UserTable.php', $renderedContent);
     }
+
+    function test_generate_row()
+    {
+        $renderer = new Renderer('tests\GW\DQO\Example');
+        $renderedContent = $renderer->renderRowFile(
+            new Table(
+                'User',
+                new Column('id', 'id', 'id', 'UserId', false),
+                new Column('email', 'email', 'email', 'string', false),
+                new Column('name', 'name', 'name', 'string', false),
+                new Column('surname', 'surname', 'surname', 'string', false),
+            )
+        );
+
+        self::assertStringEqualsFile(__DIR__ . '/../Example/UserRow.php', $renderedContent);
+    }
 }

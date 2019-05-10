@@ -25,9 +25,4 @@ final class UserRow extends TableRow
     {
         return $this->getString(UserTable::SURNAME);
     }
-
-    public function fullName(): string
-    {
-        return "{$this->name()} {$this->surname()}";
-    }
 }
