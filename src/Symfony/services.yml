@@ -1,0 +1,14 @@
+services:
+    database_access_generator.generate_tables:
+        class: GW\DatabaseAccessGenerator\GenerateTables
+        arguments:
+            - '@database_connection'
+            - '@database_access_generator.table_factory'
+            - '@database_access_generator.renderer'
+        tags: [{name: console.command}]
+
+    database_access_generator.table_factory:
+        class: GW\DatabaseAccessGenerator\TableFactory
+
+    database_access_generator.renderer:
+        class: GW\DatabaseAccessGenerator\Renderer
