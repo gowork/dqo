@@ -2,3 +2,4 @@ zsh_history
 .idea
 vendor
 composer.lock
+.phpunit.result.cache
