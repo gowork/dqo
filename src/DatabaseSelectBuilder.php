@@ -2,11 +2,16 @@
 
 namespace GW\DQO;
 
+use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
-use GW\DQO\Generator\Table;
 use GW\Value\ArrayValue;
 use GW\Value\Wrap;
+use RuntimeException;
+use function array_merge;
+use function get_class;
+use function is_array;
+use function is_object;
 
 final class DatabaseSelectBuilder
 {
@@ -29,7 +34,7 @@ final class DatabaseSelectBuilder
 
     public function __construct(
         Connection $connection,
-        array $types = [\DateTimeImmutable::class => 'DateTimeImmutable']
+        array $types = [DateTimeImmutable::class => 'DateTimeImmutable']
     ) {
         $this->builder = $connection->createQueryBuilder();
         $this->types = $types;
@@ -131,11 +136,11 @@ final class DatabaseSelectBuilder
         return (clone $this->builder)->setMaxResults(1)->execute()->fetchColumn($index);
     }
 
-    public function fetchDate(int $index = 0): ?\DateTimeImmutable
+    public function fetchDate(int $index = 0): ?DateTimeImmutable
     {
         $date = $this->fetchColumn($index);
 
-        return $date ? new \DateTimeImmutable($date) : null;
+        return $date ? new DateTimeImmutable($date) : null;
     }
 
     /**
@@ -236,21 +241,21 @@ final class DatabaseSelectBuilder
      */
     private function paramType($object)
     {
-        if (\is_array($object)) {
+        if (is_array($object)) {
             return Connection::PARAM_STR_ARRAY;
         }
 
-        if (!\is_object($object)) {
+        if (!is_object($object)) {
             return null;
         }
 
-        return $this->types[\get_class($object)] ?? null;
+        return $this->types[get_class($object)] ?? null;
     }
 
     private function assertCanJoin(): void
     {
         if ($this->from === null) {
-            throw new \RuntimeException('FROM must be declared before JOIN');
+            throw new RuntimeException('FROM must be declared before JOIN');
         }
     }
 }
