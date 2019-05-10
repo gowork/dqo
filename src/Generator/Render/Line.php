@@ -1,6 +1,6 @@
 <?php
 
-namespace GW\DQO\Render;
+namespace GW\DQO\Generator\Render;
 
 interface Line
 {

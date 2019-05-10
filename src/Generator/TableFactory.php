@@ -1,9 +1,11 @@
 <?php
 
-namespace GW\DQO;
+namespace GW\DQO\Generator;
 
 use Doctrine\DBAL\Schema\Column as DbalColumn;
 use Doctrine\DBAL\Schema\Table as DbalTable;
+use GW\DQO\Generator\Column;
+use GW\DQO\Generator\Table;
 use GW\Value\Wrap;
 
 final class TableFactory

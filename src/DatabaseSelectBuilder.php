@@ -4,6 +4,7 @@ namespace GW\DQO;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+use GW\DQO\Generator\Table;
 use GW\Value\ArrayValue;
 use GW\Value\Wrap;
 

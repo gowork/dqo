@@ -2,30 +2,80 @@
 
 namespace GW\DQO;
 
-final class Table
+use GW\Value\Wrap;
+
+abstract class Table
 {
     /** @var string */
-    private $name;
+    private $table;
 
-    /** @var Column[] */
-    private $columns;
+    /** @var string */
+    private $alias;
 
-    public function __construct(string $name, Column ...$columns)
+    /** @var string[] */
+    private $fields;
+
+    public function __construct(string $alias = null)
     {
-        $this->name = $name;
-        $this->columns = $columns;
+        $this->table = $this->resolveTableName();
+        $this->fields = $this->resolveTableFields();
+        $this->alias = $alias ?? $this->table();
     }
 
-    public function name(): string
+    final public function table(): string
     {
-        return $this->name;
+        return $this->table;
     }
 
-    /**
-     * @return Column[]
-     */
-    public function columns(): array
+    final public function alias(): string
     {
-        return $this->columns;
+        return $this->alias;
+    }
+
+    public function selectAll(): array
+    {
+        return $this->select(...$this->fields);
+    }
+
+    public function select(string ...$fields): array
+    {
+        return Wrap::array($fields)
+            ->map([$this, 'selectField'])
+            ->toArray();
+    }
+
+    public function selectField(string $field): string
+    {
+        $path = $this->fieldPath($field);
+        $alias = $this->fieldAlias($field);
+
+        return "{$path} as {$alias}";
+    }
+
+    public function fieldPath(string $field): string
+    {
+        return "{$this->alias}.{$field}";
+    }
+
+    public function fieldAlias(string $field): string
+    {
+        return "{$this->alias}_{$field}";
+    }
+
+    private function resolveTableName(): string
+    {
+        return Wrap::string(static::class)
+            ->explode('\\')
+            ->last()
+            ->substring(0, -\strlen('Table'))
+            ->replacePattern('/([A-Z])/', '_$1')
+            ->trimLeft('_')
+            ->lower()
+            ->toString();
+    }
+
+    private function resolveTableFields(): array
+    {
+        return \array_values((new \ReflectionClass(static::class))->getConstants());
     }
 }

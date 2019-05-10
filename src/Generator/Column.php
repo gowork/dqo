@@ -1,6 +1,6 @@
 <?php
 
-namespace GW\DQO;
+namespace GW\DQO\Generator;
 
 final class Column
 {

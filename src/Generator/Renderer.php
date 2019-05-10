@@ -1,10 +1,12 @@
 <?php
 
-namespace GW\DQO;
+namespace GW\DQO\Generator;
 
-use GW\DQO\Render\Block;
-use GW\DQO\Render\Body;
-use GW\DQO\Render\Line;
+use GW\DQO\Generator\Column;
+use GW\DQO\Generator\Table;
+use GW\DQO\Generator\Render\Block;
+use GW\DQO\Generator\Render\Body;
+use GW\DQO\Generator\Render\Line;
 
 final class Renderer
 {

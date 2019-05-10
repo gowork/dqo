@@ -1,6 +1,6 @@
 <?php
 
-namespace GW\DQO\gen;
+namespace GW\DQO;
 
 use GW\Gowork\Generic\DateTimeTo;
 

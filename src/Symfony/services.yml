@@ -8,7 +8,7 @@ services:
         tags: [{name: console.command}]
 
     database_access_generator.table_factory:
-        class: GW\DQO\TableFactory
+        class: GW\DQO\Generator\TableFactory
 
     database_access_generator.renderer:
-        class: GW\DQO\Renderer
+        class: GW\DQO\Generator\Renderer
