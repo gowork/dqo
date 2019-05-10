@@ -80,6 +80,7 @@ final class Renderer
                 return 'string';
 
             case 'datetime':
+            case 'datetime_immutable':
             case 'DateTimeImmutable':
                 return '\DateTimeImmutable';
 
@@ -104,6 +105,7 @@ final class Renderer
                 return "return \$this->getString({$const});";
 
             case 'datetime':
+            case 'datetime_immutable':
             case 'DateTimeImmutable':
                 return "return \$this->getDateTimeImmutable({$const});";
 
