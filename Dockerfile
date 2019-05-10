@@ -17,12 +17,29 @@ RUN apt-get update && \
 	    curl \
         zsh
 
+RUN apt-add-repository -y ppa:ondrej/php && apt-get update && apt-get install -y --force-yes \
+	php7.3-cli \
+	php7.3-curl \
+	php7.3-intl \
+	php7.3-mysql \
+	php7.3-xml \
+	php7.3-mbstring \
+	php7.3-bcmath \
+	php7.3-zip \
+	php7.3-opcache \
+	php7.3-bz2 \
+	php7.3-gmp \
+    php-xdebug \
+    php7.3-redis
+
+RUN curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer
+
 RUN groupadd -g ${GID} -r ${USER} && useradd -u ${UID} -rm -s /bin/zsh -g ${USER} -G audio,video ${USER} \
     && mkdir -p /home/${USER}/Downloads \
-    && chown -R ${USER}:${USER} /home/${USER} 
+    && chown -R ${USER}:${USER} /home/${USER}
 
 WORKDIR /home/${USER}
-
 
 USER ${USER}
 
