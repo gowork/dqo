@@ -16,7 +16,12 @@
     },
     "autoload": {
         "psr-4": {
-            "GW\\DQO": "src"
+            "GW\\DQO\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "tests\\GW\\DQO\\": "tests/"
         }
     }
 }
