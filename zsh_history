@@ -1,5 +1,0 @@
-: 1557503975:0;composer inst
-: 1557504220:0;composer req --dev symfony/console
-: 1557504629:0;composer req --dev symfony/dependency-injection
-: 1557504652:0;composer req --dev symfony/http-kernel
-: 1557504683:0;composer req --dev symfony/config

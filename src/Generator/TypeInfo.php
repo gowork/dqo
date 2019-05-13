@@ -10,10 +10,14 @@ final class TypeInfo
     /** @var string */
     private $phpType;
 
-    public function __construct(bool $isClass, string $phpType)
+    /** @var bool */
+    private $allowsNull;
+
+    public function __construct(bool $isClass, string $phpType, bool $allowsNull)
     {
         $this->isClass = $isClass;
         $this->phpType = $phpType;
+        $this->allowsNull = $allowsNull;
     }
 
     public function isClass(): bool
@@ -24,5 +28,10 @@ final class TypeInfo
     public function phpType(): string
     {
         return $this->phpType;
+    }
+
+    public function allowsNull(): bool
+    {
+        return $this->allowsNull;
     }
 }
