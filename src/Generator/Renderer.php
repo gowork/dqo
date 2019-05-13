@@ -2,8 +2,10 @@
 
 namespace GW\DQO\Generator;
 
+use Doctrine\DBAL\Types\Type;
 use GW\DQO\Generator\Render\Block;
 use GW\DQO\Generator\Render\Body;
+use GW\DQO\Generator\Render\ClassHead;
 use GW\DQO\Generator\Render\Line;
 
 final class Renderer
@@ -25,7 +27,8 @@ final class Renderer
 
     public function renderTableFile(Table $table): string
     {
-        $render =
+        $head = new ClassHead($this->namespace, ['use GW\DQO\Table;']);
+        $body =
             new Block(
                 "final class {$table->name()}Table extends Table",
                 ...array_map(
@@ -50,13 +53,12 @@ final class Renderer
                 )
             );
 
-        $uses = "namespace {$this->namespace};\n\nuse GW\\DQO\\Table;";
-
-        return "<?php declare(strict_types=1);\n\n{$uses}\n\n" . self::HEADER . "{$render->render()}";
+        return $head->render() . $body->render();
     }
 
     public function renderRowFile(Table $table): string
     {
+        $head = new ClassHead($this->namespace, ['use GW\DQO\TableRow;']);
         $render =
             new Block(
                 "final class {$table->name()}Row extends TableRow",
@@ -73,9 +75,7 @@ final class Renderer
                 )
             );
 
-        $uses = "namespace {$this->namespace};\n\nuse GW\\DQO\\TableRow;";
-
-        return "<?php declare(strict_types=1);\n\n{$uses}\n\n" . self::HEADER . "{$render->render()}";
+        return $head->render() . $render->render();
     }
 
     private function typeDef(Column $column): string
@@ -116,7 +116,6 @@ final class Renderer
 
             case 'datetime':
             case 'datetime_immutable':
-            case 'DateTimeImmutable':
                 return "return \$this->getDateTimeImmutable({$const});";
 
             case 'boolean':
