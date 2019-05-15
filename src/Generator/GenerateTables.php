@@ -48,7 +48,7 @@ class GenerateTables
             );
 
         $save = function (string $content, string $fileName) use ($path, $overwrite): void {
-            if (file_exists($fileName) && !$overwrite) {
+            if (!$overwrite && file_exists($fileName)) {
                 return;
             }
 

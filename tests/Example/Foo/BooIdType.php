@@ -20,6 +20,11 @@ final class BooIdType extends Type
         return $platform->getBinaryTypeDeclarationSQL($fieldDeclaration);
     }
 
+    public function convertToPHPValue($value, AbstractPlatform $platform): BooId
+    {
+        return $value !== null ? BooId::from($value) : null;
+    }
+
     /**
      * Gets the name of this type.
      *

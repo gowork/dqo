@@ -9,14 +9,11 @@ use GW\DQO\Generator\Renderer;
 use GW\DQO\Generator\TableFactory;
 use PHPUnit\Framework\TestCase;
 use tests\GW\DQO\Example\Foo\BooIdType;
-use tests\GW\DQO\Example\UserIdType;
 
 class TableFactoryTest extends TestCase
 {
     function test_build_from_dbal()
     {
-        Type::addType('UserId', UserIdType::class);
-
         $factory = new TableFactory();
         $table = $factory->buildFromDbalTable(new Table('user', [
             new Column('id', Type::getType('UserId')),

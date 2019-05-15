@@ -6,7 +6,7 @@ final class UserId
 {
     private $id;
 
-    public function __construct($id)
+    private function __construct($id)
     {
         $this->id = $id;
     }

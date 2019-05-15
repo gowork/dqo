@@ -2,8 +2,6 @@
 
 namespace GW\DQO\Generator;
 
-use GW\DQO\Generator\Column;
-
 final class Table
 {
     /** @var string */

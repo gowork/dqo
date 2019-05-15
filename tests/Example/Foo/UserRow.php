@@ -7,7 +7,7 @@ use GW\DQO\TableRow;
 
 final class UserRow extends TableRow
 {
-    public function id(): UserId
+    public function id(): BooId
     {
         return BooId::from($this->getString(UserTable::ID));
     }

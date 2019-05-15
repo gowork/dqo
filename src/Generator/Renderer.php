@@ -2,7 +2,6 @@
 
 namespace GW\DQO\Generator;
 
-use Doctrine\DBAL\Types\Type;
 use GW\DQO\Generator\Render\Block;
 use GW\DQO\Generator\Render\Body;
 use GW\DQO\Generator\Render\ClassHead;
@@ -10,14 +9,28 @@ use GW\DQO\Generator\Render\Line;
 
 final class Renderer
 {
-    private const HEADER = '';
+    private const TYPE_RETURN = [
+        'integer' => 'int',
+        'smallint' => 'int',
+        'tinyint' => 'int',
+        'bigint' => 'int',
+        'string' => 'string',
+        'text' => 'string',
+        'datetime' => '\DateTimeImmutable',
+        'datetime_immutable' => '\DateTimeImmutable',
+        'DateTimeImmutable' => '\DateTimeImmutable',
+    ];
 
     /** @var string */
     private $namespace;
 
+    /** @var TypeRegistry */
+    private $types;
+
     public function __construct(string $namespace = '\\')
     {
         $this->namespace = $namespace;
+        $this->types = new TypeRegistry();
     }
 
     public function onNamespace(string $namespace): self
@@ -59,6 +72,7 @@ final class Renderer
     public function renderRowFile(Table $table): string
     {
         $head = new ClassHead($this->namespace, ['use GW\DQO\TableRow;']);
+
         $render =
             new Block(
                 "final class {$table->name()}Row extends TableRow",
@@ -80,25 +94,9 @@ final class Renderer
 
     private function typeDef(Column $column): string
     {
-        switch ($column->type()) {
-            case 'integer':
-            case 'smallint':
-                return 'int';
+        $type = self::TYPE_RETURN[$column->type()] ?? 'string';
 
-            case 'string':
-            case 'text':
-                return 'string';
-
-            case 'datetime':
-            case 'datetime_immutable':
-            case 'DateTimeImmutable':
-                return '\DateTimeImmutable';
-
-            case 'boolean':
-                return 'bool';
-        }
-
-        return sprintf('%s%s', $column->optional() ? '?' : '', $column->type());
+        return sprintf('%s%s', $column->optional() ? '?' : '', $type);
     }
 
     private function valueReturn(Table $table, Column $column): string
@@ -108,6 +106,7 @@ final class Renderer
         switch ($column->type()) {
             case 'integer':
             case 'smallint':
+            case 'bigint':
                 return "return \$this->getInt({$const});";
 
             case 'string':
@@ -122,10 +121,31 @@ final class Renderer
                 return "return \$this->getBool({$const});";
         }
 
-        if ($column->optional()) {
-            return "return \$this->getThrough([{$column->type()}::class, 'from'], {$const});";
+        $type = $this->types->type($column->type());
+
+        if (!$type->isClass()) {
+            return "return \$this->getString({$const});";
         }
 
-        return "return {$column->type()}::from(\$this->getString({$const}));";
+        $class = new ClassInfo($type->phpType());
+        $stringValue = "\$this->getString({$const})";
+        $construct = "new {$class->shortName()}({$stringValue})";
+
+        if ($class->hasPublicConstructor() && !$column->optional()) {
+            return "return {$construct};";
+        }
+
+        if ($class->hasPublicConstructor() && $column->optional()) {
+            return "return {$stringValue} !== null ? {$construct} : null;";
+        }
+
+        $from = $class->firstStaticFactory() ?? 'from';
+        $construct = "{$class->shortName()}::{$from}({$stringValue})";
+
+        if (!$column->optional()) {
+            return "return {$construct};";
+        }
+
+        return "return {$stringValue} !== null ? {$construct} : null;";
     }
 }

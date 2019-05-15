@@ -20,6 +20,11 @@ final class UserIdType extends Type
         return $platform->getBinaryTypeDeclarationSQL($fieldDeclaration);
     }
 
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?UserId
+    {
+        return $value !== null ? UserId::from($value) : null;
+    }
+
     /**
      * Gets the name of this type.
      *

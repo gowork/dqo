@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Example\Foo;
+namespace tests\GW\DQO\Example\Foo;
 
 final class BooId
 {

@@ -38,8 +38,6 @@ final class TypeRegistry
             if ($docBlockReturnType instanceof Object_) {
                 return new TypeInfo(true, (string)$docBlockReturnType->getFqsen(), $allowsNull);
             }
-
-            return new TypeInfo(false, (string)$docBlockReturnType, $allowsNull);
         }
 
         if (!$returnInfo) {
