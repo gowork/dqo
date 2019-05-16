@@ -77,12 +77,17 @@ final class Renderer
             new Block(
                 "final class {$table->name()}Row extends TableRow",
                 ...array_map(
-                    function (Column $column) use ($table): Line {
-                        $typeDef = $this->typeDef($column);
+                    function (Column $column) use ($table, &$head): Line {
+                        $typeInfo = $this->types->type($column->type());
+                        $typeDef = $this->typeDef($column, $typeInfo);
+
+                        if ($typeInfo->isClass()) {
+                            $head = $head->useClass(new ClassInfo($typeInfo->phpType()));
+                        }
 
                         return new Block(
                             "public function {$column->methodName()}(): {$typeDef}",
-                            new Body($this->valueReturn($table, $column))
+                            new Body($this->valueReturn($table, $column, $typeInfo))
                         );
                     },
                     $table->columns()
@@ -92,14 +97,19 @@ final class Renderer
         return $head->render() . $render->render();
     }
 
-    private function typeDef(Column $column): string
+    private function typeDef(Column $column, TypeInfo $type): string
     {
-        $type = self::TYPE_RETURN[$column->type()] ?? 'string';
+        $phpType = self::TYPE_RETURN[$column->type()] ?? 'string';
 
-        return sprintf('%s%s', $column->optional() ? '?' : '', $type);
+        if ($type->isClass()) {
+            $class = new ClassInfo($type->phpType());
+            $phpType = $class->shortName();
+        }
+
+        return sprintf('%s%s', $column->optional() ? '?' : '', $phpType);
     }
 
-    private function valueReturn(Table $table, Column $column): string
+    private function valueReturn(Table $table, Column $column, TypeInfo $type): string
     {
         $const = "{$table->name()}Table::{$column->nameConst()}";
 
@@ -121,31 +131,30 @@ final class Renderer
                 return "return \$this->getBool({$const});";
         }
 
-        $type = $this->types->type($column->type());
-
         if (!$type->isClass()) {
             return "return \$this->getString({$const});";
         }
 
         $class = new ClassInfo($type->phpType());
         $stringValue = "\$this->getString({$const})";
-        $construct = "new {$class->shortName()}({$stringValue})";
 
-        if ($class->hasPublicConstructor() && !$column->optional()) {
+        $from = $class->firstStaticFactory();
+        $construct = "{$class->shortName()}::{$from}({$stringValue})";
+
+        if ($from !== null && !$column->optional()) {
             return "return {$construct};";
         }
+
+        if ($from !== null && $column->optional()) {
+            return "return {$stringValue} !== null ? {$construct} : null;";
+        }
+
+        $construct = "new {$class->shortName()}({$stringValue})";
 
         if ($class->hasPublicConstructor() && $column->optional()) {
             return "return {$stringValue} !== null ? {$construct} : null;";
         }
 
-        $from = $class->firstStaticFactory() ?? 'from';
-        $construct = "{$class->shortName()}::{$from}({$stringValue})";
-
-        if (!$column->optional()) {
-            return "return {$construct};";
-        }
-
-        return "return {$stringValue} !== null ? {$construct} : null;";
+        return "return {$construct};";
     }
 }

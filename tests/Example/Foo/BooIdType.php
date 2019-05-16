@@ -4,6 +4,7 @@ namespace tests\GW\DQO\Example\Foo;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
+use tests\GW\DQO\Example\Foo\Boo\BooId;
 
 final class BooIdType extends Type
 {

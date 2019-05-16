@@ -2,8 +2,8 @@
 
 namespace tests\GW\DQO\Example\Foo;
 
-use Example\Foo\BooId;
 use GW\DQO\TableRow;
+use tests\GW\DQO\Example\Foo\Boo\BooId;
 
 final class UserRow extends TableRow
 {
