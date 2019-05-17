@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace GW\DQO;
 
@@ -6,6 +6,7 @@ use ArrayAccess;
 use Closure;
 use DateTime;
 use DateTimeImmutable;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use GW\DQO\Util\DateTimeUtil;
 use InvalidArgumentException;
 use function is_array;
@@ -31,6 +32,8 @@ abstract class TableRow
         $this->initGetter($row);
         $this->table = $table;
     }
+
+    abstract protected static function getPlatform(): AbstractPlatform;
 
     /**
      * @return string|int|null

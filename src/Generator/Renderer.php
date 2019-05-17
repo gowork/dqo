@@ -2,10 +2,13 @@
 
 namespace GW\DQO\Generator;
 
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use function get_class;
 use GW\DQO\Generator\Render\Block;
 use GW\DQO\Generator\Render\Body;
 use GW\DQO\Generator\Render\ClassHead;
 use GW\DQO\Generator\Render\Line;
+use function sprintf;
 
 final class Renderer
 {
@@ -71,11 +74,11 @@ final class Renderer
 
     public function renderRowFile(Table $table): string
     {
-        $head = new ClassHead($this->namespace, ['use GW\DQO\TableRow;']);
+        $head = new ClassHead($this->namespace, []);
 
         $render =
             new Block(
-                "final class {$table->name()}Row extends TableRow",
+                "final class {$table->name()}Row extends ClientRow",
                 ...array_map(
                     function (Column $column) use ($table, &$head): Line {
                         $typeInfo = $this->types->type($column->type());
@@ -91,6 +94,38 @@ final class Renderer
                         );
                     },
                     $table->columns()
+                )
+            );
+
+        return $head->render() . $render->render();
+    }
+
+    public function renderClientRow(AbstractPlatform $databasePlatform): string
+    {
+        $head = new ClassHead(
+            $this->namespace,
+            [
+                'use GW\DQO\TableRow;',
+                'use Doctrine\DBAL\Platforms\AbstractPlatform;',
+                sprintf('use %s;', get_class($databasePlatform)),
+            ]
+        );
+
+        $classInfo = new ClassInfo(get_class($databasePlatform));
+
+        $render =
+            new Block(
+                'final class ClientRow extends TableRow',
+                new Block(
+                    'protected static function getPlatform(): AbstractPlatform',
+                    new Body(
+                        'static $platform;',
+                        '',
+                        sprintf(
+                            'return $platform ?? $platform = new %s();',
+                            $classInfo->shortName()
+                        )
+                    )
                 )
             );
 

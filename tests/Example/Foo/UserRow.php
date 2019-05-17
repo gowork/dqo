@@ -2,10 +2,9 @@
 
 namespace tests\GW\DQO\Example\Foo;
 
-use GW\DQO\TableRow;
 use tests\GW\DQO\Example\Foo\Boo\BooId;
 
-final class UserRow extends TableRow
+final class UserRow extends ClientRow
 {
     public function id(): BooId
     {

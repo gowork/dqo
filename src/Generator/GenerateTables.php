@@ -81,4 +81,10 @@ class GenerateTables
             )
             ->each($save);
     }
+
+    public function generateClientRow(string $path): void
+    {
+        $content = $this->renderer->renderClientRow($this->connection->getDatabasePlatform());
+        file_put_contents($path . '/ClientRow.php', $content);
+    }
 }

@@ -1,0 +1,10 @@
+: 1557503975:0;composer inst
+: 1557504220:0;composer req --dev symfony/console
+: 1557504629:0;composer req --dev symfony/dependency-injection
+: 1557504652:0;composer req --dev symfony/http-kernel
+: 1557504683:0;composer req --dev symfony/config
+: 1557763116:0;composer require roave/better-reflection
+: 1557764029:0;phpunit tests
+: 1557764034:0;vendor/bin/phpunit
+: 1557764746:0;vendor/bin/phpunit Generator\TypeRegistryTest::test_getting_builtin_type_nullable_from_doc_block
+: 1557764768:0;vendor/bin/phpunit

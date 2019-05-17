@@ -35,6 +35,7 @@ class GenerateTablesCommand extends Command
         $path = (string)$input->getArgument('path');
         $overwrite = (bool)$input->getOption('overwrite');
 
+        $this->generateTables->generateClientRow($path);
         $this->generateTables->generate($filterTables, $path, $overwrite);
 
         return 0;

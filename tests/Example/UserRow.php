@@ -2,9 +2,7 @@
 
 namespace tests\GW\DQO\Example;
 
-use GW\DQO\TableRow;
-
-final class UserRow extends TableRow
+final class UserRow extends ClientRow
 {
     public function id(): UserId
     {
