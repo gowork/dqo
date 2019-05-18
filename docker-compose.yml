@@ -8,7 +8,7 @@ services:
             USER: ${USER}
             UID: ${UID:-1000}
             GID: ${GID:-1000}
-    image: ${PROJECT_NAME:-nest}
+    image: ${PROJECT_NAME:-dqo}
     volumes:
       - ./:/home/${USER}/current
       - ~/.ssh/id_rsa:/home/${USER}/.ssh/id_rsa
