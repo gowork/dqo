@@ -4,6 +4,7 @@
     "type": "library",
     "license": "MIT",
     "require": {
+        "php": "^7.3",
         "doctrine/dbal": "^2.9",
         "gowork/values": "^0.2.0",
         "roave/better-reflection": "^3.4"

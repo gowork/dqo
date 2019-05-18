@@ -107,6 +107,7 @@ final class Renderer
             [
                 'use GW\DQO\TableRow;',
                 'use Doctrine\DBAL\Platforms\AbstractPlatform;',
+                'use Doctrine\DBAL\Types\Type;',
                 sprintf('use %s;', get_class($databasePlatform)),
             ]
         );
@@ -170,6 +171,15 @@ final class Renderer
             return "return \$this->getString({$const});";
         }
 
+        $stringValue = "\$this->getString({$const})";
+        $construct = "Type::getType('{$column->type()}')->convertToPHPValue({$stringValue}, parent::getPlatform())";
+
+        return "return {$construct};";
+    }
+
+    private function valueReturnThroughFactory(Table $table, Column $column, TypeInfo $type): string
+    {
+        $const = "{$table->name()}Table::{$column->nameConst()}";
         $class = new ClassInfo($type->phpType());
         $stringValue = "\$this->getString({$const})";
 
