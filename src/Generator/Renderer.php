@@ -30,7 +30,7 @@ final class Renderer
     /** @var TypeRegistry */
     private $types;
 
-    public function __construct(string $namespace = '\\')
+    public function __construct(string $namespace = '')
     {
         $this->namespace = $namespace;
         $this->types = new TypeRegistry();
@@ -116,7 +116,7 @@ final class Renderer
 
         $render =
             new Block(
-                'final class ClientRow extends TableRow',
+                'abstract class ClientRow extends TableRow',
                 new Block(
                     'protected static function getPlatform(): AbstractPlatform',
                     new Body(

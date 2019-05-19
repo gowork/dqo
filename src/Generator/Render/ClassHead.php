@@ -46,8 +46,19 @@ final class ClassHead implements Line
 
     public function render(): string
     {
-        $uses = implode("\n", array_merge(["namespace {$this->namespace};", ''], $this->uses));
+        $uses = [];
 
-        return "<?php declare(strict_types=1);\n\n{$uses}\n\n{$this->header}";
+        if ($this->namespace !== '') {
+            $uses[] = "namespace {$this->namespace};";
+        }
+
+        if ($this->uses) {
+            $uses[] = '';
+            $uses = array_merge($uses, $this->uses);
+        }
+
+        $usesString = implode("\n", $uses);
+
+        return "<?php declare(strict_types=1);\n\n{$usesString}\n\n{$this->header}";
     }
 }

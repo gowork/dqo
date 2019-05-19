@@ -17,16 +17,20 @@ final class SQLiteTest extends TestCase
 
         $conn->executeQuery(
             <<<SQL
-                CREATE TABLE message (id INTEGER PRIMARY KEY, 
-                                      title TEXT, 
+                CREATE TABLE message (id INTEGER PRIMARY KEY NOT NULL, 
+                                      title TEXT NOT NULL, 
                                       message TEXT)
                 SQL
         );
 
         $path = '/tmp/';
 
-        $generateTables = new GenerateTables($conn, new TableFactory(), new Renderer());
+        $generateTables = new GenerateTables($conn, new TableFactory(), new Renderer('tests\GW\DQO\SQLite\Cases\One'));
         $generateTables->generateClientRow($path);
         $generateTables->generate(['message'], $path, true);
+
+        self::assertFileEquals(__DIR__ . '/Cases/One/ClientRow.php', '/tmp/ClientRow.php');
+        self::assertFileEquals(__DIR__ . '/Cases/One/MessageRow.php', '/tmp/MessageRow.php');
+        self::assertFileEquals(__DIR__ . '/Cases/One/MessageTable.php', '/tmp/MessageTable.php');
     }
 }
