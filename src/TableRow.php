@@ -7,6 +7,7 @@ use Closure;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Type;
 use GW\DQO\Util\DateTimeUtil;
 use InvalidArgumentException;
 use function is_array;
@@ -92,6 +93,14 @@ abstract class TableRow
         $value = $this->get($field);
 
         return $value !== null ? $factory($value) : null;
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getThroughType(string $dc2Type, string $field)
+    {
+        return Type::getType($dc2Type)->convertToPHPValue($this->getString($field), self::getPlatform());
     }
 
     private function initGetter($row): void

@@ -8,7 +8,7 @@ final class UserRow extends ClientRow
 {
     public function id(): BooId
     {
-        return BooId::from($this->getString(UserTable::ID));
+        return $this->getThroughType('BooId', UserTable::ID);
     }
 
     public function email(): string
