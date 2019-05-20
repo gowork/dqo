@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace tests\GW\DQO\SQLite;
+namespace tests\GW\DQO\Integration\SQLite;
 
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
@@ -25,12 +25,19 @@ final class SQLiteTest extends TestCase
 
         $path = '/tmp/';
 
-        $generateTables = new GenerateTables($conn, new TableFactory(), new Renderer('tests\GW\DQO\SQLite\Cases\One'));
+        $generateTables = new GenerateTables(
+            $conn,
+            new TableFactory(),
+            new Renderer('tests\GW\DQO\Integration\Cases\One')
+        );
         $generateTables->generateClientRow($path);
         $generateTables->generate(['message'], $path, true);
 
-        self::assertFileEquals(__DIR__ . '/Cases/One/ClientRow.php', '/tmp/ClientRow.php');
-        self::assertFileEquals(__DIR__ . '/Cases/One/MessageRow.php', '/tmp/MessageRow.php');
-        self::assertFileEquals(__DIR__ . '/Cases/One/MessageTable.php', '/tmp/MessageTable.php');
+        self::assertStringEqualsFile(
+            '/tmp/ClientRow.php',
+            str_replace('%platform%', 'SqlitePlatform', file_get_contents(__DIR__ . '/../Cases/One/ClientRow.txt')),
+        );
+        self::assertFileEquals(__DIR__ . '/../Cases/One/MessageRow.php', '/tmp/MessageRow.php');
+        self::assertFileEquals(__DIR__ . '/../Cases/One/MessageTable.php', '/tmp/MessageTable.php');
     }
 }

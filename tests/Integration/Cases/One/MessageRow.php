@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace tests\GW\DQO\SQLite\Cases\One;
+namespace tests\GW\DQO\Integration\Cases\One;
 
 final class MessageRow extends ClientRow
 {

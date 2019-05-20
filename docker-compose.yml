@@ -1,18 +1,22 @@
 version: "3.7"
 
 services:
-  develop:
-    build:
-        context: .
-        args:
-            USER: ${USER}
-            UID: ${UID:-1000}
-            GID: ${GID:-1000}
-    image: ${PROJECT_NAME:-dqo}
-    volumes:
-      - ./:/home/${USER}/current
-      - ~/.ssh/id_rsa:/home/${USER}/.ssh/id_rsa
-      - ~/.ssh/id_rsa.pub:/home/${USER}/.ssh/id_rsa.pub
-      - ./zsh_history:/home/${USER}/.zsh_history
-      - ~/.gitconfig:/home/${USER}/.gitconfig
-      - ~/.ssh/known_hosts:/home/${USER}/.ssh/known_hosts
+    develop:
+        build:
+            context: .
+            args:
+                USER: ${USER}
+                UID: ${UID:-1000}
+                GID: ${GID:-1000}
+        image: ${PROJECT_NAME:-dqo}
+        volumes:
+            - ./:/home/${USER}/current
+            - ~/.ssh/id_rsa:/home/${USER}/.ssh/id_rsa
+            - ~/.ssh/id_rsa.pub:/home/${USER}/.ssh/id_rsa.pub
+            - ./zsh_history:/home/${USER}/.zsh_history
+            - ~/.gitconfig:/home/${USER}/.gitconfig
+            - ~/.ssh/known_hosts:/home/${USER}/.ssh/known_hosts
+
+    mysql:
+        image: mysql:5.7
+        environment: {MYSQL_ROOT_PASSWORD: test, MYSQL_USER: test, MYSQL_DATABASE: test, MYSQL_PASSWORD: test, LANG: "C.UTF-8"}

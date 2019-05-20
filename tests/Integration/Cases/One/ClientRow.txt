@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace tests\GW\DQO\SQLite\Cases\One;
+namespace tests\GW\DQO\Integration\Cases\One;
 
 use GW\DQO\TableRow;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Platforms\SqlitePlatform;
+use Doctrine\DBAL\Platforms\%platform%;
 
 abstract class ClientRow extends TableRow
 {
@@ -12,6 +12,6 @@ abstract class ClientRow extends TableRow
     {
         static $platform;
 
-        return $platform ?? $platform = new SqlitePlatform();
+        return $platform ?? $platform = new %platform%();
     }
 }
