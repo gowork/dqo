@@ -8,8 +8,9 @@ use GW\DQO\Generator\GenerateTables;
 use GW\DQO\Generator\Renderer;
 use GW\DQO\Generator\TableFactory;
 use PHPUnit\Framework\TestCase;
+use tests\GW\DQO\Integration\IntegrationTestCase;
 
-final class SQLiteTest extends TestCase
+final class SQLiteTest extends IntegrationTestCase
 {
     function test_real_db()
     {
@@ -33,11 +34,7 @@ final class SQLiteTest extends TestCase
         $generateTables->generateClientRow($path);
         $generateTables->generate(['message'], $path, true);
 
-        self::assertStringEqualsFile(
-            '/tmp/ClientRow.php',
-            str_replace('%platform%', 'SqlitePlatform', file_get_contents(__DIR__ . '/../Cases/One/ClientRow.txt')),
-        );
-        self::assertFileEquals(__DIR__ . '/../Cases/One/MessageRow.php', '/tmp/MessageRow.php');
-        self::assertFileEquals(__DIR__ . '/../Cases/One/MessageTable.php', '/tmp/MessageTable.php');
+        self::assertClientRow('One', 'SqlitePlatform');
+        self::assertTable('One','message');
     }
 }

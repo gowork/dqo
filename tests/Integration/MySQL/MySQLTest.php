@@ -8,8 +8,9 @@ use GW\DQO\Generator\GenerateTables;
 use GW\DQO\Generator\Renderer;
 use GW\DQO\Generator\TableFactory;
 use PHPUnit\Framework\TestCase;
+use tests\GW\DQO\Integration\IntegrationTestCase;
 
-final class MySQLTest extends TestCase
+final class MySQLTest extends IntegrationTestCase
 {
     function test_real_db()
     {
@@ -39,11 +40,7 @@ final class MySQLTest extends TestCase
         $generateTables->generateClientRow($path);
         $generateTables->generate(['message'], $path, true);
 
-        self::assertStringEqualsFile(
-            '/tmp/ClientRow.php',
-            str_replace('%platform%', 'MySQL57Platform', file_get_contents(__DIR__ . '/../Cases/One/ClientRow.txt')),
-        );
-        self::assertFileEquals(__DIR__ . '/../Cases/One/MessageRow.php', '/tmp/MessageRow.php');
-        self::assertFileEquals(__DIR__ . '/../Cases/One/MessageTable.php', '/tmp/MessageTable.php');
+        self::assertClientRow('One', 'MySQL57Platform');
+        self::assertTable('One','message');
     }
 }
