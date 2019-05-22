@@ -10,13 +10,11 @@ use GW\DQO\Generator\TableFactory;
 use PHPUnit\Framework\TestCase;
 use tests\GW\DQO\Integration\IntegrationTestCase;
 
-final class SQLiteTest extends IntegrationTestCase
+final class SQLiteTest extends SQLiteTestCase
 {
     function test_real_db()
     {
-        $conn = DriverManager::getConnection(['url' => 'sqlite:///:memory:'], new Configuration());
-
-        $conn->executeQuery(
+        $this->executeQuery(
             <<<SQL
                 CREATE TABLE message (id INTEGER PRIMARY KEY NOT NULL, 
                                       title TEXT NOT NULL, 
@@ -27,14 +25,14 @@ final class SQLiteTest extends IntegrationTestCase
         $path = '/tmp/';
 
         $generateTables = new GenerateTables(
-            $conn,
+            $this->conn(),
             new TableFactory(),
             new Renderer('tests\GW\DQO\Integration\Cases\One')
         );
         $generateTables->generateClientRow($path);
         $generateTables->generate(['message'], $path, true);
 
-        self::assertClientRow('One', 'SqlitePlatform');
+        self::assertClientRow('One', $this->platform());
         self::assertTable('One','message');
     }
 }
