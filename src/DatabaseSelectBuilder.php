@@ -123,7 +123,18 @@ final class DatabaseSelectBuilder
     public function select(string ...$columns): self
     {
         $copy = clone $this;
-        $copy->builder->select(...$columns);
+        $copy->builder->select(
+            ...array_map(
+                function (string $column): string {
+                    if (strpos($column, '.') !== false && strpos($column, ' ') === false) {
+                        return "$column " . str_replace('.', '_', $column);
+                    }
+
+                    return $column;
+                },
+                $columns
+            )
+        );
 
         return $copy;
     }
