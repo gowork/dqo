@@ -24,4 +24,9 @@ final class MessageTable extends Table
     {
         return $this->fieldPath(self::MESSAGE);
     }
+
+    public function createRow(array $raw): MessageRow
+    {
+        return new MessageRow($raw, $this);
+    }
 }

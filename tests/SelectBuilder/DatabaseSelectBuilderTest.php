@@ -62,6 +62,9 @@ final class DatabaseSelectBuilderTest extends MySQLTestCase
         );
         self::assertEquals('John', (new Schema\UserRow($rows[0], $userTable))->name());
         self::assertEquals('Hello', (new Schema\MessageRow($rows[0], $messageTable))->message());
+
+        self::assertEquals('John', $userTable->createRow($rows[0])->name());
+        self::assertEquals('Hello', $messageTable->createRow($rows[0])->message());
     }
 
     function test_aliases()

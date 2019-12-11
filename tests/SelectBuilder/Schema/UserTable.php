@@ -18,4 +18,9 @@ final class UserTable extends Table
     {
         return $this->fieldPath(self::NAME);
     }
+
+    public function createRow(array $raw): UserRow
+    {
+        return new UserRow($raw, $this);
+    }
 }
