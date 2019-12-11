@@ -100,7 +100,7 @@ abstract class TableRow
      */
     protected function getThroughType(string $dc2Type, string $field)
     {
-        return Type::getType($dc2Type)->convertToPHPValue($this->getString($field), self::getPlatform());
+        return Type::getType($dc2Type)->convertToPHPValue($this->getString($field), static::getPlatform());
     }
 
     private function initGetter($row): void

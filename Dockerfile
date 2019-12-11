@@ -30,6 +30,7 @@ RUN apt-add-repository -y ppa:ondrej/php && apt-get update && apt-get install -y
 	php7.3-bz2 \
 	php7.3-gmp \
 	php7.3-sqlite \
+	php7.3-pgsql \
     php-xdebug \
     php7.3-redis
 
