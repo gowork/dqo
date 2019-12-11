@@ -3,9 +3,7 @@
 namespace GW\DQO\Generator;
 
 use Doctrine\DBAL\Types\Type;
-use phpDocumentor\Reflection\Types\Null_;
-use phpDocumentor\Reflection\Types\Nullable;
-use phpDocumentor\Reflection\Types\Object_;
+use phpDocumentor\Reflection\Types as Types;
 use Roave\BetterReflection\BetterReflection;
 
 final class TypeRegistry
@@ -24,19 +22,27 @@ final class TypeRegistry
         $allowsNull = false;
 
         foreach ($methodInfo->getDocBlockReturnTypes() as $docBlockReturnType) {
-            if ($docBlockReturnType instanceof Null_) {
+            if ($docBlockReturnType instanceof Types\Null_) {
                 $allowsNull = true;
             }
         }
 
         foreach ($methodInfo->getDocBlockReturnTypes() as $docBlockReturnType) {
-            if ($docBlockReturnType instanceof Nullable) {
+            if ($docBlockReturnType instanceof Types\Nullable) {
                 $allowsNull = true;
-                $docBlockReturnType->getActualType();
+                $docBlockReturnType = $docBlockReturnType->getActualType();
             }
 
-            if ($docBlockReturnType instanceof Object_) {
+            if ($docBlockReturnType instanceof Types\Object_) {
                 return new TypeInfo(true, (string)$docBlockReturnType->getFqsen(), $allowsNull);
+            }
+
+            if ($docBlockReturnType instanceof Types\String_) {
+                return new TypeInfo(false, (string)$docBlockReturnType, $allowsNull);
+            }
+
+            if ($docBlockReturnType instanceof Types\Integer) {
+                return new TypeInfo(false, (string)$docBlockReturnType, $allowsNull);
             }
         }
 

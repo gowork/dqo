@@ -11,13 +11,13 @@ abstract class IntegrationTestCase extends TestCase
         $tableName = ucfirst($tableName);
 
         self::assertFileEquals(
-            __DIR__ . '/../Cases/' . $testCase . '/ ' . $tableName . 'Row.php',
-            '/tmp/ ' . $tableName . 'Row.php'
+            __DIR__ . '/Cases/' . $testCase . '/' . $tableName . 'Row.php',
+            '/tmp/' . $tableName . 'Row.php'
         );
 
         self::assertFileEquals(
-            __DIR__ . '/../Cases/' . $testCase . '/ ' . $tableName . 'Table.php',
-            '/tmp/ ' . $tableName . 'Table.php'
+            __DIR__ . '/Cases/' . $testCase . '/' . $tableName . 'Table.php',
+            '/tmp/' . $tableName . 'Table.php'
         );
     }
 
@@ -28,7 +28,7 @@ abstract class IntegrationTestCase extends TestCase
             str_replace(
                 '%platform%',
                 $platformName,
-                file_get_contents(__DIR__ . '/../Cases/' . $testCase . '/ClientRow.txt')
+                file_get_contents(__DIR__ . '/Cases/' . $testCase . '/ClientRow.txt')
             ),
         );
     }
