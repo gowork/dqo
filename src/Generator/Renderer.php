@@ -68,7 +68,15 @@ final class Renderer
                         );
                     },
                     $table->columns()
-                )
+                ),
+                ...[
+                    new Block(
+                        "public function createRow(array \$raw): {$table->name()}Row",
+                        new Body(
+                            "return new {$table->name()}Row(\$raw, \$this);"
+                        )
+                    ),
+                ],
             );
 
         return $head->render() . $body->render();

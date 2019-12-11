@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class GenerateTablesCommand extends Command
+final class GenerateTablesCommand extends Command
 {
     protected static $defaultName = 'gw:generate-tables';
 
