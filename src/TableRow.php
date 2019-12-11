@@ -8,7 +8,6 @@ use DateTime;
 use DateTimeImmutable;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
-use GW\DQO\Util\DateTimeUtil;
 use InvalidArgumentException;
 use function is_array;
 use function is_object;
@@ -76,12 +75,17 @@ abstract class TableRow
 
     protected function getDateTime(string $field): ?DateTime
     {
-        return $this->getThrough(DateTimeUtil::mutable, $field);
+        return $this->getThrough(Util\DateTimeUtil::mutable, $field);
     }
 
-    protected function getDateTimeImmutable(string $field): ?DateTimeImmutable
+    protected function getDateTimeImmutable(string $field): DateTimeImmutable
     {
-        return $this->getThrough(DateTimeUtil::immutable, $field);
+        return Util\DateTimeUtil::immutable($field);
+    }
+
+    protected function getNullableDateTimeImmutable(string $field): ?DateTimeImmutable
+    {
+        return $this->getThrough(Util\DateTimeUtil::immutable, $field);
     }
 
     /**

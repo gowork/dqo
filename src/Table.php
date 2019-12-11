@@ -3,6 +3,9 @@
 namespace GW\DQO;
 
 use GW\Value\Wrap;
+use ReflectionClass;
+use function array_values;
+use function strlen;
 
 abstract class Table
 {
@@ -65,17 +68,15 @@ abstract class Table
     private function resolveTableName(): string
     {
         return Wrap::string(static::class)
-            ->explode('\\')
-            ->last()
-            ->substring(0, -\strlen('Table'))
-            ->replacePattern('/([A-Z])/', '_$1')
-            ->trimLeft('_')
-            ->lower()
+            // class name
+            ->explode('\\')->last()->substring(0, -strlen('Table'))
+            // snake case
+            ->replacePattern('/([A-Z])/', '_$1')->trimLeft('_')->lower()
             ->toString();
     }
 
     private function resolveTableFields(): array
     {
-        return \array_values((new \ReflectionClass(static::class))->getConstants());
+        return array_values((new ReflectionClass(static::class))->getConstants());
     }
 }
