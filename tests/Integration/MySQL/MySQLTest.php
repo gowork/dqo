@@ -2,13 +2,9 @@
 
 namespace tests\GW\DQO\Integration\MySQL;
 
-use Doctrine\DBAL\Configuration;
-use Doctrine\DBAL\DriverManager;
 use GW\DQO\Generator\GenerateTables;
 use GW\DQO\Generator\Renderer;
 use GW\DQO\Generator\TableFactory;
-use PHPUnit\Framework\TestCase;
-use tests\GW\DQO\Integration\IntegrationTestCase;
 
 final class MySQLTest extends MySQLTestCase
 {
@@ -19,7 +15,10 @@ final class MySQLTest extends MySQLTestCase
         $this->executeQuery(
             <<<SQL
                 CREATE TABLE message (id INTEGER PRIMARY KEY NOT NULL, 
-                                      title TEXT NOT NULL, 
+                                      title TEXT NULL, 
+                                      title_not_null TEXT NOT NULL, 
+                                      boo TEXT COMMENT '(DC2Type:BooId)',
+                                      boo_not_null TEXT NOT NULL COMMENT '(DC2Type:BooId)',
                                       message TEXT)
                 SQL
         );
@@ -34,7 +33,7 @@ final class MySQLTest extends MySQLTestCase
         $generateTables->generateClientRow($path);
         $generateTables->generate(['message'], $path, true);
 
-        self::assertClientRow('One', $this->platform());
-        self::assertTable('One','message');
+        self::assertClientRow('Two', $this->platform());
+        self::assertTable('Two','message');
     }
 }

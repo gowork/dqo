@@ -152,24 +152,35 @@ final class Renderer
             case 'integer':
             case 'smallint':
             case 'bigint':
-                return "return \$this->getInt({$const});";
+                return $this->returnStatement('getInt', $const);
 
             case 'string':
             case 'text':
-                return "return \$this->getString({$const});";
+                if ($column->optional()) {
+                    return $this->returnStatement('getNullableString', $const);
+                }
+                return $this->returnStatement('getString', $const);
 
             case 'datetime':
             case 'datetime_immutable':
-                return "return \$this->getDateTimeImmutable({$const});";
+                return $this->returnStatement('getDateTimeImmutable', $const);
 
             case 'boolean':
-                return "return \$this->getBool({$const});";
+                return $this->returnStatement('getBool', $const);
         }
 
         if (!$type->isClass()) {
-            return "return \$this->getString({$const});";
+            if ($column->optional()) {
+                return $this->returnStatement('getNullableString', $const);
+            }
+            return $this->returnStatement('getString', $const);
         }
 
-        return "return \$this->getThroughType('{$column->type()}', {$const});";
+        return $this->returnStatement('getThroughType', "'{$column->type()}', {$const}");
+    }
+
+    private function returnStatement(string $methodName, string $arguments): string
+    {
+        return "return \$this->$methodName($arguments);";
     }
 }

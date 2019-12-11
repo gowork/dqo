@@ -16,6 +16,6 @@ final class MessageRow extends ClientRow
 
     public function message(): ?string
     {
-        return $this->getString(MessageTable::MESSAGE);
+        return $this->getNullableString(MessageTable::MESSAGE);
     }
 }
