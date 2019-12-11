@@ -19,6 +19,8 @@ final class Renderer
         'bigint' => 'int',
         'string' => 'string',
         'text' => 'string',
+        'bool' => 'bool',
+        'boolean' => 'bool',
         'datetime' => '\DateTimeImmutable',
         'datetime_immutable' => '\DateTimeImmutable',
         'DateTimeImmutable' => '\DateTimeImmutable',
@@ -150,8 +152,12 @@ final class Renderer
 
         switch ($column->type()) {
             case 'integer':
+            case 'tinyint':
             case 'smallint':
             case 'bigint':
+                if ($column->optional()) {
+                    return $this->returnStatement('getNullableInt', $const);
+                }
                 return $this->returnStatement('getInt', $const);
 
             case 'string':
@@ -166,6 +172,9 @@ final class Renderer
                 return $this->returnStatement('getDateTimeImmutable', $const);
 
             case 'boolean':
+                if ($column->optional()) {
+                    return $this->returnStatement('getNullableBool', $const);
+                }
                 return $this->returnStatement('getBool', $const);
         }
 

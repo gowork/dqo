@@ -11,6 +11,16 @@ final class MessageRow extends ClientRow
         return $this->getInt(MessageTable::ID);
     }
 
+    public function tinyBool(): bool
+    {
+        return $this->getBool(MessageTable::TINY_BOOL);
+    }
+
+    public function tinyInt(): int
+    {
+        return $this->getInt(MessageTable::TINY_INT);
+    }
+
     public function title(): ?string
     {
         return $this->getNullableString(MessageTable::TITLE);

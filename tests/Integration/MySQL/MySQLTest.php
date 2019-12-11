@@ -15,6 +15,8 @@ final class MySQLTest extends MySQLTestCase
         $this->executeQuery(
             <<<SQL
                 CREATE TABLE message (id INTEGER PRIMARY KEY NOT NULL, 
+                                      tiny_bool TINYINT NOT NULL, 
+                                      tiny_int TINYINT NOT NULL COMMENT '(DC2Type:integer)', 
                                       title TEXT NULL, 
                                       title_not_null TEXT NOT NULL, 
                                       boo TEXT COMMENT '(DC2Type:BooId)',
@@ -33,7 +35,7 @@ final class MySQLTest extends MySQLTestCase
         $generateTables->generateClientRow($path);
         $generateTables->generate(['message'], $path, true);
 
-        self::assertClientRow('Two', $this->platform());
-        self::assertTable('Two','message');
+        self::assertClientRow('MySQL', $this->platform());
+        self::assertTable('MySQL','message');
     }
 }

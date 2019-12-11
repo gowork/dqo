@@ -8,3 +8,12 @@
 : 1557764034:0;vendor/bin/phpunit
 : 1557764746:0;vendor/bin/phpunit Generator\TypeRegistryTest::test_getting_builtin_type_nullable_from_doc_block
 : 1557764768:0;vendor/bin/phpunit
+: 1576081171:0;console
+: 1576081182:0;composer inst
+: 1576081373:0;vendor/bin/phpunit
+: 1576081765:0;cat /tmp/ClientRow.php
+: 1576081808:0;vendor/bin/phpunit Generator\TypeRegistryTest::test_getting_builtin_type_nullable_from_doc_block
+: 1576081814:0;cat /tmp/ClientRow.php
+: 1576081817:0;vendor/bin/phpunit
+: 1576081936:0;cat /home/goworkpl/current/tests/Integration/../Cases/One/ClientRow.txt
+: 1576081949:0;vendor/bin/phpunit
