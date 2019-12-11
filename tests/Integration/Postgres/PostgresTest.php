@@ -31,7 +31,7 @@ final class PostgresTest extends PostgresTestCase
         $generateTables = new GenerateTables(
             $this->conn(),
             new TableFactory(),
-            new Renderer('tests\GW\DQO\Integration\Cases\One')
+            new Renderer('tests\GW\DQO\Integration\Cases\Postgres')
         );
         $generateTables->generateClientRow($path);
         $generateTables->generate(['message'], $path, true);

@@ -27,12 +27,12 @@ final class SQLiteTest extends SQLiteTestCase
         $generateTables = new GenerateTables(
             $this->conn(),
             new TableFactory(),
-            new Renderer('tests\GW\DQO\Integration\Cases\One')
+            new Renderer('tests\GW\DQO\Integration\Cases\SQLite')
         );
         $generateTables->generateClientRow($path);
         $generateTables->generate(['message'], $path, true);
 
-        self::assertClientRow('One', $this->platform());
-        self::assertTable('One','message');
+        self::assertClientRow('SQLite', $this->platform());
+        self::assertTable('SQLite','message');
     }
 }

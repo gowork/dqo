@@ -30,7 +30,7 @@ final class MySQLTest extends MySQLTestCase
         $generateTables = new GenerateTables(
             $this->conn(),
             new TableFactory(),
-            new Renderer('tests\GW\DQO\Integration\Cases\One')
+            new Renderer('tests\GW\DQO\Integration\Cases\MySQL')
         );
         $generateTables->generateClientRow($path);
         $generateTables->generate(['message'], $path, true);
