@@ -41,6 +41,10 @@ RUN groupadd -g ${GID} -r ${USER} && useradd -u ${UID} -rm -s /bin/zsh -g ${USER
     && mkdir -p /home/${USER}/Downloads \
     && chown -R ${USER}:${USER} /home/${USER}
 
+
+RUN apt install wget &&  wget https://get.symfony.com/cli/installer -O - | bash
+RUN mv /root/.symfony/bin/symfony /usr/local/bin/symfony
+
 WORKDIR /home/${USER}
 
 USER ${USER}

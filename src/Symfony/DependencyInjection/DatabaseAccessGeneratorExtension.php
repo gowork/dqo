@@ -1,6 +1,6 @@
 <?php
 
-namespace GW\DQO\Bundle\DependencyInjection;
+namespace GW\DQO\Symfony\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

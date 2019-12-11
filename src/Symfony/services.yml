@@ -3,7 +3,7 @@ services:
         autowire: true
 
     database_access_generator.generate_tables:
-        class: GW\DQO\Symfony\GenerateTables
+        class: GW\DQO\Symfony\GenerateTablesCommand
         tags: [{name: console.command}]
 
     GW\DQO\Generator\TableFactory: ~

@@ -17,3 +17,40 @@
 : 1576081817:0;vendor/bin/phpunit
 : 1576081936:0;cat /home/goworkpl/current/tests/Integration/../Cases/One/ClientRow.txt
 : 1576081949:0;vendor/bin/phpunit
+: 1576094296:0;cd tests
+: 1576094300:0;symfony new symfony
+: 1576094315:0;/root/.symfony/bin/symfony new symfony
+: 1576094414:0;cd tests
+: 1576094416:0;symfony new symfony
+: 1576095968:0;cd symfony
+: 1576095970:0;composer inst
+: 1576095985:0;composer up
+: 1576096025:0;composer inst
+: 1576096027:0;composer up
+: 1576096319:0;composer -v
+: 1576096362:0;composer up
+: 1576096652:0;composer inst
+: 1576097472:0;composer inst --no-cache
+: 1576097496:0;rm -rf vendor
+: 1576097500:0;composer inst --no-cache -o
+: 1576097552:0;composer inst --help | grep check
+: 1576097559:0;composer inst --help | grep ver
+: 1576097567:0;composer inst --no-cache -o --prefer-dist
+: 1576098076:0;composer inst --help | grep lock
+: 1576098124:0;composer inst --no-cache -o --prefer-dist
+: 1576098213:0;composer require doctrine/doctrine-bundle
+: 1576098241:0;composer require doctrine/doctrine-bundle doctrine/orm
+: 1576098316:0;composer inst --no-cache -o --prefer-dist
+: 1576098435:0;bin/console
+: 1576098530:0;composer inst --no-cache -o --prefer-dist
+: 1576098814:0;bin/console
+: 1576098845:0;composer inst --no-cache -o --prefer-dist
+: 1576099117:0;bin/console
+: 1576099135:0;bin/console gw:generate-tables src user
+: 1576099896:0;..
+: 1576099897:0;git s
+: 1576099907:0;git add symfony
+: 1576099909:0;git s
+: 1576099948:0;bin/console
+: 1576099951:0;cd symfony
+: 1576099952:0;bin/console

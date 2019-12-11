@@ -24,8 +24,8 @@ final class GenerateTablesCommand extends Command
 
     protected function configure(): void
     {
+        $this->addArgument('path', InputArgument::REQUIRED);
         $this->addArgument('table', InputArgument::IS_ARRAY);
-        $this->addArgument('path', 'p', InputArgument::REQUIRED);
         $this->addOption('overwrite', 'o', InputOption::VALUE_NONE);
     }
 
