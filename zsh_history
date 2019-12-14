@@ -54,3 +54,11 @@
 : 1576099948:0;bin/console
 : 1576099951:0;cd symfony
 : 1576099952:0;bin/console
+: 1576322400:0;rm composer.lock
+: 1576322402:0;composer inst
+: 1576322816:0;phpunit
+: 1576322824:0;vendor/bin/phpunit
+: 1576323055:0;git s
+: 1576323098:0;vendor/bin/phpunit
+: 1576323400:0;vendor/bin/phpunit tests/Generator
+: 1576323568:0;vendor/bin/phpunit tests/Generator/RendererTest.php

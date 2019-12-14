@@ -2,6 +2,7 @@
     <testsuites>
         <testsuite name="dqo">
             <directory>tests</directory>
+            <exclude>tests/Usage/symfony</exclude>
         </testsuite>
     </testsuites>
 </phpunit>

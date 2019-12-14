@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace tests\GW\DQO;
+namespace tests\GW\DQO\Generator;
 
 use GW\DQO\Generator\Column;
 use GW\DQO\Generator\Renderer;
 use GW\DQO\Generator\Table;
-use PHPUnit\Framework\TestCase;
+use tests\GW\DQO\Example\UserIdType;
 
-final class RendererTest extends TestCase
+final class RendererTest extends DoctrineTestCase
 {
     function test_generate()
     {
@@ -27,6 +27,8 @@ final class RendererTest extends TestCase
 
     function test_generate_row()
     {
+        $this->registerType(UserIdType::class, 'UserId');
+
         $renderer = new Renderer('tests\GW\DQO\Example');
         $renderedContent = $renderer->renderRowFile(
             new Table(

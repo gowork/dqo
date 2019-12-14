@@ -1,0 +1,20 @@
+language: php
+
+php:
+  - 7.3
+  - 7.4
+
+install:
+  - composer install --dev
+#
+#script:
+#  - ./bin/phpspec run
+#  - ./bin/phpstan analyze -l 7 src
+
+services:
+  - mysql
+  - postgresql
+
+before_install:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS dqo;'
+  - psql -c 'create database dqo;' -U postgres

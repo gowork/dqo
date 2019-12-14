@@ -1,13 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Generator;
+namespace tests\GW\DQO\Generator;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 use GW\DQO\Generator\TypeRegistry;
-use PHPUnit\Framework\TestCase;
 
-final class TypeRegistryTest extends TestCase
+final class TypeRegistryTest extends DoctrineTestCase
 {
     function test_getting_builtin_type()
     {
@@ -55,15 +54,6 @@ final class TypeRegistryTest extends TestCase
         self::assertFalse($type->isClass());
         self::assertEquals('string', $type->phpType());
         self::assertTrue($type->allowsNull());
-    }
-
-    private function registerType(string $class, string $name = 'foo'): void
-    {
-        if (Type::hasType($name)) {
-            Type::overrideType($name, $class);
-        } else {
-            Type::addType($name, $class);
-        }
     }
 }
 
