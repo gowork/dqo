@@ -26,6 +26,7 @@ final class GenerateTablesCommand extends Command
     {
         $this->addArgument('path', InputArgument::REQUIRED);
         $this->addArgument('table', InputArgument::IS_ARRAY);
+        $this->addArgument('namespace', InputArgument::IS_ARRAY);
         $this->addOption('overwrite', 'o', InputOption::VALUE_NONE);
     }
 
@@ -33,10 +34,13 @@ final class GenerateTablesCommand extends Command
     {
         $filterTables = (array)$input->getArgument('table');
         $path = (string)$input->getArgument('path');
+        $namespace = (string)$input->getArgument('namespace');
         $overwrite = (bool)$input->getOption('overwrite');
 
-        $this->generateTables->generateClientRow($path);
-        $this->generateTables->generate($filterTables, $path, $overwrite);
+        $generateTables = $this->generateTables->onNamespace($namespace);
+
+        $generateTables->generateClientRow($path);
+        $generateTables->generate($filterTables, $path, $overwrite);
 
         return 0;
     }

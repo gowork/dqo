@@ -24,6 +24,14 @@ class GenerateTables
         $this->renderer = $renderer;
     }
 
+    public function onNamespace(string $namespace): self
+    {
+        $clone = clone $this;
+        $clone->renderer = $this->renderer->onNamespace($namespace);
+
+        return $clone;
+    }
+
     /**
      * @param string[] $filterTables
      */

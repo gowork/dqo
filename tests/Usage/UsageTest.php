@@ -25,6 +25,9 @@ final class UsageTest extends TestCase
         $this->runOnSymfonyDIr(['rm', '-rf', 'vendor', 'repo']);
         $this->mustRunOnSymfonyDIr(['composer', 'install']);
         $this->mustRunOnSymfonyDIr(['bin/console']);
-        $this->mustRunOnSymfonyDIr(['bin/console', 'gw:generate-tables', 'src', 'user']);
+        $this->mustRunOnSymfonyDIr(['bin/console', 'gw:generate-tables', 'src', 'user', 'App\\']);
+        self::assertFileExists(self::SYMFONY_DIR . 'src/ClientRow.php');
+        self::assertFileExists(self::SYMFONY_DIR . 'src/UserTable.php');
+        self::assertFileExists(self::SYMFONY_DIR . 'src/UserRow.php');
     }
 }
