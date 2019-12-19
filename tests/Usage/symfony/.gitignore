@@ -10,3 +10,6 @@
 /repo/
 composer.lock
 symfony.lock
+/src/ClientRow.php
+/src/UserTable.php
+/src/UserRow.php
