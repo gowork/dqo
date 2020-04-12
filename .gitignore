@@ -3,3 +3,4 @@ zsh_history
 vendor
 composer.lock
 .phpunit.result.cache
+/composer.phar
