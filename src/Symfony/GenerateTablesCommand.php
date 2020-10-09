@@ -3,6 +3,7 @@
 namespace GW\DQO\Symfony;
 
 use GW\DQO\Generator\GenerateTables;
+use GW\Safe\SafeConsoleInput;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,10 +32,13 @@ final class GenerateTablesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $filterTables = (array)$input->getArgument('table');
-        $path = (string)$input->getArgument('path');
-        $namespace = (string)$input->getArgument('namespace');
-        $overwrite = (bool)$input->getOption('overwrite');
+        $arguments = SafeConsoleInput::arguments($input);
+        $options = SafeConsoleInput::options($input);
+
+        $filterTables = $arguments->strings('table');
+        $path = $arguments->string('path');
+        $namespace = $arguments->string('namespace');
+        $overwrite = $options->bool('overwrite');
 
         $generateTables = $this->generateTables->onNamespace($namespace);
 
