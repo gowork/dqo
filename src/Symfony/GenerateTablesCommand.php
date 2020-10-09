@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class GenerateTablesCommand extends Command
 {
-    protected static $defaultName = 'gw:generate-tables';
+    protected static $defaultName = 'dqo:generate-tables';
     private GenerateTables $generateTables;
 
     public function __construct(GenerateTables $generateTables)

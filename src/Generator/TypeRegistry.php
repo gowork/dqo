@@ -28,8 +28,9 @@ use Doctrine\DBAL\Types\TextType;
 use Doctrine\DBAL\Types\TimeImmutableType;
 use Doctrine\DBAL\Types\TimeType;
 use Doctrine\DBAL\Types\Type;
-use phpDocumentor\Reflection\Types as Types;
+use phpDocumentor\Reflection\Types;
 use Roave\BetterReflection\BetterReflection;
+use function get_class;
 
 final class TypeRegistry
 {
@@ -68,7 +69,7 @@ final class TypeRegistry
 
         $classInfo = (new BetterReflection())
             ->classReflector()
-            ->reflect(\get_class($dbalType));
+            ->reflect(get_class($dbalType));
 
         $methodInfo = $classInfo->getMethod('convertToPHPValue');
         $returnInfo = $methodInfo->getReturnType();

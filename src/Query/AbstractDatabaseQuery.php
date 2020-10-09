@@ -2,7 +2,6 @@
 
 namespace GW\DQO\Query;
 
-use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
 use GW\DQO\DatabaseSelectBuilder;
 use GW\DQO\Table;
@@ -18,15 +17,11 @@ abstract class AbstractDatabaseQuery
     public function __construct(DatabaseSelectBuilder $builder, Table $table)
     {
         $this->builderTable = $table;
-        $this->builder = $builder
-            ->withTypes(
-                [DateTimeImmutable::class => 'DateTimeImmutable']
-            )
-            ->from($table);
+        $this->builder = $builder->from($table);
     }
 
     /**
-     * @return $this
+     * @return static
      */
     public function resetForConnection(Connection $connection): self
     {
@@ -39,7 +34,7 @@ abstract class AbstractDatabaseQuery
     }
 
     /**
-     * @return $this
+     * @return static
      * @param array<string, mixed> $params
      * @param array<string, string> $types
      */
@@ -53,7 +48,7 @@ abstract class AbstractDatabaseQuery
     }
 
     /**
-     * @return $this
+     * @return static
      * @param array<string, mixed> $params
      * @param array<string, string> $types
      */
@@ -67,7 +62,7 @@ abstract class AbstractDatabaseQuery
     }
 
     /**
-     * @return $this
+     * @return static
      */
     public function joinOnce(Table $join, string $condition): self
     {
@@ -79,7 +74,7 @@ abstract class AbstractDatabaseQuery
     }
 
     /**
-     * @return $this
+     * @return static
      * @param array<string, mixed> $params
      * @param array<string, string> $types
      */
@@ -92,7 +87,7 @@ abstract class AbstractDatabaseQuery
     }
 
     /**
-     * @return $this
+     * @return static
      * @param array<string, mixed> $params
      * @param array<string, string> $types
      */
@@ -105,7 +100,7 @@ abstract class AbstractDatabaseQuery
     }
 
     /**
-     * @return $this
+     * @return static
      */
     public function groupBy(string ...$groupsBy): self
     {
@@ -119,7 +114,7 @@ abstract class AbstractDatabaseQuery
     }
 
     /**
-     * @return $this
+     * @return static
      */
     public function offsetLimit(int $offset, ?int $limit = null): self
     {
@@ -130,7 +125,7 @@ abstract class AbstractDatabaseQuery
     }
 
     /**
-     * @return $this
+     * @return static
      */
     public function limitOne(): self
     {
@@ -138,7 +133,7 @@ abstract class AbstractDatabaseQuery
     }
 
     /**
-     * @return $this
+     * @return static
      */
     public function orderBy(string $field, string $direction): self
     {
@@ -149,7 +144,7 @@ abstract class AbstractDatabaseQuery
     }
 
     /**
-     * @return $this
+     * @return static
      */
     public function select(string ...$fields): self
     {

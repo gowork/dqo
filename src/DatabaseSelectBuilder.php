@@ -4,7 +4,6 @@ namespace GW\DQO;
 
 use DateTimeImmutable;
 use Doctrine\DBAL\Driver\ResultStatement;
-use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use GW\Value\ArrayValue;
@@ -28,10 +27,8 @@ final class DatabaseSelectBuilder
     private bool $sliced = false;
 
     /** @param array<string, string> $types */
-    public function __construct(
-        Connection $connection,
-        array $types = [DateTimeImmutable::class => 'DateTimeImmutable']
-    ) {
+    public function __construct(Connection $connection, array $types = [])
+    {
         $this->builder = $connection->createQueryBuilder();
         $this->types = $types;
     }

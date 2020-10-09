@@ -103,12 +103,8 @@ abstract class TableRow
     /** @param array<string, mixed>|ArrayAccess<string, mixed>|object $row */
     private function initGetter($row): Row
     {
-        if (is_array($row)) {
+        if (is_array($row) || $row instanceof ArrayAccess) {
             return new ArrayRow($row, $this->table);
-        }
-
-        if ($row instanceof ArrayAccess) {
-            return new ArrayAccessRow($row, $this->table);
         }
 
         return new ObjectRow($row, $this->table);

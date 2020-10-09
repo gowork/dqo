@@ -7,12 +7,12 @@ use GW\DQO\Table;
 
 final class ArrayRow implements Row
 {
-    /** @var array<string, mixed> */
-    private array $row;
+    /** @var array<string, mixed>|ArrayAccess<string, mixed> */
+    private $row;
     private Table $table;
 
-    /** @param array<string, mixed> $row */
-    public function __construct(array $row, Table $table)
+    /** @param array<string, mixed>|ArrayAccess<string, mixed> $row */
+    public function __construct($row, Table $table)
     {
         $this->row = $row;
         $this->table = $table;

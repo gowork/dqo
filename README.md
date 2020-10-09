@@ -2,17 +2,36 @@
 
 ## Install
 
-todo 
+```bash
+composer require gowork/dqo
+```
 
 ## Setup
 
-todo 
+### Symfony
+
+Add the DatabaseAccessGeneratorBundle to your application's kernel:
+
+<?php
+public function registerBundles()
+{
+    $bundles = array(
+        // ...
+        new GW\DQO\Symfony\DatabaseAccessGeneratorBundle(),
+        // ...
+    );
+    ...
+}
 
 ## Generate table class
 
-todo 
+```bash
+dqo:generate-tables src/Database App/Database table_1 table_2
+```
 
 ## Table query pattern
+
+All queries should extends `GW\DQO\Query\AbstractDatabaseQuery`
 
 ## About
 
