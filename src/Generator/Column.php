@@ -4,20 +4,11 @@ namespace GW\DQO\Generator;
 
 final class Column
 {
-    /** @var string */
-    private $name;
-
-    /** @var string */
-    private $dbName;
-
-    /** @var string */
-    private $type;
-
-    /** @var string */
-    private $methodName;
-
-    /** @var bool */
-    private $optional;
+    private string $name;
+    private string $dbName;
+    private string $type;
+    private string $methodName;
+    private bool $optional;
 
     public function __construct(string $name, string $methodName, string $dbName, string $type, bool $optional)
     {

@@ -9,14 +9,10 @@ use function strlen;
 
 abstract class Table
 {
-    /** @var string */
-    private $table;
-
-    /** @var string */
-    private $alias;
-
+    private string $table;
+    private string $alias;
     /** @var string[] */
-    private $fields;
+    private array $fields;
 
     public function __construct(?string $alias = null, ?string $table = null)
     {

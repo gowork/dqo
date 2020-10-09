@@ -14,23 +14,17 @@ use function is_object;
 
 abstract class TableRow
 {
-    /** @var array|object */
+    /** @var array<string, mixed>|object */
     private $row;
+    private Closure $getter;
+    private Table $table;
 
-    /** @var Closure */
-    private $getter;
-
-    /** @var Table */
-    private $table;
-
-    /**
-     * @param object|array $row
-     */
+    /** @param array<string, mixed>|object $row */
     public function __construct($row, Table $table)
     {
         $this->row = $row;
-        $this->initGetter($row);
         $this->table = $table;
+        $this->initGetter();
     }
 
     abstract protected static function getPlatform(): AbstractPlatform;
@@ -78,12 +72,12 @@ abstract class TableRow
         return $this->getThrough(Util\DateTimeUtil::mutable, $field);
     }
 
-    protected function getDateTimeImmutable(string $field): DateTimeImmutable
+    protected function getRequiredDateTimeImmutable(string $field): DateTimeImmutable
     {
-        return Util\DateTimeUtil::immutable($field);
+        return Util\DateTimeUtil::immutable($this->get($field));
     }
 
-    protected function getNullableDateTimeImmutable(string $field): ?DateTimeImmutable
+    protected function getDateTimeImmutable(string $field): ?DateTimeImmutable
     {
         return $this->getThrough(Util\DateTimeUtil::immutable, $field);
     }
@@ -107,9 +101,9 @@ abstract class TableRow
         return Type::getType($dc2Type)->convertToPHPValue($this->getString($field), static::getPlatform());
     }
 
-    private function initGetter($row): void
+    private function initGetter(): void
     {
-        if (is_array($row) || $row instanceof ArrayAccess) {
+        if (is_array($this->row) || $this->row instanceof ArrayAccess) {
             $this->getter = function (string $field) {
                 return $this->row[$this->table->fieldAlias($field)] ?? null;
             };
@@ -117,7 +111,7 @@ abstract class TableRow
             return;
         }
 
-        if (is_object($row)) {
+        if (is_object($this->row)) {
             $this->getter = function (string $field) {
                 return $this->row->{$this->table->fieldAlias($field)} ?? null;
             };

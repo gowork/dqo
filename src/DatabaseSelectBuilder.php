@@ -3,6 +3,7 @@
 namespace GW\DQO;
 
 use DateTimeImmutable;
+use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use GW\Value\ArrayValue;
@@ -16,21 +17,14 @@ use function is_object;
 final class DatabaseSelectBuilder
 {
     public const DEFAULT_LIMIT = 20;
-
-    /** @var QueryBuilder */
-    private $builder;
-
-    /** @var Table|null */
-    private $from;
-
+    private QueryBuilder $builder;
+    private ?Table $from = null;
     /** @var string[] [class => doctrine type, ...] */
-    private $types;
-
+    private array $types;
     /** @var string[] [model field => query field, ...] */
-    private $sortMap = [];
-
-    /** @var bool */
-    private $sliced = false;
+    private array $sortMap = [];
+    private int $startOffset = 0;
+    private bool $sliced = false;
 
     public function __construct(
         Connection $connection,
@@ -54,6 +48,7 @@ final class DatabaseSelectBuilder
         return $copy;
     }
 
+    /** @param array<string, string> $types */
     public function withTypes(array $types): self
     {
         $copy = clone $this;
@@ -62,6 +57,7 @@ final class DatabaseSelectBuilder
         return $copy;
     }
 
+    /** @param array<string, string> $sortMap */
     public function withSortMap(array $sortMap): self
     {
         $copy = clone $this;
@@ -120,6 +116,17 @@ final class DatabaseSelectBuilder
         return $copy;
     }
 
+    public function having(string $condition, array $params = [], array $types = []): self
+    {
+        $copy = clone $this;
+        $copy->builder->andHaving($condition);
+        foreach ($params as $key => $value) {
+            $copy->builder->setParameter($key, $value, $types[$key] ?? $this->paramType($value));
+        }
+
+        return $copy;
+    }
+
     public function select(string ...$columns): self
     {
         $copy = clone $this;
@@ -140,11 +147,14 @@ final class DatabaseSelectBuilder
     }
 
     /**
-     * @return bool|string
+     * @return false|string
      */
     public function fetchColumn(int $index = 0)
     {
-        return (clone $this->builder)->setMaxResults(1)->execute()->fetchColumn($index);
+        /** @var Statement $statement */
+        $statement = (clone $this->builder)->setMaxResults(1)->execute();
+
+        return $statement->fetchColumn($index);
     }
 
     public function fetchDate(int $index = 0): ?DateTimeImmutable
@@ -155,16 +165,22 @@ final class DatabaseSelectBuilder
     }
 
     /**
-     * @return array[]
+     * @return array<array<string, mixed>>
      */
     public function fetchAll(): array
     {
-        return (clone $this->builder)->execute()->fetchAll();
+        /** @var Statement $statement */
+        $statement = (clone $this->builder)->execute();
+
+        return $statement->fetchAll();
     }
 
+    /** @return array<string, mixed>|null */
     public function fetch(): ?array
     {
-        $result = (clone $this->builder)->execute()->fetch();
+        /** @var Statement $statement */
+        $statement = (clone $this->builder)->execute();
+        $result = $statement->fetch();
 
         return $result !== false ? $result : null;
     }
@@ -174,20 +190,29 @@ final class DatabaseSelectBuilder
         return Wrap::array($this->fetchAll());
     }
 
-    public function count(): int
+    public function count(string $column = '1'): int
     {
-        return (int)$this->select('COUNT(1)')->fetchColumn();
+        return (int)$this->select("COUNT({$column})")->fetchColumn();
     }
 
     public function offsetLimit(int $offset, ?int $limit = null): self
     {
         $copy = clone $this;
-        $copy->sliced = true;
+        $copy->sliced = $limit !== null;
+        $copy->startOffset = $offset;
         $copy->builder->setFirstResult($offset);
 
         if ($limit) {
             $copy->builder->setMaxResults($limit ?? self::DEFAULT_LIMIT);
         }
+
+        return $copy;
+    }
+
+    public function randomOrder(): self
+    {
+        $copy = clone $this;
+        $copy->builder->addOrderBy('RAND()');
 
         return $copy;
     }
@@ -208,6 +233,10 @@ final class DatabaseSelectBuilder
         return $copy;
     }
 
+    /**
+     * @param mixed $value
+     * @param string|int|null $type
+     */
     public function withParameter(string $key, $value, $type = null): self
     {
         $copy = clone $this;
@@ -216,10 +245,22 @@ final class DatabaseSelectBuilder
         return $copy;
     }
 
+    public function withParameters(array $params = [], array $types = []): self
+    {
+        $copy = $this;
+        $key = 0;
+
+        foreach ($params as $name => $param) {
+            $copy = $copy->withParameter($name, $param, $types[$key++] ?? null);
+        }
+
+        return $copy;
+    }
+
     public function groupBy(string $groupBy): self
     {
         $copy = clone $this;
-        $copy->builder->groupBy($groupBy);
+        $copy->builder->addGroupBy($groupBy);
 
         return $copy;
     }
@@ -247,7 +288,13 @@ final class DatabaseSelectBuilder
         return $this->sliced;
     }
 
+    public function startOffset(): int
+    {
+        return $this->startOffset;
+    }
+
     /**
+     * @param mixed $object
      * @return string|int|null
      */
     private function paramType($object)

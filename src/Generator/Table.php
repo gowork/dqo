@@ -4,11 +4,8 @@ namespace GW\DQO\Generator;
 
 final class Table
 {
-    /** @var string */
-    private $name;
-
-    /** @var Column[] */
-    private $columns;
+    private string $name;
+    private array $columns;
 
     public function __construct(string $name, Column ...$columns)
     {

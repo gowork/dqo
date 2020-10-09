@@ -4,14 +4,9 @@ namespace GW\DQO\Generator;
 
 final class TypeInfo
 {
-    /** @var bool */
-    private $isClass;
-
-    /** @var string */
-    private $phpType;
-
-    /** @var bool */
-    private $allowsNull;
+    private bool $isClass;
+    private string $phpType;
+    private bool $allowsNull;
 
     public function __construct(bool $isClass, string $phpType, bool $allowsNull)
     {

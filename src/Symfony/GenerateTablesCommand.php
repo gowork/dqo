@@ -12,9 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class GenerateTablesCommand extends Command
 {
     protected static $defaultName = 'gw:generate-tables';
-
-    /** @var GenerateTables */
-    private $generateTables;
+    private GenerateTables $generateTables;
 
     public function __construct(GenerateTables $generateTables)
     {
@@ -24,10 +22,11 @@ final class GenerateTablesCommand extends Command
 
     protected function configure(): void
     {
-        $this->addArgument('path', InputArgument::REQUIRED);
-        $this->addArgument('namespace', InputArgument::REQUIRED);
-        $this->addArgument('table', InputArgument::IS_ARRAY);
-        $this->addOption('overwrite', 'o', InputOption::VALUE_NONE);
+        $this->setDescription('Generates table class for one or more database tables');
+        $this->addArgument('path', InputArgument::REQUIRED, 'Path to put generated files');
+        $this->addArgument('namespace', InputArgument::REQUIRED, 'Namespace for generated table class file');
+        $this->addArgument('table', InputArgument::IS_ARRAY, 'Name of database table');
+        $this->addOption('overwrite', 'o', InputOption::VALUE_NONE, 'Overwrite existing table class when exists');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

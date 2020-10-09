@@ -9,8 +9,7 @@ use Roave\BetterReflection\Reflection\ReflectionMethod;
 
 final class ClassInfo
 {
-    /** @var ReflectionClass */
-    private $class;
+    private ReflectionClass $class;
 
     public function __construct(string $class)
     {
