@@ -35,6 +35,24 @@ final class DatabaseSelectBuilderTest extends MySQLTestCase
         $this->conn()->insert('message', ['id' => 2, 'user_id' => 1, 'message' => 'World']);
     }
 
+    function test_select_function()
+    {
+        $userTable = new Schema\UserTable();
+        $messageTable = new Schema\MessageTable();
+
+        $builder = (new DatabaseSelectBuilder($this->conn()))
+            ->from($messageTable)
+            ->join($userTable, "{$messageTable->userId()} = {$userTable->id()}")
+            ->select("MAX({$userTable->id()})");
+
+        $sql = $builder->getSQL();
+
+        self::assertEquals(
+            'SELECT MAX(user.id) FROM message message INNER JOIN user user ON message.user_id = user.id',
+            $sql
+        );
+    }
+
     function test_select()
     {
         $userTable = new Schema\UserTable();

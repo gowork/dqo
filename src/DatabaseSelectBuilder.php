@@ -13,6 +13,7 @@ use function array_merge;
 use function get_class;
 use function is_array;
 use function is_object;
+use function strpos;
 
 final class DatabaseSelectBuilder
 {
@@ -140,7 +141,7 @@ final class DatabaseSelectBuilder
         $copy->builder->select(
             ...array_map(
                 static function (string $column): string {
-                    if (strpos($column, '.') !== false && strpos($column, ' ') === false) {
+                    if (strpos($column, '.') !== false && strpos($column, ' ') === false && strpos($column, '(') === false) {
                         return "$column " . str_replace('.', '_', $column);
                     }
 
