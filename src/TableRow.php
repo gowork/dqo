@@ -3,12 +3,10 @@
 namespace GW\DQO;
 
 use ArrayAccess;
-use Closure;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
-use GW\DQO\Getter\ArrayAccessRow;
 use GW\DQO\Getter\ArrayRow;
 use GW\DQO\Getter\ObjectRow;
 use GW\DQO\Getter\Row;

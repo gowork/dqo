@@ -8,8 +8,7 @@ use tests\GW\DQO\Example\TableRowTest\RichTable;
 
 class TableRowTest extends TestCase
 {
-    /** @var RichTable */
-    private $table;
+    private RichTable $table;
 
     protected function setUp(): void
     {

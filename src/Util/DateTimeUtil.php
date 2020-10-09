@@ -5,6 +5,7 @@ namespace GW\DQO\Util;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
+use DateTimeZone;
 use RuntimeException;
 
 final class DateTimeUtil
@@ -36,7 +37,7 @@ final class DateTimeUtil
             return $date;
         }
 
-        return new DateTime($input ?? 'now', new \DateTimeZone('UTC'));
+        return new DateTime($input ?? 'now', new DateTimeZone('UTC'));
     }
 
     /**
@@ -66,6 +67,6 @@ final class DateTimeUtil
             return $date;
         }
 
-        return new DateTimeImmutable($input ?? 'now', new \DateTimeZone('UTC'));
+        return new DateTimeImmutable($input ?? 'now', new DateTimeZone('UTC'));
     }
 }

@@ -8,14 +8,9 @@ use GW\Value\Wrap;
 
 class GenerateTables
 {
-    /** @var Connection */
-    private $connection;
-
-    /** @var TableFactory */
-    private $tableFactory;
-
-    /** @var Renderer */
-    private $renderer;
+    private Connection $connection;
+    private TableFactory $tableFactory;
+    private Renderer $renderer;
 
     public function __construct(Connection $connection, TableFactory $tableFactory, Renderer $renderer)
     {

@@ -4,17 +4,14 @@ namespace GW\DQO\Generator\Render;
 
 use GW\Value\ArrayValue;
 use GW\Value\Wrap;
+use function rtrim;
 
 final class Block implements Line
 {
     /** @var Line[]|ArrayValue */
     private $lines;
-
-    /** @var string */
-    private $indent = '    ';
-
-    /** @var string */
-    private $declaration;
+    private string $indent = '    ';
+    private string $declaration;
 
     public function __construct(string $declaration, Line ...$lines)
     {
@@ -32,12 +29,11 @@ final class Block implements Line
             )
             ->map(
                 function (string $line): string {
-                    return \rtrim($this->indent . $line);
+                    return rtrim($this->indent . $line);
                 }
             )
             ->implode("\n")
-            ->trimRight()
-        ;
+            ->trimRight();
 
         return "{$this->declaration}\n{\n{$content}\n}\n";
     }

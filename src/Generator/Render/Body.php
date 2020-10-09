@@ -5,7 +5,7 @@ namespace GW\DQO\Generator\Render;
 final class Body implements Line
 {
     /** @var string[] */
-    private $lines;
+    private array $lines;
 
     public function __construct(string ...$lines)
     {

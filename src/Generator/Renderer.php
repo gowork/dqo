@@ -3,11 +3,11 @@
 namespace GW\DQO\Generator;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use function get_class;
 use GW\DQO\Generator\Render\Block;
 use GW\DQO\Generator\Render\Body;
 use GW\DQO\Generator\Render\ClassHead;
 use GW\DQO\Generator\Render\Line;
+use function get_class;
 use function sprintf;
 
 final class Renderer
@@ -26,11 +26,8 @@ final class Renderer
         'DateTimeImmutable' => '\DateTimeImmutable',
     ];
 
-    /** @var string */
-    private $namespace;
-
-    /** @var TypeRegistry */
-    private $types;
+    private string $namespace;
+    private TypeRegistry $types;
 
     public function __construct(string $namespace = '')
     {
@@ -50,7 +47,7 @@ final class Renderer
             new Block(
                 "final class {$table->name()}Table extends Table",
                 ...array_map(
-                    function (Column $column): Line {
+                    static function (Column $column): Line {
                         return new Body(
                             "public const {$column->nameConst()} = '{$column->dbName()}';"
                         );
@@ -59,7 +56,7 @@ final class Renderer
                 ),
                 ...[new Body()],
                 ...array_map(
-                    function (Column $column): Line {
+                    static function (Column $column): Line {
                         return new Block(
                             "public function {$column->methodName()}(): string",
                             new Body(

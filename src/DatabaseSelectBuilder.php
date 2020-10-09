@@ -139,7 +139,7 @@ final class DatabaseSelectBuilder
         $copy = clone $this;
         $copy->builder->select(
             ...array_map(
-                function (string $column): string {
+                static function (string $column): string {
                     if (strpos($column, '.') !== false && strpos($column, ' ') === false) {
                         return "$column " . str_replace('.', '_', $column);
                     }
@@ -210,8 +210,8 @@ final class DatabaseSelectBuilder
         $copy->startOffset = $offset;
         $copy->builder->setFirstResult($offset);
 
-        if ($limit) {
-            $copy->builder->setMaxResults($limit ?? self::DEFAULT_LIMIT);
+        if ($limit !== null) {
+            $copy->builder->setMaxResults($limit);
         }
 
         return $copy;
