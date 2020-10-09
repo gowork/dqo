@@ -7,8 +7,8 @@ install:
   - composer install --dev
 
 script:
-  - ./bin/phpstan
-  - ./bin/phpstan analyze -l 8 src
+  - ./vendor/bin/phpstan
+  - ./vendor/bin/phpstan analyze -l 8 src
 
 services:
   - mysql
