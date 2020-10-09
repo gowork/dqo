@@ -23,7 +23,7 @@ class TableRowTest extends TestCase
     {
         $row = new RichRow([$this->table->fieldAlias($field) => $rawValue], $this->table);
 
-        self::assertEquals($row->get($field), $rawValue);
+        self::assertEquals($rawValue, $row->get($field));
     }
 
     /**

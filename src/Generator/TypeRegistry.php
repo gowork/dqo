@@ -33,6 +33,7 @@ use Roave\BetterReflection\BetterReflection;
 
 final class TypeRegistry
 {
+    /** @var array<string, string> */
     private static $_typesMap = [
         ArrayType::class => 'array',
         SimpleArrayType::class => 'array',

@@ -10,15 +10,12 @@ use function sort;
 
 final class ClassHead implements Line
 {
-    /** @var string */
-    private $namespace;
-
-    /** @var string */
-    private $header;
-
+    private string $namespace;
+    private string $header;
     /** @var string[] */
-    private $uses;
+    private array $uses;
 
+    /** @param string[] $uses */
     public function __construct(string $namespace, array $uses = [], string $header = '')
     {
         $this->namespace = $namespace;

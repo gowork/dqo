@@ -8,23 +8,22 @@ use DateTime;
 use DateTimeImmutable;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
-use InvalidArgumentException;
+use GW\DQO\Getter\ArrayAccessRow;
+use GW\DQO\Getter\ArrayRow;
+use GW\DQO\Getter\ObjectRow;
+use GW\DQO\Getter\Row;
 use function is_array;
-use function is_object;
 
 abstract class TableRow
 {
-    /** @var array<string, mixed>|object */
-    private $row;
-    private Closure $getter;
+    private Row $row;
     private Table $table;
 
     /** @param array<string, mixed>|object $row */
     public function __construct($row, Table $table)
     {
-        $this->row = $row;
         $this->table = $table;
-        $this->initGetter();
+        $this->row = $this->initGetter($row);
     }
 
     abstract protected static function getPlatform(): AbstractPlatform;
@@ -34,12 +33,12 @@ abstract class TableRow
      */
     public function get(string $field)
     {
-        return ($this->getter)($field);
+        return $this->row->get($field);
     }
 
     protected function getNullableString(string $field): ?string
     {
-        return $this->getThrough('strval', $field);
+        return $this->getThrough('\strval', $field);
     }
 
     protected function getString(string $field): string
@@ -49,7 +48,7 @@ abstract class TableRow
 
     protected function getNullableInt(string $field): ?int
     {
-        return $this->getThrough('intval', $field);
+        return $this->getThrough('\intval', $field);
     }
 
     protected function getInt(string $field): int
@@ -74,7 +73,7 @@ abstract class TableRow
 
     protected function getRequiredDateTimeImmutable(string $field): DateTimeImmutable
     {
-        return Util\DateTimeUtil::immutable($this->get($field));
+        return Util\DateTimeUtil::immutable($this->getString($field));
     }
 
     protected function getDateTimeImmutable(string $field): ?DateTimeImmutable
@@ -101,24 +100,17 @@ abstract class TableRow
         return Type::getType($dc2Type)->convertToPHPValue($this->getString($field), static::getPlatform());
     }
 
-    private function initGetter(): void
+    /** @param array<string, mixed>|ArrayAccess<string, mixed>|object $row */
+    private function initGetter($row): Row
     {
-        if (is_array($this->row) || $this->row instanceof ArrayAccess) {
-            $this->getter = function (string $field) {
-                return $this->row[$this->table->fieldAlias($field)] ?? null;
-            };
-
-            return;
+        if (is_array($row)) {
+            return new ArrayRow($row, $this->table);
         }
 
-        if (is_object($this->row)) {
-            $this->getter = function (string $field) {
-                return $this->row->{$this->table->fieldAlias($field)} ?? null;
-            };
-
-            return;
+        if ($row instanceof ArrayAccess) {
+            return new ArrayAccessRow($row, $this->table);
         }
 
-        throw new InvalidArgumentException('Unsupported database query row format.');
+        return new ObjectRow($row, $this->table);
     }
 }

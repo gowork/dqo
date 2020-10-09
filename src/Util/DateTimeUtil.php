@@ -5,6 +5,7 @@ namespace GW\DQO\Util;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
+use RuntimeException;
 
 final class DateTimeUtil
 {
@@ -22,14 +23,20 @@ final class DateTimeUtil
         }
 
         if ($input instanceof DateTimeInterface) {
-            return DateTime::createFromFormat(
+            $date = DateTime::createFromFormat(
                 self::PRECISE_FORMAT,
                 $input->format(self::PRECISE_FORMAT),
                 $input->getTimezone()
             );
+
+            if ($date === false) {
+                throw new RuntimeException("Cannot create date from {$input->format(self::PRECISE_FORMAT)}");
+            }
+
+            return $date;
         }
 
-        return new DateTime($input, new \DateTimeZone('UTC'));
+        return new DateTime($input ?? 'now', new \DateTimeZone('UTC'));
     }
 
     /**
@@ -46,13 +53,19 @@ final class DateTimeUtil
         }
 
         if ($input instanceof DateTimeInterface) {
-            return DateTimeImmutable::createFromFormat(
+            $date = DateTimeImmutable::createFromFormat(
                 self::PRECISE_FORMAT,
                 $input->format(self::PRECISE_FORMAT),
                 $input->getTimezone()
             );
+
+            if ($date === false) {
+                throw new RuntimeException("Cannot create date from {$input->format(self::PRECISE_FORMAT)}");
+            }
+
+            return $date;
         }
 
-        return new DateTimeImmutable($input, new \DateTimeZone('UTC'));
+        return new DateTimeImmutable($input ?? 'now', new \DateTimeZone('UTC'));
     }
 }

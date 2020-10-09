@@ -3,6 +3,7 @@
 namespace GW\DQO;
 
 use DateTimeImmutable;
+use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -18,14 +19,15 @@ final class DatabaseSelectBuilder
 {
     public const DEFAULT_LIMIT = 20;
     private QueryBuilder $builder;
-    private ?Table $from = null;
-    /** @var string[] [class => doctrine type, ...] */
+    private Table $from;
+    /** @var array<string, string> [class => doctrine type, ...] */
     private array $types;
-    /** @var string[] [model field => query field, ...] */
+    /** @var array<string, string> [model field => query field, ...] */
     private array $sortMap = [];
     private int $startOffset = 0;
     private bool $sliced = false;
 
+    /** @param array<string, string> $types */
     public function __construct(
         Connection $connection,
         array $types = [DateTimeImmutable::class => 'DateTimeImmutable']
@@ -105,6 +107,10 @@ final class DatabaseSelectBuilder
         return $copy;
     }
 
+    /**
+     * @param array<string, mixed> $params
+     * @param array<string, string> $types
+     */
     public function where(string $condition, array $params = [], array $types = []): self
     {
         $copy = clone $this;
@@ -116,6 +122,10 @@ final class DatabaseSelectBuilder
         return $copy;
     }
 
+    /**
+     * @param array<string, mixed> $params
+     * @param array<string, string> $types
+     */
     public function having(string $condition, array $params = [], array $types = []): self
     {
         $copy = clone $this;
@@ -151,7 +161,7 @@ final class DatabaseSelectBuilder
      */
     public function fetchColumn(int $index = 0)
     {
-        /** @var Statement $statement */
+        /** @var ResultStatement<mixed> $statement */
         $statement = (clone $this->builder)->setMaxResults(1)->execute();
 
         return $statement->fetchColumn($index);
@@ -169,7 +179,7 @@ final class DatabaseSelectBuilder
      */
     public function fetchAll(): array
     {
-        /** @var Statement $statement */
+        /** @var ResultStatement<mixed> $statement */
         $statement = (clone $this->builder)->execute();
 
         return $statement->fetchAll();
@@ -178,13 +188,14 @@ final class DatabaseSelectBuilder
     /** @return array<string, mixed>|null */
     public function fetch(): ?array
     {
-        /** @var Statement $statement */
+        /** @var ResultStatement<mixed> $statement */
         $statement = (clone $this->builder)->execute();
         $result = $statement->fetch();
 
         return $result !== false ? $result : null;
     }
 
+    /** @return ArrayValue<int, array<string, mixed>> */
     public function wrapAll(): ArrayValue
     {
         return Wrap::array($this->fetchAll());
@@ -245,6 +256,10 @@ final class DatabaseSelectBuilder
         return $copy;
     }
 
+    /**
+     * @param array<string, mixed> $params
+     * @param array<string, string> $types
+     */
     public function withParameters(array $params = [], array $types = []): self
     {
         $copy = $this;
@@ -312,7 +327,7 @@ final class DatabaseSelectBuilder
 
     private function assertCanJoin(): void
     {
-        if ($this->from === null) {
+        if (!isset($this->from)) {
             throw new RuntimeException('FROM must be declared before JOIN');
         }
     }

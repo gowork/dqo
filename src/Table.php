@@ -30,11 +30,13 @@ abstract class Table
         return $this->alias;
     }
 
+    /** @return string[] */
     public function selectAll(): array
     {
         return $this->select(...$this->fields);
     }
 
+    /** @return string[] */
     public function select(string ...$fields): array
     {
         return Wrap::array($fields)->map([$this, 'selectField'])->toArray();
@@ -74,8 +76,9 @@ abstract class Table
             ->toString();
     }
 
+    /** @return string[] */
     private function resolveTableFields(): array
     {
-        return array_values((new ReflectionClass(static::class))->getConstants());
+        return array_map('\strval', array_values((new ReflectionClass(static::class))->getConstants()));
     }
 }
