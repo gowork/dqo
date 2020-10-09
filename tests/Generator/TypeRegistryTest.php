@@ -6,6 +6,9 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 use GW\DQO\Generator\TypeRegistry;
 
+/**
+ * @covers \GW\DQO\Generator\TypeRegistry
+ */
 final class TypeRegistryTest extends DoctrineTestCase
 {
     function test_getting_builtin_type()

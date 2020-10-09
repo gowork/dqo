@@ -3,4 +3,6 @@ zsh_history
 vendor
 composer.lock
 .phpunit.result.cache
+.phpunit.cache
 /composer.phar
+tests/Usage/symfony

@@ -5,7 +5,6 @@ namespace GW\DQO;
 use GW\Value\Wrap;
 use ReflectionClass;
 use function array_values;
-use function strlen;
 
 abstract class Table
 {
@@ -38,9 +37,7 @@ abstract class Table
 
     public function select(string ...$fields): array
     {
-        return Wrap::array($fields)
-            ->map([$this, 'selectField'])
-            ->toArray();
+        return Wrap::array($fields)->map([$this, 'selectField'])->toArray();
     }
 
     public function selectField(string $field): string
@@ -63,11 +60,17 @@ abstract class Table
 
     private function resolveTableName(): string
     {
-        return Wrap::string(static::class)
+        $class = Wrap::string(static::class);
+
+        return $class
             // class name
-            ->explode('\\')->last()->substring(0, -strlen('Table'))
+            ->substring($class->positionLast('\\') ?? 0)
+            ->trimLeft('\\')
+            ->replacePattern('/Table$/', '')
             // snake case
-            ->replacePattern('/([A-Z])/', '_$1')->trimLeft('_')->lower()
+            ->replacePattern('/([A-Z])/', '_$1')
+            ->trimLeft('_')
+            ->lower()
             ->toString();
     }
 

@@ -4,6 +4,7 @@ namespace tests\GW\DQO;
 
 use PHPUnit\Framework\TestCase;
 use tests\GW\DQO\Example\UserTable;
+use tests\GW\DQO\Example\WithoutSuffix;
 
 class TableTest extends TestCase
 {
@@ -12,6 +13,13 @@ class TableTest extends TestCase
         $userTable = new UserTable();
 
         self::assertEquals('user', $userTable->table());
+    }
+
+    function test_default_table_without_suffix()
+    {
+        $table = new WithoutSuffix();
+
+        self::assertEquals('without_suffix', $table->table());
     }
 
     function test_custom_table_name()
