@@ -18,21 +18,21 @@ RUN apt-get update && \
         zsh
 
 RUN apt-add-repository -y ppa:ondrej/php && apt-get update && apt-get install -y --force-yes \
-	php7.3-cli \
-	php7.3-curl \
-	php7.3-intl \
-	php7.3-mysql \
-	php7.3-xml \
-	php7.3-mbstring \
-	php7.3-bcmath \
-	php7.3-zip \
-	php7.3-opcache \
-	php7.3-bz2 \
-	php7.3-gmp \
-	php7.3-sqlite \
-	php7.3-pgsql \
+	php7.4-cli \
+	php7.4-curl \
+	php7.4-intl \
+	php7.4-mysql \
+	php7.4-xml \
+	php7.4-mbstring \
+	php7.4-bcmath \
+	php7.4-zip \
+	php7.4-opcache \
+	php7.4-bz2 \
+	php7.4-gmp \
+	php7.4-sqlite \
+	php7.4-pgsql \
     php-xdebug \
-    php7.3-redis
+    php7.4-redis
 
 RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer
