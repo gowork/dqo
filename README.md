@@ -12,6 +12,7 @@ composer require gowork/dqo
 
 Add the DatabaseAccessGeneratorBundle to your application's kernel:
 
+```php
 <?php
 public function registerBundles()
 {
@@ -22,6 +23,7 @@ public function registerBundles()
     );
     ...
 }
+```
 
 ## Generate table class
 
