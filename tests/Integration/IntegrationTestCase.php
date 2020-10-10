@@ -2,9 +2,9 @@
 
 namespace tests\GW\DQO\Integration;
 
-use PHPUnit\Framework\TestCase;
+use tests\GW\DQO\Generator\DoctrineTestCase;
 
-abstract class IntegrationTestCase extends TestCase
+abstract class IntegrationTestCase extends DoctrineTestCase
 {
     protected static function assertTable(string $testCase, string $tableName): void
     {

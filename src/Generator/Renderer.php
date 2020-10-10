@@ -6,9 +6,32 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use GW\DQO\Generator\Render\Block;
 use GW\DQO\Generator\Render\Body;
 use GW\DQO\Generator\Render\ClassHead;
-use GW\DQO\Generator\Render\Line;
+use PhpParser\Builder\Use_;
+use PhpParser\BuilderFactory;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Const_;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BinaryOp\Coalesce;
+use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Name;
+use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassConst;
+use PhpParser\Node\Stmt\Declare_;
+use PhpParser\Node\Stmt\DeclareDeclare;
+use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\Static_;
+use PhpParser\Node\Stmt\StaticVar;
+use PhpParser\PrettyPrinter\Standard;
+use function array_map;
 use function get_class;
+use function in_array;
 use function sprintf;
+use const PHP_EOL;
 
 final class Renderer
 {
@@ -42,101 +65,166 @@ final class Renderer
 
     public function renderTableFile(Table $table): string
     {
-        $head = new ClassHead($this->namespace, ['use GW\DQO\Table;']);
-        $body =
-            new Block(
-                "final class {$table->name()}Table extends Table",
-                ...array_map(
-                    static function (Column $column): Line {
-                        return new Body(
-                            "public const {$column->nameConst()} = '{$column->dbName()}';"
-                        );
-                    },
-                    $table->columns()
-                ),
-                ...[new Body()],
-                ...array_map(
-                    static function (Column $column): Line {
-                        return new Block(
-                            "public function {$column->methodName()}(): string",
-                            new Body(
-                                "return \$this->fieldPath(self::{$column->nameConst()});"
-                            )
-                        );
-                    },
-                    $table->columns()
-                ),
-                ...[
-                    new Block(
-                        "public function createRow(array \$raw): {$table->name()}Row",
-                        new Body(
-                            "return new {$table->name()}Row(\$raw, \$this);"
-                        )
-                    ),
-                ],
-            );
+        $factory = new BuilderFactory();
 
-        return $head->render() . $body->render();
+        $node = $factory
+            ->namespace($this->namespace)
+            ->addStmt($factory->use('GW\DQO\Table'))
+            ->addStmt(
+                $factory->class("{$table->name()}Table")
+                    ->extend('Table')
+                    ->makeFinal()
+                    ->addStmts(
+                        array_map(
+                            static fn(Column $column) => new ClassConst(
+                                [new Const_($column->nameConst(), new String_($column->dbName()))],
+                                Class_::MODIFIER_PUBLIC
+                            ),
+                            $table->columns(),
+                        )
+                    )
+                    ->addStmts(
+                        array_map(
+                            static fn(Column $column) => $factory->method($column->methodName())
+                                ->setReturnType('string')
+                                ->makePublic()
+                                ->addStmt(
+                                    new Return_(
+                                        new MethodCall(
+                                            new Variable('this'), 'fieldPath', [
+                                                new Arg(new ClassConstFetch(new Name('self'), $column->nameConst())),
+                                            ]
+                                        )
+                                    )
+                                ),
+                            $table->columns(),
+                        )
+                    )
+                    ->addStmt(
+                        $factory->method('createRow')
+                            ->addParam($factory->param('raw')->setType('array'))
+                            ->setReturnType("{$table->name()}Row")
+                            ->makePublic()
+                            ->addStmt(
+                                new Return_(
+                                    new New_(
+                                        new Name("{$table->name()}Row"),
+                                        [
+                                            new Arg(new Variable('raw')),
+                                            new Arg(new Variable('this')),
+                                        ]
+                                    )
+                                )
+                            )
+                    )
+            )
+            ->getNode();
+
+        $prettyPrinter = new Standard();
+
+        return $prettyPrinter->prettyPrintFile(
+            [new Declare_([new DeclareDeclare('strict_types', new LNumber(1))]), $node]
+        ) . PHP_EOL;
     }
 
     public function renderRowFile(Table $table): string
     {
-        $head = new ClassHead($this->namespace, []);
+        $factory = new BuilderFactory();
+        $uses = [];
 
-        $render =
-            new Block(
-                "final class {$table->name()}Row extends ClientRow",
-                ...array_map(
-                    function (Column $column) use ($table, &$head): Line {
-                        $typeInfo = $this->types->type($column->type());
-                        $typeDef = $this->typeDef($column, $typeInfo);
+        $node = $factory
+            ->namespace($this->namespace)
+            ->addStmts(
+                array_filter(
+                    array_map(
+                        function (Column $column) use ($factory, &$uses): ?Use_ {
+                            $typeInfo = $this->types->type($column->type());
 
-                        if ($typeInfo->isClass()) {
-                            $head = $head->useClass(new ClassInfo($typeInfo->phpType()));
-                        }
+                            if ($typeInfo->isClass()) {
+                                $fullName = (new ClassInfo($typeInfo->phpType()))->fullName();
 
-                        return new Block(
-                            "public function {$column->methodName()}(): {$typeDef}",
-                            new Body($this->valueReturn($table, $column, $typeInfo))
-                        );
-                    },
-                    $table->columns()
+                                if (!in_array($fullName, $uses, true)) {
+                                    $uses[] = $fullName;
+
+                                    return $factory->use($fullName);
+                                }
+                            }
+
+                            return null;
+                        },
+                        $table->columns(),
+                    )
                 )
-            );
+            )
+            ->addStmt(
+                $factory->class("{$table->name()}Row")
+                    ->extend('ClientRow')
+                    ->makeFinal()
+                    ->addStmts(
+                        array_map(
+                            function (Column $column) use ($table, $factory) {
+                                $typeInfo = $this->types->type($column->type());
 
-        return $head->render() . $render->render();
+                                return $factory->method($column->methodName())
+                                    ->setReturnType($this->typeDef($column, $typeInfo))
+                                    ->makePublic()
+                                    ->addStmt($this->valueReturn($table, $column, $typeInfo));
+                            },
+                            $table->columns(),
+                        )
+                    )
+            )
+            ->getNode();
+
+        $prettyPrinter = new Standard();
+
+        return $prettyPrinter->prettyPrintFile(
+                [new Declare_([new DeclareDeclare('strict_types', new LNumber(1))]), $node]
+            ) . PHP_EOL;
     }
 
     public function renderClientRow(AbstractPlatform $databasePlatform): string
     {
-        $head = new ClassHead(
-            $this->namespace,
-            [
-                'use GW\DQO\TableRow;',
-                'use Doctrine\DBAL\Platforms\AbstractPlatform;',
-                sprintf('use %s;', get_class($databasePlatform)),
-            ]
-        );
-
+        $factory = new BuilderFactory();
         $classInfo = new ClassInfo(get_class($databasePlatform));
 
-        $render =
-            new Block(
-                'abstract class ClientRow extends TableRow',
-                new Block(
-                    'protected static function getPlatform(): AbstractPlatform',
-                    new Body(
-                        'static $platform;',
-                        '',
-                        sprintf(
-                            'return $platform ?? $platform = new %s();',
-                            $classInfo->shortName()
-                        )
+        $node = $factory
+            ->namespace($this->namespace)
+            ->addStmt($factory->use('GW\DQO\TableRow'))
+            ->addStmt($factory->use('Doctrine\DBAL\Platforms\AbstractPlatform'))
+            ->addStmt($factory->use(get_class($databasePlatform)))
+            ->addStmt(
+                $factory->class('ClientRow')
+                    ->extend('TableRow')
+                    ->makeAbstract()
+                    ->addStmt(
+                        $factory->method('getPlatform')
+                            ->makeStatic()
+                            ->makeProtected()
+                            ->setReturnType('AbstractPlatform')
+                            ->addStmts(
+                                [
+                                    new Static_([new StaticVar(new Variable('platform'))]),
+                                    new Return_(
+                                        new Coalesce(
+                                            new Variable('platform'),
+                                            new Assign(
+                                                new Variable('platform'),
+                                                new New_(new Name($classInfo->shortName()))
+                                            )
+                                        )
+                                    ),
+                                ]
+                            )
                     )
-                )
-            );
+            )
+            ->getNode();
 
-        return $head->render() . $render->render();
+        $prettyPrinter = new Standard();
+
+        return $prettyPrinter->prettyPrintFile(
+                [new Declare_([new DeclareDeclare('strict_types', new LNumber(1))]), $node]
+            ) . PHP_EOL;
     }
 
     private function typeDef(Column $column, TypeInfo $type): string
@@ -151,9 +239,11 @@ final class Renderer
         return sprintf('%s%s', $column->optional() ? '?' : '', $phpType);
     }
 
-    private function valueReturn(Table $table, Column $column, TypeInfo $type): string
+    private function valueReturn(Table $table, Column $column, TypeInfo $type): Return_
     {
-        $const = "{$table->name()}Table::{$column->nameConst()}";
+        $const = new Arg(
+            new ClassConstFetch(new Name("{$table->name()}Table"), $column->nameConst())
+        );
 
         switch ($column->type()) {
             case 'integer':
@@ -190,11 +280,13 @@ final class Renderer
             return $this->returnStatement('getString', $const);
         }
 
-        return $this->returnStatement('getThroughType', "'{$column->type()}', {$const}");
+        return $this->returnStatement('getThroughType', new Arg(new String_($column->type())), $const);
     }
 
-    private function returnStatement(string $methodName, string $arguments): string
+    private function returnStatement(string $methodName, Arg ...$arguments): Return_
     {
-        return "return \$this->$methodName($arguments);";
+        return new Return_(
+            new MethodCall(new Variable('this'), $methodName, $arguments)
+        );
     }
 }

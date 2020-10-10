@@ -41,6 +41,7 @@ All queries should extends `GW\DQO\Query\AbstractDatabaseQuery`
   - [ ] generate queries for tables
   - [ ] update readme
   - [ ] add command to update table/row with new fields
+  - [ ] auto run cs fixer on generated files (if installed)
 
 ## About
 

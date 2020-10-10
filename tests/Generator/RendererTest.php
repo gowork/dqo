@@ -2,6 +2,7 @@
 
 namespace tests\GW\DQO\Generator;
 
+use Doctrine\DBAL\Platforms\MySqlPlatform;
 use GW\DQO\Generator\Column;
 use GW\DQO\Generator\Renderer;
 use GW\DQO\Generator\Table;
@@ -41,5 +42,13 @@ final class RendererTest extends DoctrineTestCase
         );
 
         self::assertStringEqualsFile(__DIR__ . '/../Example/UserRow.php', $renderedContent);
+    }
+
+    function test_generate_client_row()
+    {
+        $renderer = new Renderer('tests\GW\DQO\Example');
+        $renderedContent = $renderer->renderClientRow(new MySqlPlatform());
+
+        self::assertStringEqualsFile(__DIR__ . '/../Example/ClientRow.php', $renderedContent);
     }
 }

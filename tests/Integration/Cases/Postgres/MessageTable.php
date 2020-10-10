@@ -1,9 +1,9 @@
-<?php declare(strict_types=1);
+<?php
 
+declare (strict_types=1);
 namespace tests\GW\DQO\Integration\Cases\Postgres;
 
 use GW\DQO\Table;
-
 final class MessageTable extends Table
 {
     public const ID = 'id';
@@ -12,38 +12,31 @@ final class MessageTable extends Table
     public const BOO = 'boo';
     public const BOO_NOT_NULL = 'boo_not_null';
     public const MESSAGE = 'message';
-
-    public function id(): string
+    public function id() : string
     {
         return $this->fieldPath(self::ID);
     }
-
-    public function title(): string
+    public function title() : string
     {
         return $this->fieldPath(self::TITLE);
     }
-
-    public function titleNotNull(): string
+    public function titleNotNull() : string
     {
         return $this->fieldPath(self::TITLE_NOT_NULL);
     }
-
-    public function boo(): string
+    public function boo() : string
     {
         return $this->fieldPath(self::BOO);
     }
-
-    public function booNotNull(): string
+    public function booNotNull() : string
     {
         return $this->fieldPath(self::BOO_NOT_NULL);
     }
-
-    public function message(): string
+    public function message() : string
     {
         return $this->fieldPath(self::MESSAGE);
     }
-
-    public function createRow(array $raw): MessageRow
+    public function createRow(array $raw) : MessageRow
     {
         return new MessageRow($raw, $this);
     }

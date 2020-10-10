@@ -5,12 +5,14 @@ namespace tests\GW\DQO\Integration\MySQL;
 use GW\DQO\Generator\GenerateTables;
 use GW\DQO\Generator\Renderer;
 use GW\DQO\Generator\TableFactory;
+use tests\GW\DQO\Example\Foo\BooIdType;
 
 final class MySQLTest extends MySQLTestCase
 {
     function test_real_db()
     {
         $this->dropTable('message');
+        $this->registerType(BooIdType::class, 'BooId');
 
         $this->executeQuery(
             <<<SQL

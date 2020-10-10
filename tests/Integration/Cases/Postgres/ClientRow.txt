@@ -1,17 +1,16 @@
-<?php declare(strict_types=1);
+<?php
 
+declare (strict_types=1);
 namespace tests\GW\DQO\Integration\Cases\Postgres;
 
 use GW\DQO\TableRow;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\%platform%;
-
 abstract class ClientRow extends TableRow
 {
-    protected static function getPlatform(): AbstractPlatform
+    protected static function getPlatform() : AbstractPlatform
     {
         static $platform;
-
-        return $platform ?? $platform = new %platform%();
+        return $platform ?? ($platform = new %platform%());
     }
 }
