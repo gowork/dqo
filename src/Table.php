@@ -55,6 +55,12 @@ abstract class Table
         return "{$this->alias}.{$field}";
     }
 
+    /** @return string[] */
+    public function fields(): array
+    {
+        return $this->fields;
+    }
+
     public function fieldAlias(string $field): string
     {
         return "{$this->alias}_{$field}";
