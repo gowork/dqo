@@ -3,8 +3,8 @@
 namespace GW\DQO;
 
 use DateTimeImmutable;
-use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Query\QueryBuilder;
 use GW\Value\ArrayValue;
 use GW\Value\Wrap;
@@ -13,7 +13,6 @@ use function array_merge;
 use function get_class;
 use function is_array;
 use function is_object;
-use function strpos;
 
 final class DatabaseSelectBuilder
 {
@@ -26,6 +25,8 @@ final class DatabaseSelectBuilder
     private array $sortMap = [];
     private int $startOffset = 0;
     private bool $sliced = false;
+    /** @var array<string, string> */
+    private array $fieldSelect = [];
 
     /** @param array<string, string> $types */
     public function __construct(Connection $connection, array $types = [])
@@ -71,6 +72,7 @@ final class DatabaseSelectBuilder
         $copy = clone $this;
         $copy->from = $table;
         $copy->builder->from($table->table(), $table->alias());
+        $copy->registerFieldSelectsForTable($table);
 
         return $copy;
     }
@@ -81,6 +83,7 @@ final class DatabaseSelectBuilder
 
         $copy = clone $this;
         $copy->builder->join($this->from->alias(), $join->table(), $join->alias(), $condition);
+        $copy->registerFieldSelectsForTable($join);
 
         return $copy;
     }
@@ -91,6 +94,7 @@ final class DatabaseSelectBuilder
 
         $copy = clone $this;
         $copy->builder->leftJoin($this->from->alias(), $join->table(), $join->alias(), $condition);
+        $copy->registerFieldSelectsForTable($join);
 
         return $copy;
     }
@@ -101,6 +105,7 @@ final class DatabaseSelectBuilder
 
         $copy = clone $this;
         $copy->builder->rightJoin($this->from->alias(), $join->table(), $join->alias(), $condition);
+        $copy->registerFieldSelectsForTable($join);
 
         return $copy;
     }
@@ -140,12 +145,8 @@ final class DatabaseSelectBuilder
         $copy = clone $this;
         $copy->builder->select(
             ...array_map(
-                static function (string $column): string {
-                    if (strpos($column, '.') !== false && strpos($column, ' ') === false && strpos($column, '(') === false) {
-                        return "$column " . str_replace('.', '_', $column);
-                    }
-
-                    return $column;
+                function (string $field): string {
+                    return $this->fieldSelect[$field] ?? $field;
                 },
                 $columns
             )
@@ -327,6 +328,13 @@ final class DatabaseSelectBuilder
     {
         if (!isset($this->from)) {
             throw new RuntimeException('FROM must be declared before JOIN');
+        }
+    }
+
+    private function registerFieldSelectsForTable(Table $table): void
+    {
+        foreach ($table->fields() as $field) {
+            $this->fieldSelect[$table->fieldPath($field)] = $table->selectField($field);
         }
     }
 }

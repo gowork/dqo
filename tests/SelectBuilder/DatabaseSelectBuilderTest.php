@@ -67,7 +67,7 @@ final class DatabaseSelectBuilderTest extends MySQLTestCase
         $rows = $builder->fetchAll();
 
         self::assertEquals(
-            'SELECT user.name user_name, message.message message_message FROM message message INNER JOIN user user ON message.user_id = user.id',
+            'SELECT user.name as user_name, message.message as message_message FROM message message INNER JOIN user user ON message.user_id = user.id',
             $sql
         );
         self::assertCount(2, $rows);
@@ -98,7 +98,7 @@ final class DatabaseSelectBuilderTest extends MySQLTestCase
         $sql = $builder->getSQL();
         $rows = $builder->fetchAll();
 
-        self::assertEquals('SELECT u.name u_name, m.message m_message FROM message m INNER JOIN user u ON m.user_id = u.id', $sql);
+        self::assertEquals('SELECT u.name as u_name, m.message as m_message FROM message m INNER JOIN user u ON m.user_id = u.id', $sql);
         self::assertCount(2, $rows);
         self::assertEquals(
             [
