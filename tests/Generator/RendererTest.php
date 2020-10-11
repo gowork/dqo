@@ -10,6 +10,8 @@ use tests\GW\DQO\Example\UserIdType;
 
 final class RendererTest extends DoctrineTestCase
 {
+    use AstAssertions;
+
     function test_generate()
     {
         $renderer = new Renderer('tests\GW\DQO\Example');
@@ -23,7 +25,7 @@ final class RendererTest extends DoctrineTestCase
             )
         );
 
-        self::assertStringEqualsFile(__DIR__ . '/../Example/UserTable.php', $renderedContent);
+        self::assertAstEquals(__DIR__ . '/../Example/UserTable.php', $renderedContent);
     }
 
     function test_generate_row()
@@ -41,7 +43,7 @@ final class RendererTest extends DoctrineTestCase
             )
         );
 
-        self::assertStringEqualsFile(__DIR__ . '/../Example/UserRow.php', $renderedContent);
+        self::assertAstEquals(__DIR__ . '/../Example/UserRow.php', $renderedContent);
     }
 
     function test_generate_client_row()
@@ -49,6 +51,6 @@ final class RendererTest extends DoctrineTestCase
         $renderer = new Renderer('tests\GW\DQO\Example');
         $renderedContent = $renderer->renderClientRow(new MySqlPlatform());
 
-        self::assertStringEqualsFile(__DIR__ . '/../Example/ClientRow.php', $renderedContent);
+        self::assertAstEquals(__DIR__ . '/../Example/ClientRow.php', $renderedContent);
     }
 }
