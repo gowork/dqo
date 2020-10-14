@@ -3,9 +3,6 @@
 namespace GW\DQO\Generator;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use GW\DQO\Generator\Render\Block;
-use GW\DQO\Generator\Render\Body;
-use GW\DQO\Generator\Render\ClassHead;
 use PhpParser\Builder\Use_;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Arg;
@@ -15,8 +12,11 @@ use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
+use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
@@ -27,11 +27,15 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Static_;
 use PhpParser\Node\Stmt\StaticVar;
 use PhpParser\PrettyPrinter\Standard;
+use function array_filter;
 use function array_map;
 use function get_class;
 use function in_array;
 use function sprintf;
+use function ucfirst;
 use const PHP_EOL;
+use GW\DQO\DatabaseSelectBuilder;
+use GW\DQO\Query\AbstractDatabaseQuery;
 
 final class Renderer
 {
@@ -48,7 +52,6 @@ final class Renderer
         'datetime_immutable' => '\DateTimeImmutable',
         'DateTimeImmutable' => '\DateTimeImmutable',
     ];
-
     private string $namespace;
     private TypeRegistry $types;
 
@@ -123,8 +126,8 @@ final class Renderer
         $prettyPrinter = new Standard();
 
         return $prettyPrinter->prettyPrintFile(
-            [new Declare_([new DeclareDeclare('strict_types', new LNumber(1))]), $node]
-        ) . PHP_EOL;
+                [new Declare_([new DeclareDeclare('strict_types', new LNumber(1))]), $node]
+            ) . PHP_EOL;
     }
 
     public function renderRowFile(Table $table): string
@@ -169,6 +172,101 @@ final class Renderer
                                     ->setReturnType($this->typeDef($column, $typeInfo))
                                     ->makePublic()
                                     ->addStmt($this->valueReturn($table, $column, $typeInfo));
+                            },
+                            $table->columns(),
+                        )
+                    )
+            )
+            ->getNode();
+
+        $prettyPrinter = new Standard();
+
+        return $prettyPrinter->prettyPrintFile(
+                [new Declare_([new DeclareDeclare('strict_types', new LNumber(1))]), $node]
+            ) . PHP_EOL;
+    }
+
+    public function renderQueryFile(Table $table): string
+    {
+        $factory = new BuilderFactory();
+        $uses = [];
+
+        $node = $factory
+            ->namespace($this->namespace)
+            ->addStmt($factory->use(AbstractDatabaseQuery::class))
+            ->addStmt($factory->use(DatabaseSelectBuilder::class))
+            ->addStmt(
+                $factory->class("{$table->name()}Query")
+                    ->extend('AbstractDatabaseQuery')
+                    ->makeFinal()
+                    ->addStmt(
+                        $factory->property('table')
+                            ->setType("{$table->name()}Table")
+                            ->makePrivate()
+                    )
+                    ->addStmt(
+                        $factory->method('__construct')
+                            ->addParam($factory->param('builder')->setType('DatabaseSelectBuilder'))
+                            ->makePublic()
+                            ->addStmt(
+                                new Assign(
+                                    new PropertyFetch(new Variable('this'), 'table'),
+                                    new New_(new Name("{$table->name()}Table")),
+                                )
+                            )
+                            ->addStmt(
+                                new StaticCall(
+                                    new Name('parent'),
+                                    '__construct',
+                                    [
+                                        new Arg(new Variable('builder')),
+                                        new Arg(new PropertyFetch(new Variable('this'), 'table')),
+                                    ]
+                                )
+                            )
+                    )
+                    ->addStmt(
+                        $factory->method('table')
+                            ->setReturnType("{$table->name()}Table")
+                            ->makePublic()
+                            ->addStmt(
+                                new Return_(
+                                    new PropertyFetch(new Variable('this'), 'table'),
+                                )
+                            )
+                    )
+                    ->addStmt(
+                        $factory->method('all')
+                            ->makePublic()
+                    )
+                    ->addStmt(
+                        $factory->method('single')
+                            ->makePublic()
+                    )
+                    ->addStmts(
+                        array_map(
+                            function (Column $column) use ($table, $factory) {
+                                $typeInfo = $this->types->type($column->type());
+
+                                return $factory->method("with" . ucfirst($column->methodName()))
+                                    ->setReturnType($this->typeDef($column, $typeInfo))
+                                    ->addParam(
+                                        new Param(
+                                            new Variable($column->methodName()),
+                                            null,
+                                            $this->typeDef($column, $typeInfo)
+                                        )
+                                    )
+                                    ->makePublic()
+                                    ->addStmt(
+                                        new Return_(
+                                            new MethodCall(
+                                                new Variable('this'),
+                                                'where',
+                                                [],
+                                            )
+                                        )
+                                    );
                             },
                             $table->columns(),
                         )
@@ -253,6 +351,7 @@ final class Renderer
                 if ($column->optional()) {
                     return $this->returnStatement('getNullableInt', $const);
                 }
+
                 return $this->returnStatement('getInt', $const);
 
             case 'string':
@@ -260,6 +359,7 @@ final class Renderer
                 if ($column->optional()) {
                     return $this->returnStatement('getNullableString', $const);
                 }
+
                 return $this->returnStatement('getString', $const);
 
             case 'datetime':
@@ -270,6 +370,7 @@ final class Renderer
                 if ($column->optional()) {
                     return $this->returnStatement('getNullableBool', $const);
                 }
+
                 return $this->returnStatement('getBool', $const);
         }
 
@@ -277,6 +378,7 @@ final class Renderer
             if ($column->optional()) {
                 return $this->returnStatement('getNullableString', $const);
             }
+
             return $this->returnStatement('getString', $const);
         }
 
