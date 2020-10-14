@@ -9,3 +9,11 @@ services:
     GW\DQO\Generator\TableFactory: ~
     GW\DQO\Generator\Renderer: ~
     GW\DQO\Generator\GenerateTables: ~
+
+    GW\DQO\Formatter\Formatter:
+        class: GW\DQO\Formatter\MultiFormatter
+        arguments:
+            - !service:
+               class: GW\DQO\Formatter\CsFixerFormatter
+            - !service:
+               class: GW\DQO\Formatter\PhpcbfFormatter
