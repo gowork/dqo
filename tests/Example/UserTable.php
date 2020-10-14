@@ -1,37 +1,32 @@
-<?php declare(strict_types=1);
+<?php
 
+declare (strict_types=1);
 namespace tests\GW\DQO\Example;
 
 use GW\DQO\Table;
-
 final class UserTable extends Table
 {
     public const ID = 'id';
     public const EMAIL = 'email';
     public const NAME = 'name';
     public const SURNAME = 'surname';
-
-    public function id(): string
+    public function id() : string
     {
         return $this->fieldPath(self::ID);
     }
-
-    public function email(): string
+    public function email() : string
     {
         return $this->fieldPath(self::EMAIL);
     }
-
-    public function name(): string
+    public function name() : string
     {
         return $this->fieldPath(self::NAME);
     }
-
-    public function surname(): string
+    public function surname() : string
     {
         return $this->fieldPath(self::SURNAME);
     }
-
-    public function createRow(array $raw): UserRow
+    public function createRow(array $raw) : UserRow
     {
         return new UserRow($raw, $this);
     }

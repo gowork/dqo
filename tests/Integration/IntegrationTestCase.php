@@ -2,20 +2,23 @@
 
 namespace tests\GW\DQO\Integration;
 
-use PHPUnit\Framework\TestCase;
+use tests\GW\DQO\Generator\AstAssertions;
+use tests\GW\DQO\Generator\DoctrineTestCase;
 
-abstract class IntegrationTestCase extends TestCase
+abstract class IntegrationTestCase extends DoctrineTestCase
 {
+    use AstAssertions;
+
     protected static function assertTable(string $testCase, string $tableName): void
     {
         $tableName = ucfirst($tableName);
 
-        self::assertFileEquals(
+        self::assertAstFilesEquals(
             __DIR__ . '/Cases/' . $testCase . '/' . $tableName . 'Row.php',
             '/tmp/' . $tableName . 'Row.php'
         );
 
-        self::assertFileEquals(
+        self::assertAstFilesEquals(
             __DIR__ . '/Cases/' . $testCase . '/' . $tableName . 'Table.php',
             '/tmp/' . $tableName . 'Table.php'
         );
@@ -23,7 +26,7 @@ abstract class IntegrationTestCase extends TestCase
 
     protected static function assertClientRow(string $testCase, string $platformName): void
     {
-        self::assertStringEqualsFile(
+        self::assertAstEquals(
             '/tmp/ClientRow.php',
             str_replace(
                 '%platform%',

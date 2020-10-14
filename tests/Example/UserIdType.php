@@ -4,6 +4,7 @@ namespace tests\GW\DQO\Example;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
+use tests\GW\DQO\Example\Id\UserId;
 
 final class UserIdType extends Type
 {

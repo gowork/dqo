@@ -1,6 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare (strict_types=1);
 
 namespace tests\GW\DQO\Example;
+
+use tests\GW\DQO\Example\Id\UserId;
 
 final class UserRow extends ClientRow
 {

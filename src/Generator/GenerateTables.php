@@ -33,22 +33,10 @@ class GenerateTables
     public function generate(array $filterTables, string $path, bool $overwrite): void
     {
         $models = Wrap::array($this->connection->getSchemaManager()->listTables())
-            ->filter(
-                function (DbalTable $table) use ($filterTables): bool {
-                    return in_array($table->getName(), $filterTables, true);
-                }
-            )
+            ->filter(static fn(DbalTable $table): bool => in_array($table->getName(), $filterTables, true))
             ->toAssocValue()
-            ->map(
-                function (DbalTable $table): Table {
-                    return $this->tableFactory->buildFromDbalTable($table);
-                }
-            )
-            ->mapKeys(
-                function (string $key, Table $table): string {
-                    return $table->name();
-                }
-            );
+            ->map(fn(DbalTable $table): Table => $this->tableFactory->buildFromDbalTable($table))
+            ->mapKeys(static fn(string $key, Table $table): string => $table->name());
 
         $save = function (string $content, string $fileName) use ($path, $overwrite): void {
             if (!$overwrite && file_exists($fileName)) {

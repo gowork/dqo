@@ -12,6 +12,8 @@ use tests\GW\DQO\Example\Foo\BooIdType;
 
 class TableFactoryTest extends TestCase
 {
+    use AstAssertions;
+
     function test_build_from_dbal()
     {
         $factory = new TableFactory();
@@ -26,7 +28,7 @@ class TableFactoryTest extends TestCase
         $renderer = new Renderer('tests\GW\DQO\Example');
         $renderedContent = $renderer->renderTableFile($table);
 
-        self::assertStringEqualsFile(__DIR__ . '/../Example/UserTable.php', $renderedContent);
+        self::assertAstEquals(__DIR__ . '/../Example/UserTable.php', $renderedContent);
     }
 
     function test_build_from_dbal_with_id_in_different_namespace()
@@ -45,6 +47,6 @@ class TableFactoryTest extends TestCase
         $renderer = new Renderer('tests\GW\DQO\Example\Foo');
         $renderedContent = $renderer->renderRowFile($table);
 
-        self::assertStringEqualsFile(__DIR__ . '/../Example/Foo/UserRow.php', $renderedContent);
+        self::assertAstEquals(__DIR__ . '/../Example/Foo/UserRow.php', $renderedContent);
     }
 }

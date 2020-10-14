@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace tests\GW\DQO\Example;
+namespace tests\GW\DQO\Example\Id;
 
 final class UserId
 {
