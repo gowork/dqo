@@ -5,4 +5,4 @@ composer.lock
 .phpunit.result.cache
 .phpunit.cache
 /composer.phar
-tests/Usage/symfony
+/.php_cs.cache
