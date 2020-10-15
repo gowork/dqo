@@ -3,10 +3,14 @@
 namespace GW\DQO\Generator;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use GW\DQO\DatabaseSelectBuilder;
+use GW\DQO\Query\AbstractDatabaseQuery;
 use PhpParser\Builder\Use_;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Const_;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -17,6 +21,8 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\Scalar\Encapsed;
+use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
@@ -34,8 +40,6 @@ use function in_array;
 use function sprintf;
 use function ucfirst;
 use const PHP_EOL;
-use GW\DQO\DatabaseSelectBuilder;
-use GW\DQO\Query\AbstractDatabaseQuery;
 
 final class Renderer
 {
@@ -192,9 +196,11 @@ final class Renderer
         $uses = [];
 
         $node = $factory
-            ->namespace($this->namespace)
+            ->namespace($this->namespace . '\Query')
             ->addStmt($factory->use(AbstractDatabaseQuery::class))
             ->addStmt($factory->use(DatabaseSelectBuilder::class))
+            ->addStmt($factory->use($this->namespace . "\\{$table->name()}Table"))
+            ->addStmt($factory->use($this->namespace . "\\{$table->name()}Row"))
             ->addStmt(
                 $factory->class("{$table->name()}Query")
                     ->extend('AbstractDatabaseQuery')
@@ -237,10 +243,13 @@ final class Renderer
                     )
                     ->addStmt(
                         $factory->method('all')
+                            ->setReturnType('iterable')
+                            ->setDocComment("/** @return iterable<{$table->name()}Row> */")
                             ->makePublic()
                     )
                     ->addStmt(
-                        $factory->method('single')
+                        $factory->method('first')
+                            ->setReturnType("?{$table->name()}Row")
                             ->makePublic()
                     )
                     ->addStmts(
@@ -249,12 +258,12 @@ final class Renderer
                                 $typeInfo = $this->types->type($column->type());
 
                                 return $factory->method("with" . ucfirst($column->methodName()))
-                                    ->setReturnType($this->typeDef($column, $typeInfo))
+                                    ->setReturnType('self')
                                     ->addParam(
                                         new Param(
-                                            new Variable($column->methodName()),
+                                            $factory->var($column->methodName()),
                                             null,
-                                            $this->typeDef($column, $typeInfo)
+                                            $this->typeDef($column, $typeInfo),
                                         )
                                     )
                                     ->makePublic()
@@ -263,7 +272,20 @@ final class Renderer
                                             new MethodCall(
                                                 new Variable('this'),
                                                 'where',
-                                                [],
+                                                $factory->args([
+                                                    new Encapsed(
+                                                        [
+                                                            new MethodCall(
+                                                                new PropertyFetch(new Variable('this'), 'table'),
+                                                                $column->methodName(),
+                                                            ),
+                                                            new EncapsedStringPart(' = :' . $column->methodName()),
+                                                        ]
+                                                    ),
+                                                    $factory->val([
+                                                        $column->methodName() => $factory->var($column->methodName()),
+                                                    ]),
+                                                ]),
                                             )
                                         )
                                     );
