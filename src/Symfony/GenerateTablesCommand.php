@@ -55,7 +55,7 @@ final class GenerateTablesCommand extends Command
         if ($options->bool('autofix') || $style->confirm('Use php-cs-fixer to format generated code?', true)) {
             try {
                 foreach ($generatedFiles as $generatedFile) {
-                    $this->formatter->formatFile($generatedFile, $path . '/../');
+                    $this->formatter->formatFile($generatedFile);
                 }
             } catch (Exception $e) {
                 $style->error("There was a problem during auto fixing code: {$e->getMessage()}");
