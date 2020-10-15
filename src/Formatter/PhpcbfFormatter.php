@@ -5,7 +5,7 @@ namespace GW\DQO\Formatter;
 use Symfony\Component\Process\Process;
 use function file_exists;
 
-final class PhpcbFormatter implements Formatter
+final class PhpcbfFormatter implements Formatter
 {
     public function formatFile(string $filename): void
     {
@@ -15,13 +15,13 @@ final class PhpcbFormatter implements Formatter
             return;
         }
 
-        $process = new Process([$bin, $filename]);
-        $process->mustRun();
+        $process = new Process([$bin, $filename], __DIR__ . '/../../../../../');
+        $process->run();
     }
 
     private function detectBin(): ?string
     {
-        $vendorBin = __DIR__ . '/../../../bin/phpcbf';
+        $vendorBin = __DIR__ . '/../../../../bin/phpcbf';
 
         if (file_exists($vendorBin)) {
             return $vendorBin;

@@ -2,6 +2,7 @@
 
 namespace GW\DQO\Symfony;
 
+use Exception;
 use GW\DQO\Formatter\Formatter;
 use GW\DQO\Generator\GenerateTables;
 use GW\Safe\SafeConsoleInput;
@@ -51,11 +52,15 @@ final class GenerateTablesCommand extends Command
         $generateTables->generateClientRow($path);
         $generatedFiles = $generateTables->generate($filterTables, $path, $overwrite);
 
-        //if ($options->bool('autofix') || $style->confirm('Use php-cs-fixer to format generated code?')) {
-            foreach ($generatedFiles as $generatedFile) {
-                $this->formatter->formatFile($generatedFile);
+        if ($options->bool('autofix') || $style->confirm('Use php-cs-fixer to format generated code?', true)) {
+            try {
+                foreach ($generatedFiles as $generatedFile) {
+                    $this->formatter->formatFile($generatedFile, $path . '/../');
+                }
+            } catch (Exception $e) {
+                $style->error("There was a problem during auto fixing code: {$e->getMessage()}");
             }
-        //}
+        }
 
         return 0;
     }

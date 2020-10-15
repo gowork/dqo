@@ -15,13 +15,13 @@ final class CsFixerFormatter implements Formatter
             return;
         }
 
-        $process = new Process([$bin, 'fix', $filename]);
+        $process = new Process([$bin, 'fix', $filename], __DIR__ . '/../../../../../');
         $process->mustRun();
     }
 
     private function detectBin(): ?string
     {
-        $vendorBin = __DIR__ . '/../../../bin/php-cs-fixer';
+        $vendorBin = __DIR__ . '/../../../../bin/php-cs-fixer';
 
         if (file_exists($vendorBin)) {
             return $vendorBin;

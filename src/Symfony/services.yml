@@ -13,7 +13,7 @@ services:
     GW\DQO\Formatter\Formatter:
         class: GW\DQO\Formatter\MultiFormatter
         arguments:
-            - !service:
+            - !service
                class: GW\DQO\Formatter\CsFixerFormatter
-            - !service:
+            - !service
                class: GW\DQO\Formatter\PhpcbfFormatter
