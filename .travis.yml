@@ -9,6 +9,8 @@ install:
 script:
   - ./vendor/bin/phpstan
   - ./vendor/bin/phpstan analyze -l 8 src
+  - ./vendor/bin/phpunit
+  - ./vendor/bin/phpunit --testsuite=integration
 
 services:
   - mysql
