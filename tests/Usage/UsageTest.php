@@ -14,9 +14,9 @@ final class UsageTest extends TestCase
         (new Process($command,  self::SYMFONY_DIR))->run();
     }
 
-    private function mustRunOnSymfonyDIr(array $command): void
+    private function mustRunOnSymfonyDir(array $command): void
     {
-        echo (new Process($command,  self::SYMFONY_DIR))->mustRun()->getOutput();
+        (new Process($command,  self::SYMFONY_DIR))->mustRun();
     }
 
     function test_real_app()
@@ -26,9 +26,9 @@ final class UsageTest extends TestCase
         $this->runOnSymfonyDIr(['rm', 'src/UserTable.php']);
         $this->runOnSymfonyDIr(['rm', 'src/UserRow.php']);
         $this->runOnSymfonyDIr(['rm', '-rf', 'vendor', 'repo']);
-        $this->mustRunOnSymfonyDIr(['composer', 'install']);
-        $this->mustRunOnSymfonyDIr(['bin/console']);
-        $this->mustRunOnSymfonyDIr(['bin/console', 'dqo:generate-tables', 'src', 'App', 'user']);
+        $this->mustRunOnSymfonyDir(['composer', 'install']);
+        $this->mustRunOnSymfonyDir(['bin/console']);
+        $this->mustRunOnSymfonyDir(['bin/console', 'dqo:generate-tables', 'src', 'App', 'user']);
         self::assertFileExists(self::SYMFONY_DIR . 'src/ClientRow.php');
         self::assertFileExists(self::SYMFONY_DIR . 'src/UserTable.php');
         self::assertFileExists(self::SYMFONY_DIR . 'src/UserRow.php');
