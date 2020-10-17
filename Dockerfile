@@ -45,6 +45,10 @@ RUN groupadd -g ${GID} -r ${USER} && useradd -u ${UID} -rm -s /bin/zsh -g ${USER
 RUN apt install wget &&  wget https://get.symfony.com/cli/installer -O - | bash
 RUN mv /root/.symfony/bin/symfony /usr/local/bin/symfony
 
+RUN wget https://cs.symfony.com/download/php-cs-fixer-v2.phar -O php-cs-fixer \
+    && chmod a+x php-cs-fixer \
+    && mv php-cs-fixer /usr/local/bin/php-cs-fixer
+
 WORKDIR /home/${USER}
 
 USER ${USER}

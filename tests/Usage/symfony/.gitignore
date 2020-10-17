@@ -13,3 +13,5 @@ symfony.lock
 /src/ClientRow.php
 /src/UserTable.php
 /src/UserRow.php
+.php_cs.cache
+public

@@ -29,8 +29,9 @@ class GenerateTables
 
     /**
      * @param string[] $filterTables
+     * @return string[] Generated files paths
      */
-    public function generate(array $filterTables, string $path, bool $overwrite): void
+    public function generate(array $filterTables, string $path, bool $overwrite): array
     {
         $models = Wrap::array($this->connection->getSchemaManager()->listTables())
             ->filter(static fn(DbalTable $table): bool => in_array($table->getName(), $filterTables, true))
@@ -38,12 +39,18 @@ class GenerateTables
             ->map(fn(DbalTable $table): Table => $this->tableFactory->buildFromDbalTable($table))
             ->mapKeys(static fn(string $key, Table $table): string => $table->name());
 
-        $save = function (string $content, string $fileName) use ($path, $overwrite): void {
-            if (!$overwrite && file_exists($fileName)) {
+        /** @var string[] $generatedFiles */
+        $generatedFiles = [];
+
+        $save = function (string $content, string $fileName) use ($path, $overwrite, &$generatedFiles): void {
+            $fullPath = $path . '/' . $fileName;
+
+            if (!$overwrite && file_exists($fullPath)) {
                 return;
             }
 
-            file_put_contents($path . '/' . $fileName, $content);
+            file_put_contents($fullPath, $content);
+            $generatedFiles[] = $fullPath;
         };
 
         $models
@@ -71,6 +78,8 @@ class GenerateTables
                 }
             )
             ->each($save);
+
+        return $generatedFiles;
     }
 
     public function generateClientRow(string $path): void
