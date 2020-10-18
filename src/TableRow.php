@@ -64,17 +64,22 @@ abstract class TableRow
         return (bool)$this->get($field);
     }
 
-    protected function getDateTime(string $field): ?DateTime
+    protected function getDateTime(string $field): DateTime
+    {
+        return Util\DateTimeUtil::mutable($this->getString($field));
+    }
+
+    protected function getNullableDateTime(string $field): ?DateTime
     {
         return $this->getThrough(Util\DateTimeUtil::mutable, $field);
     }
 
-    protected function getRequiredDateTimeImmutable(string $field): DateTimeImmutable
+    protected function getDateTimeImmutable(string $field): DateTimeImmutable
     {
         return Util\DateTimeUtil::immutable($this->getString($field));
     }
 
-    protected function getDateTimeImmutable(string $field): ?DateTimeImmutable
+    protected function getNullableDateTimeImmutable(string $field): ?DateTimeImmutable
     {
         return $this->getThrough(Util\DateTimeUtil::immutable, $field);
     }
@@ -95,7 +100,7 @@ abstract class TableRow
      */
     protected function getThroughType(string $dc2Type, string $field)
     {
-        return Type::getType($dc2Type)->convertToPHPValue($this->getString($field), static::getPlatform());
+        return Type::getType($dc2Type)->convertToPHPValue($this->getNullableString($field), static::getPlatform());
     }
 
     /** @param array<string, mixed>|ArrayAccess<string, mixed>|object $row */

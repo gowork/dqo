@@ -264,7 +264,7 @@ final class Renderer
 
             case 'datetime':
             case 'datetime_immutable':
-                return $this->returnStatement('getDateTimeImmutable', $const);
+                return $this->returnStatement('getNullableDateTimeImmutable', $const);
 
             case 'boolean':
                 if ($column->optional()) {
