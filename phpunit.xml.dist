@@ -33,10 +33,10 @@
         <env name="MYSQL_HOST" value="mysql" />
         <env name="MYSQL_DATABASE" value="dqo" />
         <env name="MYSQL_USER" value="test" />
-        <env name="MYSQL_PASSWORD" value="test" />
+        <env name="MYSQL_PASSWORD" value="" />
         <env name="POSTGRES_HOST" value="mysql" />
         <env name="POSTGRES_DATABASE" value="dqo" />
         <env name="POSTGRES_USER" value="test" />
-        <env name="POSTGRES_PASSWORD" value="test" />
+        <env name="POSTGRES_PASSWORD" value="" />
     </php>
 </phpunit>
