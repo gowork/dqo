@@ -213,17 +213,20 @@ composer require gowork/dqo
 
 ### Symfony
 
-Add the DatabaseAccessGeneratorBundle to your application's kernel:
+Add the DatabaseAccessGeneratorBundle to your application's kernel (only on `dev` environment):
 
 ```php
 <?php
-public function registerBundles()
+public function registerBundles(): array
 {
-    $bundles = array(
+    $bundles = [
         // ...
-        new GW\DQO\Symfony\DatabaseAccessGeneratorBundle(),
+    ];
+    
+    if ($this->getEnvironment() === 'dev') {
         // ...
-    );
+        $bundles[] = new GW\DQO\Symfony\DatabaseAccessGeneratorBundle();
+    }
     ...
 }
 ```
