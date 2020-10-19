@@ -7,6 +7,8 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Roave\BetterReflection\Reflection\ReflectionClass;
 use tests\GW\DQO\Integration\IntegrationTestCase;
+use function getenv;
+use function sprintf;
 
 abstract class PostgresTestCase extends IntegrationTestCase
 {
@@ -16,8 +18,16 @@ abstract class PostgresTestCase extends IntegrationTestCase
     protected function setUp(): void
     {
         $this->conn = DriverManager::getConnection(
-            ['url' => 'pgsql://test:test@postgres/test'],
-            new Configuration()
+            [
+                'url' => sprintf(
+                    'pgsql://%s:%s@%s/%s',
+                    getenv('POSTGRES_USER'),
+                    getenv('POSTGRES_PASSWORD'),
+                    getenv('POSTGRES_HOST'),
+                    getenv('POSTGRES_DATABASE'),
+                ),
+            ],
+            new Configuration(),
         );
     }
 

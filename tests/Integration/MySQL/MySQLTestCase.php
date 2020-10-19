@@ -7,6 +7,8 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Roave\BetterReflection\Reflection\ReflectionClass;
 use tests\GW\DQO\Integration\IntegrationTestCase;
+use function getenv;
+use function sprintf;
 
 abstract class MySQLTestCase extends IntegrationTestCase
 {
@@ -15,7 +17,18 @@ abstract class MySQLTestCase extends IntegrationTestCase
 
     protected function setUp(): void
     {
-        $this->conn = DriverManager::getConnection(['url' => 'mysql://test:test@mysql/test'], new Configuration());
+        $this->conn = DriverManager::getConnection(
+            [
+                'url' => sprintf(
+                    'mysql://%s:%s@%s/%s',
+                    getenv('MYSQL_USER'),
+                    getenv('MYSQL_PASSWORD'),
+                    getenv('MYSQL_HOST'),
+                    getenv('MYSQL_DATABASE'),
+                ),
+            ],
+            new Configuration(),
+        );
     }
 
     protected function executeQuery(string $query): void
