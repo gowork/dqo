@@ -243,11 +243,8 @@ All queries should extends `GW\DQO\Query\AbstractDatabaseQuery`
 
 ## TODO
 
-  - [ ] switch to `nikic/parser` for code generation
   - [ ] generate queries for tables
-  - [ ] update readme
   - [ ] add command to update table/row with new fields
-  - [ ] auto run cs fixer on generated files (if installed)
 
 ## About
 
