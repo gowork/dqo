@@ -27,6 +27,6 @@ env:
         - POSTGRES_PASS=
         - POSTGRES_DATABASE=dqo
         - MYSQL_HOST=127.0.0.1
-        - MYSQL_USER=travis
+        - MYSQL_USER=postgres
         - MYSQL_PASS=
         - MYSQL_DATABASE=dqo
