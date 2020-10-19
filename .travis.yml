@@ -23,10 +23,10 @@ before_install:
 env:
     global:
         - POSTGRES_HOST=127.0.0.1
-        - POSTGRES_USER=travis
+        - POSTGRES_USER=postgres
         - POSTGRES_PASS=
         - POSTGRES_DATABASE=dqo
         - MYSQL_HOST=127.0.0.1
-        - MYSQL_USER=postgres
+        - MYSQL_USER=travis
         - MYSQL_PASS=
         - MYSQL_DATABASE=dqo
