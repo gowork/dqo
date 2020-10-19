@@ -17,12 +17,14 @@ abstract class MySQLTestCase extends IntegrationTestCase
 
     protected function setUp(): void
     {
+        $password = getenv('MYSQL_PASSWORD');
+
         $this->conn = DriverManager::getConnection(
             [
                 'url' => sprintf(
                     'mysql://%s:%s@%s/%s',
                     getenv('MYSQL_USER'),
-                    getenv('MYSQL_PASSWORD'),
+                    $password === '_' ? '' : $password,
                     getenv('MYSQL_HOST'),
                     getenv('MYSQL_DATABASE'),
                 ),
