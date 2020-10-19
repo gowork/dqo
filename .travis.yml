@@ -24,9 +24,9 @@ env:
     global:
         - POSTGRES_HOST=127.0.0.1
         - POSTGRES_USER=postgres
-        - POSTGRES_PASS=_
+        - POSTGRES_PASSWORD=
         - POSTGRES_DATABASE=dqo
         - MYSQL_HOST=127.0.0.1
         - MYSQL_USER=travis
-        - MYSQL_PASS=_
+        - MYSQL_PASSWORD=
         - MYSQL_DATABASE=dqo

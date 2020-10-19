@@ -23,12 +23,11 @@ final class UsageTest extends TestCase
 
     function test_real_app()
     {
-        $password = getenv('MYSQL_PASSWORD');
         $env = [
             'DATABASE_URL' => sprintf(
                 'mysql://%s:%s@%s/%s',
                 getenv('MYSQL_USER'),
-                $password === '_' ? '' : $password,
+                getenv('MYSQL_PASSWORD'),
                 getenv('MYSQL_HOST'),
                 getenv('MYSQL_DATABASE'),
             ),

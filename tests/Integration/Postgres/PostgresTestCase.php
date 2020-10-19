@@ -17,14 +17,12 @@ abstract class PostgresTestCase extends IntegrationTestCase
 
     protected function setUp(): void
     {
-        $password = getenv('POSTGRES_PASSWORD');
-
         $this->conn = DriverManager::getConnection(
             [
                 'url' => sprintf(
                     'pgsql://%s:%s@%s/%s',
                     getenv('POSTGRES_USER'),
-                    $password === '_' ? '' : $password,
+                    getenv('POSTGRES_PASSWORD'),
                     getenv('POSTGRES_HOST'),
                     getenv('POSTGRES_DATABASE'),
                 ),
