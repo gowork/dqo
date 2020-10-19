@@ -4,7 +4,8 @@ php:
   - 7.4
 
 install:
-  - composer install --dev
+  - if [[ "$DEPS" = 'high' ]]; then  composer install; fi
+  - if [[ "$DEPS" = 'low' ]]; then  composer update --prefer-lowest --prefer-stable; fi
 
 script:
   - ./vendor/bin/phpstan
@@ -21,12 +22,15 @@ before_install:
   - psql -c 'create database dqo;' -U postgres
 
 env:
-    global:
-        - POSTGRES_HOST=127.0.0.1
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=
-        - POSTGRES_DATABASE=dqo
-        - MYSQL_HOST=127.0.0.1
-        - MYSQL_USER=travis
-        - MYSQL_PASSWORD=
-        - MYSQL_DATABASE=dqo
+  global:
+    - POSTGRES_HOST=127.0.0.1
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=
+    - POSTGRES_DATABASE=dqo
+    - MYSQL_HOST=127.0.0.1
+    - MYSQL_USER=travis
+    - MYSQL_PASSWORD=
+    - MYSQL_DATABASE=dqo
+  jobs:
+    - DEPS="low"
+    - DEPS="high"
