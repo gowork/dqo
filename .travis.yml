@@ -21,11 +21,12 @@ before_install:
   - psql -c 'create database dqo;' -U postgres
 
 env:
-    - POSTGRES_HOST=127.0.0.1
-    - POSTGRES_USER=travis
-    - POSTGRES_PASS=
-    - POSTGRES_DATABASE=dqo
-    - MYSQL_HOST=127.0.0.1
-    - MYSQL_USER=travis
-    - MYSQL_PASS=
-    - MYSQL_DATABASE=dqo
+    global:
+        - POSTGRES_HOST=127.0.0.1
+        - POSTGRES_USER=travis
+        - POSTGRES_PASS=
+        - POSTGRES_DATABASE=dqo
+        - MYSQL_HOST=127.0.0.1
+        - MYSQL_USER=travis
+        - MYSQL_PASS=
+        - MYSQL_DATABASE=dqo
