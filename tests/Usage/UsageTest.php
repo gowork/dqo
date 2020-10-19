@@ -18,7 +18,7 @@ final class UsageTest extends TestCase
 
     private function mustRunOnSymfonyDir(array $command, array $env = []): void
     {
-        (new Process($command,  self::SYMFONY_DIR))->mustRun();
+        (new Process($command,  self::SYMFONY_DIR, $env))->mustRun();
     }
 
     function test_real_app()
