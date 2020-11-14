@@ -2,9 +2,9 @@ services:
     _defaults:
         autowire: true
 
-    database_access_generator.generate_tables:
-        class: GW\DQO\Symfony\GenerateTablesCommand
+    GW\DQO\Symfony\GenerateTablesCommand:
         tags: [{name: console.command}]
+        public: true
 
     GW\DQO\Generator\TableFactory: ~
     GW\DQO\Generator\Renderer: ~
