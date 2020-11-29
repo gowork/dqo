@@ -18,7 +18,6 @@ use Doctrine\DBAL\Types\DecimalType;
 use Doctrine\DBAL\Types\FloatType;
 use Doctrine\DBAL\Types\GuidType;
 use Doctrine\DBAL\Types\IntegerType;
-use Doctrine\DBAL\Types\JsonArrayType;
 use Doctrine\DBAL\Types\JsonType;
 use Doctrine\DBAL\Types\ObjectType;
 use Doctrine\DBAL\Types\SimpleArrayType;
@@ -38,7 +37,7 @@ final class TypeRegistry
     private static $_typesMap = [
         ArrayType::class => 'array',
         SimpleArrayType::class => 'array',
-        JsonArrayType::class => 'array',
+        '\Doctrine\DBAL\Types\JsonArrayType' => 'array',
         JsonType::class => 'array',
         ObjectType::class => 'object',
         BooleanType::class => 'bool',

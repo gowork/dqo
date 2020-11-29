@@ -6,7 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.4|^8.0",
-        "doctrine/dbal": "^2.9|^3.0",
+        "doctrine/dbal": "^3.0",
         "gowork/values": "^0.3.0",
         "roave/better-reflection": "^4.10",
         "gowork/safe": "^0.1.0",
