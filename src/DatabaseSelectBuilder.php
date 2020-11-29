@@ -160,7 +160,7 @@ final class DatabaseSelectBuilder
      */
     public function fetchColumn(int $index = 0)
     {
-        /** @var ResultStatement<mixed> $statement */
+        /** @var Result<mixed> $statement */
         $statement = (clone $this->builder)->setMaxResults(1)->execute();
 
         return $statement->fetchColumn($index);
