@@ -4,8 +4,8 @@ namespace GW\DQO;
 
 use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Result;
 use GW\Value\ArrayValue;
 use GW\Value\Wrap;
 use RuntimeException;
@@ -178,7 +178,7 @@ final class DatabaseSelectBuilder
      */
     public function fetchAll(): array
     {
-        /** @var ResultStatement<mixed> $statement */
+        /** @var Result<mixed> $statement */
         $statement = (clone $this->builder)->execute();
 
         return $statement->fetchAll();
@@ -187,7 +187,7 @@ final class DatabaseSelectBuilder
     /** @return array<string, mixed>|null */
     public function fetch(): ?array
     {
-        /** @var ResultStatement<mixed> $statement */
+        /** @var Result<mixed> $statement */
         $statement = (clone $this->builder)->execute();
         $result = $statement->fetch();
 
