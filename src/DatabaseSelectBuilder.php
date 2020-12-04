@@ -194,7 +194,7 @@ final class DatabaseSelectBuilder
         return $result !== false ? $result : null;
     }
 
-    /** @return ArrayValue<int, array<string, mixed>> */
+    /** @return ArrayValue<array<string, mixed>> */
     public function wrapAll(): ArrayValue
     {
         return Wrap::array($this->fetchAll());
