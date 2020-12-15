@@ -38,7 +38,7 @@ class GenerateTables
             ->filter(static fn(DbalTable $table): bool => in_array($table->getName(), $filterTables, true))
             ->toAssocValue()
             ->map(fn(DbalTable $table): Table => $this->tableFactory->buildFromDbalTable($table))
-            ->mapKeys(static fn(string $key, Table $table): string => $table->name());
+            ->mapKeys(static fn(int $key, Table $table): string => $table->name());
 
         /** @var string[] $generatedFiles */
         $generatedFiles = [];
