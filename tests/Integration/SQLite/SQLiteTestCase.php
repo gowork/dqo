@@ -5,8 +5,9 @@ namespace tests\GW\DQO\Integration\SQLite;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
-use Roave\BetterReflection\Reflection\ReflectionClass;
+use GW\DQO\Generator\ClassInfo;
 use tests\GW\DQO\Integration\IntegrationTestCase;
+use function get_class;
 
 abstract class SQLiteTestCase extends IntegrationTestCase
 {
@@ -25,7 +26,7 @@ abstract class SQLiteTestCase extends IntegrationTestCase
 
     protected function platform(): string
     {
-        return ReflectionClass::createFromInstance($this->conn()->getDatabasePlatform())->getShortName();
+        return (new ClassInfo(get_class($this->conn()->getDatabasePlatform())))->shortName();
     }
 
     protected function conn(): Connection

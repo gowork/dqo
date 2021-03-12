@@ -28,8 +28,11 @@ use Doctrine\DBAL\Types\TextType;
 use Doctrine\DBAL\Types\TimeImmutableType;
 use Doctrine\DBAL\Types\TimeType;
 use Doctrine\DBAL\Types\Type;
-use phpDocumentor\Reflection\Types;
-use Roave\BetterReflection\BetterReflection;
+use OpenSerializer\Type\DocBlockPropertyResolver;
+use OpenSerializer\Type\PropertyTypeResolvers;
+use OpenSerializer\Type\TypedPropertyResolver;
+use OpenSerializer\Type\TypeInfo as DqoTypeInfo;
+use ReflectionClass;
 use function get_class;
 
 final class TypeRegistry
@@ -63,56 +66,22 @@ final class TypeRegistry
         DateIntervalType::class => 'string',
     ];
 
-    public function type(string $name): TypeInfo
+    public function type(string $name): DqoTypeInfo
     {
+        $typeResolver = new PropertyTypeResolvers(
+            new TypedPropertyResolver(),
+            new DocBlockPropertyResolver(),
+        );
+
         $dbalType = Type::getType($name);
-
-        $classInfo = (new BetterReflection())
-            ->classReflector()
-            ->reflect(get_class($dbalType));
-
+        $classInfo = new ReflectionClass($dbalType);
         $methodInfo = $classInfo->getMethod('convertToPHPValue');
-        $returnInfo = $methodInfo->getReturnType();
+        $typeInfo = $typeResolver->resolveMethodType($classInfo, $methodInfo);
 
-        $allowsNull = false;
-
-        foreach ($methodInfo->getDocBlockReturnTypes() as $docBlockReturnType) {
-            if ($docBlockReturnType instanceof Types\Null_) {
-                $allowsNull = true;
-            }
+        if ($typeInfo->isMixed() && isset(self::$_typesMap[get_class($dbalType)])) {
+            return DqoTypeInfo::ofObject(self::$_typesMap[get_class($dbalType)], true);
         }
 
-        foreach ($methodInfo->getDocBlockReturnTypes() as $docBlockReturnType) {
-            if ($docBlockReturnType instanceof Types\Nullable) {
-                $allowsNull = true;
-                $docBlockReturnType = $docBlockReturnType->getActualType();
-            }
-
-            if ($docBlockReturnType instanceof Types\Object_) {
-                return new TypeInfo(true, (string)$docBlockReturnType->getFqsen(), $allowsNull);
-            }
-
-            if ($docBlockReturnType instanceof Types\String_) {
-                return new TypeInfo(false, (string)$docBlockReturnType, $allowsNull);
-            }
-
-            if ($docBlockReturnType instanceof Types\Integer) {
-                return new TypeInfo(false, (string)$docBlockReturnType, $allowsNull);
-            }
-        }
-
-        if (!$returnInfo && isset(self::$_typesMap[get_class($dbalType)])) {
-            return new TypeInfo(false, self::$_typesMap[get_class($dbalType)], true);
-        }
-
-        if (!$returnInfo) {
-            return new TypeInfo(false, $name, false);
-        }
-
-        if ($returnInfo->isBuiltin()) {
-            return new TypeInfo(false, (string)$returnInfo, $returnInfo->allowsNull());
-        }
-
-        return new TypeInfo(true, $returnInfo->targetReflectionClass()->getName(), $returnInfo->allowsNull());
+        return $typeInfo;
     }
 }

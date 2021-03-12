@@ -18,9 +18,9 @@ final class TypeRegistryTest extends DoctrineTestCase
         $registry = new TypeRegistry();
         $type = $registry->type('foo');
 
-        self::assertFalse($type->isClass());
-        self::assertEquals('string', $type->phpType());
-        self::assertFalse($type->allowsNull());
+        self::assertFalse($type->isObject());
+        self::assertEquals('string', $type->type());
+        self::assertFalse($type->isNullable());
     }
 
     function test_getting_builtin_type_nullable()
@@ -30,9 +30,9 @@ final class TypeRegistryTest extends DoctrineTestCase
         $registry = new TypeRegistry();
         $type = $registry->type('foo');
 
-        self::assertFalse($type->isClass());
-        self::assertEquals('string', $type->phpType());
-        self::assertTrue($type->allowsNull());
+        self::assertFalse($type->isObject());
+        self::assertEquals('string', $type->type());
+        self::assertTrue($type->isNullable());
     }
 
     function test_getting_builtin_type_from_doc_block()
@@ -42,9 +42,9 @@ final class TypeRegistryTest extends DoctrineTestCase
         $registry = new TypeRegistry();
         $type = $registry->type('foo');
 
-        self::assertFalse($type->isClass());
-        self::assertEquals('string', $type->phpType());
-        self::assertFalse($type->allowsNull());
+        self::assertFalse($type->isObject());
+        self::assertEquals('string', $type->type());
+        self::assertFalse($type->isNullable());
     }
 
     function test_getting_builtin_type_nullable_from_doc_block()
@@ -54,9 +54,9 @@ final class TypeRegistryTest extends DoctrineTestCase
         $registry = new TypeRegistry();
         $type = $registry->type('foo');
 
-        self::assertFalse($type->isClass());
-        self::assertEquals('string', $type->phpType());
-        self::assertTrue($type->allowsNull());
+        self::assertFalse($type->isObject());
+        self::assertEquals('string', $type->type());
+        self::assertTrue($type->isNullable());
     }
 }
 
