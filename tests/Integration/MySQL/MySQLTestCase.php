@@ -5,8 +5,9 @@ namespace tests\GW\DQO\Integration\MySQL;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
-use Roave\BetterReflection\Reflection\ReflectionClass;
+use GW\DQO\Generator\ClassInfo;
 use tests\GW\DQO\Integration\IntegrationTestCase;
+use function get_class;
 use function getenv;
 use function sprintf;
 
@@ -43,7 +44,7 @@ abstract class MySQLTestCase extends IntegrationTestCase
 
     protected function platform(): string
     {
-        return ReflectionClass::createFromInstance($this->conn()->getDatabasePlatform())->getShortName();
+        return ClassInfo::fromInstance($this->conn()->getDatabasePlatform())->shortName();
     }
 
     protected function conn(): Connection

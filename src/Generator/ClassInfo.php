@@ -3,22 +3,42 @@
 namespace GW\DQO\Generator;
 
 use GW\Value\Wrap;
+use ReflectionClass;
+use ReflectionMethod;
+use function get_class;
 use function preg_match;
-use Roave\BetterReflection\Reflection\ReflectionClass;
-use Roave\BetterReflection\Reflection\ReflectionMethod;
 
+/** @template T of object */
 final class ClassInfo
 {
+    /** @var ReflectionClass<T> */
     private ReflectionClass $class;
 
+    /** @param class-string<T> $class */
     public function __construct(string $class)
     {
-        $this->class = ReflectionClass::createFromName($class);
+        $this->class = new ReflectionClass($class);
+    }
+
+    /**
+     * @template TS of object
+     * @param TS $instance
+     * @return self<TS>
+     */
+    public static function fromInstance(object $instance): self
+    {
+        return new self(get_class($instance));
     }
 
     public function hasPublicConstructor(): bool
     {
-        return $this->class->getConstructor()->isPublic();
+        $constructor = $this->class->getConstructor();
+
+        if ($constructor === null) {
+            return false;
+        }
+
+        return $constructor->isPublic();
     }
 
     public function firstStaticFactory(string $pattern = '/^(create|from)/'): ?string

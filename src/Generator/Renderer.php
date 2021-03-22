@@ -3,9 +3,7 @@
 namespace GW\DQO\Generator;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use GW\DQO\Generator\Render\Block;
-use GW\DQO\Generator\Render\Body;
-use GW\DQO\Generator\Render\ClassHead;
+use OpenSerializer\Type\TypeInfo;
 use PhpParser\Builder\Use_;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Arg;
@@ -140,8 +138,8 @@ final class Renderer
                         function (Column $column) use ($factory, &$uses): ?Use_ {
                             $typeInfo = $this->types->type($column->type());
 
-                            if ($typeInfo->isClass()) {
-                                $fullName = (new ClassInfo($typeInfo->phpType()))->fullName();
+                            if ($typeInfo->isObject()) {
+                                $fullName = $typeInfo->type();
 
                                 if (!in_array($fullName, $uses, true)) {
                                     $uses[] = $fullName;
@@ -231,8 +229,10 @@ final class Renderer
     {
         $phpType = self::TYPE_RETURN[$column->type()] ?? 'string';
 
-        if ($type->isClass()) {
-            $class = new ClassInfo($type->phpType());
+        if ($type->isObject()) {
+            /** @phpstan-var class-string $className */
+            $className = $type->type();
+            $class = new ClassInfo($className);
             $phpType = $class->shortName();
         }
 
@@ -273,7 +273,7 @@ final class Renderer
                 return $this->returnStatement('getBool', $const);
         }
 
-        if (!$type->isClass()) {
+        if (!$type->isObject()) {
             if ($column->optional()) {
                 return $this->returnStatement('getNullableString', $const);
             }

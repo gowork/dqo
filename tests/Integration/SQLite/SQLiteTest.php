@@ -2,13 +2,9 @@
 
 namespace tests\GW\DQO\Integration\SQLite;
 
-use Doctrine\DBAL\Configuration;
-use Doctrine\DBAL\DriverManager;
 use GW\DQO\Generator\GenerateTables;
 use GW\DQO\Generator\Renderer;
 use GW\DQO\Generator\TableFactory;
-use PHPUnit\Framework\TestCase;
-use tests\GW\DQO\Integration\IntegrationTestCase;
 
 final class SQLiteTest extends SQLiteTestCase
 {
