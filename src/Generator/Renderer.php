@@ -233,7 +233,9 @@ final class Renderer
         $phpType = self::TYPE_RETURN[$column->type()] ?? 'string';
 
         if ($type->isObject()) {
-            $class = new ClassInfo($type->type());
+            /** @phpstan-var class-string $className */
+            $className = $type->type();
+            $class = new ClassInfo($className);
             $phpType = $class->shortName();
         }
 
