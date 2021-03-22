@@ -26,7 +26,7 @@ abstract class SQLiteTestCase extends IntegrationTestCase
 
     protected function platform(): string
     {
-        return (new ClassInfo(get_class($this->conn()->getDatabasePlatform())))->shortName();
+        return ClassInfo::fromInstance($this->conn()->getDatabasePlatform())->shortName();
     }
 
     protected function conn(): Connection

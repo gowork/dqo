@@ -5,6 +5,7 @@ namespace GW\DQO\Generator;
 use GW\Value\Wrap;
 use ReflectionClass;
 use ReflectionMethod;
+use function get_class;
 use function preg_match;
 
 final class ClassInfo
@@ -14,6 +15,11 @@ final class ClassInfo
     public function __construct(string $class)
     {
         $this->class = new ReflectionClass($class);
+    }
+
+    public static function fromInstance(object $instance): self
+    {
+        return new self(get_class($instance));
     }
 
     public function hasPublicConstructor(): bool
