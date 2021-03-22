@@ -3,9 +3,6 @@
 namespace GW\DQO\Generator;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use GW\DQO\Generator\Render\Block;
-use GW\DQO\Generator\Render\Body;
-use GW\DQO\Generator\Render\ClassHead;
 use OpenSerializer\Type\TypeInfo;
 use PhpParser\Builder\Use_;
 use PhpParser\BuilderFactory;
