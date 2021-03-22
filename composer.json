@@ -15,7 +15,8 @@
         "symfony/config": "^4.0|^5.0",
         "symfony/process": "^4.0|^5.0",
         "phpdocumentor/reflection-docblock": "^5.2",
-        "open-serializer/type": "dev-main"
+        "open-serializer/type": "dev-main",
+        "nikic/php-parser": "^4.10"
     },
     "require-dev": {
         "phpstan/phpstan": "^0.12",
