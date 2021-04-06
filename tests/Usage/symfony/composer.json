@@ -2,11 +2,11 @@
     "type": "project",
     "license": "proprietary",
     "require": {
-        "php": "^7.2.5",
+        "php": ">=7.2.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "doctrine/dbal": "^3.0",
         "doctrine/doctrine-bundle": "^2.0",
-        "doctrine/orm": "^2.7",
         "gowork/dqo": "@dev",
         "symfony/console": "5.0.*",
         "symfony/dotenv": "5.0.*",
