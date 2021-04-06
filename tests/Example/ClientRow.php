@@ -5,12 +5,12 @@ namespace tests\GW\DQO\Example;
 
 use GW\DQO\TableRow;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
 abstract class ClientRow extends TableRow
 {
     protected static function getPlatform() : AbstractPlatform
     {
         static $platform;
-        return $platform ?? ($platform = new MySqlPlatform());
+        return $platform ?? ($platform = new MySQLPlatform());
     }
 }
