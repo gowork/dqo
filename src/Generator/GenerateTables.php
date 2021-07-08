@@ -85,6 +85,10 @@ class GenerateTables
 
     public function generateClientRow(string $path): void
     {
+        if (file_exists($path . '/ClientRow.php')) {
+            return;
+        }
+
         $content = $this->renderer->renderClientRow($this->connection->getDatabasePlatform());
         file_put_contents($path . '/ClientRow.php', $content);
     }
