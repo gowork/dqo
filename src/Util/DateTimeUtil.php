@@ -53,20 +53,6 @@ final class DateTimeUtil
             return DateTimeImmutable::createFromMutable($input);
         }
 
-        if ($input instanceof DateTimeInterface) {
-            $date = DateTimeImmutable::createFromFormat(
-                self::PRECISE_FORMAT,
-                $input->format(self::PRECISE_FORMAT),
-                $input->getTimezone()
-            );
-
-            if ($date === false) {
-                throw new RuntimeException("Cannot create date from {$input->format(self::PRECISE_FORMAT)}");
-            }
-
-            return $date;
-        }
-
         return new DateTimeImmutable($input ?? 'now', new DateTimeZone('UTC'));
     }
 }

@@ -5,6 +5,7 @@ namespace GW\DQO\Generator;
 use GW\Value\Wrap;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionNamedType;
 use function get_class;
 use function preg_match;
 
@@ -58,7 +59,7 @@ final class ClassInfo
                 $return = $method->getReturnType();
 
                 return $return !== null
-                    && (!$return->isBuiltin() || (string)$return === 'self');
+                    && ((!($return instanceof ReflectionNamedType) || !$return->isBuiltin()) || (string)$return === 'self');
             })
             ->map(static function (ReflectionMethod $method): string {
                 return $method->getShortName();
