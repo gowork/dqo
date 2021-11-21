@@ -174,7 +174,7 @@ final class DatabaseSelectBuilder
     }
 
     /**
-     * @return array<array<string, mixed>>
+     * @return array<array<string, string|int|float|bool|null>>
      */
     public function fetchAll(): array
     {
@@ -184,7 +184,7 @@ final class DatabaseSelectBuilder
         return $statement->fetchAll();
     }
 
-    /** @return array<string, mixed>|null */
+    /** @return array<string, string|int|float|bool|null>|null */
     public function fetch(): ?array
     {
         /** @var ResultStatement<mixed> $statement */
@@ -194,7 +194,7 @@ final class DatabaseSelectBuilder
         return $result !== false ? $result : null;
     }
 
-    /** @return ArrayValue<array<string, mixed>> */
+    /** @return ArrayValue<array<string, string|int|float|bool|null>> */
     public function wrapAll(): ArrayValue
     {
         return Wrap::array($this->fetchAll());
@@ -257,7 +257,7 @@ final class DatabaseSelectBuilder
 
     /**
      * @param array<string, mixed> $params
-     * @param array<string, string> $types
+     * @param array<string|int, string> $types
      */
     public function withParameters(array $params = [], array $types = []): self
     {
@@ -265,7 +265,7 @@ final class DatabaseSelectBuilder
         $key = 0;
 
         foreach ($params as $name => $param) {
-            $copy = $copy->withParameter($name, $param, $types[$key++] ?? null);
+            $copy = $copy->withParameter($name, $param, $types[$name] ?? $types[(string)($key++)] ?? null);
         }
 
         return $copy;
