@@ -83,7 +83,7 @@ class GenerateTables
         return $generatedFiles;
     }
 
-    public function generateClientRow(string $path, bool $overwrite): void
+    public function generateClientRow(string $path, bool $overwrite = true): void
     {
         if (!$overwrite && file_exists($path . '/ClientRow.php')) {
             return;
