@@ -1,7 +1,6 @@
 {
     "name": "gowork/dqo",
     "description": "Database Query Objects",
-    "version": "0.1.0",
     "type": "library",
     "license": "MIT",
     "require": {
