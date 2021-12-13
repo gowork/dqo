@@ -4,8 +4,11 @@ namespace tests\GW\DQO\Usage;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\Process;
+use function file_get_contents;
+use function file_put_contents;
 use function getenv;
 use function sprintf;
+use function str_replace;
 
 final class UsageTest extends TestCase
 {
@@ -32,6 +35,16 @@ final class UsageTest extends TestCase
                 getenv('MYSQL_DATABASE'),
             ),
         ];
+
+        $composerFile = self::SYMFONY_DIR . 'composer.json';
+        file_put_contents(
+            $composerFile,
+            str_replace(
+                '"name": "gowork/dqo",',
+                '"name": "gowork/dqo", "version": "1.0", ',
+                file_get_contents($composerFile)
+            )
+        );
 
         $this->runOnSymfonyDIr(['rm', 'composer.lock']);
         $this->runOnSymfonyDIr(['rm', 'src/ClientRow.php']);
