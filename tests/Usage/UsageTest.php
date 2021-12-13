@@ -41,7 +41,7 @@ final class UsageTest extends TestCase
             $composerFile,
             str_replace(
                 '"name": "gowork/dqo",',
-                '"name": "gowork/dqo", "version": "1.0", ',
+                '"name": "gowork/dqo", "version": "0.1", ',
                 file_get_contents($composerFile)
             )
         );
