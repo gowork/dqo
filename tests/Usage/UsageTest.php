@@ -13,6 +13,7 @@ use function str_replace;
 final class UsageTest extends TestCase
 {
     private const SYMFONY_DIR = __DIR__ . '/symfony/';
+    private static string $originalComposerContent;
 
     private function runOnSymfonyDIr(array $command): void
     {
@@ -22,6 +23,29 @@ final class UsageTest extends TestCase
     private function mustRunOnSymfonyDir(array $command, array $env = []): void
     {
         (new Process($command,  self::SYMFONY_DIR, $env))->mustRun();
+    }
+
+    protected function setUp(): void
+    {
+        $composerFile = __DIR__ . '/../../composer.json';
+        self::$originalComposerContent = file_get_contents($composerFile);
+        file_put_contents(
+            $composerFile,
+            str_replace(
+                '"name": "gowork/dqo",',
+                '"name": "gowork/dqo", "version": "0.1", ',
+                self::$originalComposerContent
+            )
+        );
+    }
+
+    protected function tearDown(): void
+    {
+        $composerFile = __DIR__ . '/../../composer.json';
+        file_put_contents(
+            $composerFile,
+            self::$originalComposerContent,
+        );
     }
 
     function test_real_app()
@@ -35,16 +59,6 @@ final class UsageTest extends TestCase
                 getenv('MYSQL_DATABASE'),
             ),
         ];
-
-        $composerFile = self::SYMFONY_DIR . 'composer.json';
-        file_put_contents(
-            $composerFile,
-            str_replace(
-                '"name": "gowork/dqo",',
-                '"name": "gowork/dqo", "version": "0.1", ',
-                file_get_contents($composerFile)
-            )
-        );
 
         $this->runOnSymfonyDIr(['rm', 'composer.lock']);
         $this->runOnSymfonyDIr(['rm', 'src/ClientRow.php']);
