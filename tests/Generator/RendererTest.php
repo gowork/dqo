@@ -46,6 +46,24 @@ final class RendererTest extends DoctrineTestCase
         self::assertAstEquals(__DIR__ . '/../Example/UserRow.php', $renderedContent);
     }
 
+    function test_generate_query()
+    {
+        $this->registerType(UserIdType::class, 'UserId');
+
+        $renderer = new Renderer('tests\GW\DQO\Example');
+        $renderedContent = $renderer->renderQueryFile(
+            new Table(
+                'User',
+                new Column('id', 'id', 'id', 'UserId', false, true),
+                new Column('email', 'email', 'email', 'string', false),
+                new Column('name', 'name', 'name', 'string', false),
+                new Column('surname', 'surname', 'surname', 'string', false),
+            )
+        );
+
+        self::assertAstEquals(__DIR__ . '/../Example/Query/UserQuery.php', $renderedContent);
+    }
+
     function test_generate_client_row()
     {
         $renderer = new Renderer('tests\GW\DQO\Example');

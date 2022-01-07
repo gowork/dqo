@@ -80,6 +80,19 @@ class GenerateTables
             )
             ->each($save);
 
+        $models
+            ->map(
+                function (Table $table): string {
+                    return $this->renderer->renderQueryFile($table);
+                }
+            )
+            ->mapKeys(
+                function (string $key): string {
+                    return "Query/{$key}Query.php";
+                }
+            )
+            ->each($save);
+
         return $generatedFiles;
     }
 
