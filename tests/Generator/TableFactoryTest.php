@@ -33,7 +33,9 @@ class TableFactoryTest extends TestCase
 
     function test_build_from_dbal_with_id_in_different_namespace()
     {
-        Type::addType('BooId', BooIdType::class);
+        if (!Type::getTypeRegistry()->has('BooId')) {
+            Type::getTypeRegistry()->register('BooId', new BooIdType());
+        }
 
         $factory = new TableFactory();
         $table = $factory->buildFromDbalTable(new Table('user', [

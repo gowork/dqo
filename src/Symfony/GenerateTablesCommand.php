@@ -49,7 +49,7 @@ final class GenerateTablesCommand extends Command
 
         $generateTables = $this->generateTables->onNamespace($namespace);
 
-        $generateTables->generateClientRow($path);
+        $generateTables->generateClientRow($path, $overwrite);
         $generatedFiles = $generateTables->generate($filterTables, $path, $overwrite);
 
         if ($options->bool('autofix') || $style->confirm('Use php-cs-fixer to format generated code?', true)) {
