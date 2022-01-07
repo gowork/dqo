@@ -269,7 +269,7 @@ final class Renderer
         }
 
         array_push($methods, ...array_map(
-            function (Column $column) use ($table, $factory) {
+            function (Column $column) use ($factory) {
                 $typeInfo = $this->types->type($column->type());
 
                 return $factory->method("with" . ucfirst($column->methodName()))
@@ -446,6 +446,7 @@ final class Renderer
             ) . PHP_EOL;
     }
 
+    /** @param string[] $uses */
     private function typeDef(Column $column, TypeInfo $type, array &$uses = []): string
     {
         $phpType = self::TYPE_RETURN[$column->type()] ?? 'string';
