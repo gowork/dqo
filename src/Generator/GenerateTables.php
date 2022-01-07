@@ -5,6 +5,7 @@ namespace GW\DQO\Generator;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Table as DbalTable;
 use GW\Value\Wrap;
+use function dirname;
 
 class GenerateTables
 {
@@ -48,6 +49,12 @@ class GenerateTables
 
             if (!$overwrite && file_exists($fullPath)) {
                 return;
+            }
+
+            if (!file_exists(dirname($fullPath))) {
+                if (!mkdir($concurrentDirectory = dirname($fullPath)) && !is_dir($concurrentDirectory)) {
+                    throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+                }
             }
 
             file_put_contents($fullPath, $content);

@@ -3,6 +3,7 @@
 namespace tests\GW\DQO\Generator;
 
 use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\Index;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Type;
 use GW\DQO\Generator\Renderer;
@@ -22,7 +23,7 @@ class TableFactoryTest extends TestCase
             new Column('email', Type::getType('string')),
             new Column('name', Type::getType('string')),
             new Column('surname', Type::getType('string')),
-        ]));
+        ], [new Index('id', ['id'], isPrimary: true)]));
 
 
         $renderer = new Renderer('tests\GW\DQO\Example');
@@ -39,11 +40,11 @@ class TableFactoryTest extends TestCase
 
         $factory = new TableFactory();
         $table = $factory->buildFromDbalTable(new Table('user', [
-            new Column('id', Type::getType('BooId')),
+            new Column('id', Type::getType('BooId'), ),
             new Column('email', Type::getType('string')),
             new Column('name', Type::getType('string')),
             new Column('surname', Type::getType('string')),
-        ]));
+        ], [new Index('id', ['id'], isPrimary: true)]));
 
 
         $renderer = new Renderer('tests\GW\DQO\Example\Foo');
