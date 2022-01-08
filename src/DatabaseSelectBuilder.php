@@ -29,7 +29,7 @@ final class DatabaseSelectBuilder
     private array $fieldSelect = [];
 
     /** @param array<string, string> $types */
-    public function __construct(Connection $connection, array $types = [])
+    public function __construct(Connection $connection, array $types = [DateTimeImmutable::class => 'DateTimeImmutable'])
     {
         $this->builder = $connection->createQueryBuilder();
         $this->types = $types;
