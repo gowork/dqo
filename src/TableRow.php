@@ -54,6 +54,16 @@ abstract class TableRow
         return (int)$this->get($field);
     }
 
+    protected function getFloat(string $field): float
+    {
+        return (float)$this->get($field);
+    }
+
+    protected function getNullableFloat(string $field): ?float
+    {
+        return $this->getThrough('floatval', $field);
+    }
+
     protected function getNullableBool(string $field): ?bool
     {
         return $this->getThrough('boolval', $field);
