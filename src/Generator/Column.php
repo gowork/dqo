@@ -9,14 +9,22 @@ final class Column
     private string $type;
     private string $methodName;
     private bool $optional;
+    private bool $primary;
 
-    public function __construct(string $name, string $methodName, string $dbName, string $type, bool $optional)
-    {
+    public function __construct(
+        string $name,
+        string $methodName,
+        string $dbName,
+        string $type,
+        bool $optional,
+        bool $primary = false,
+    ) {
         $this->name = $name;
         $this->dbName = $dbName;
         $this->type = $type;
         $this->methodName = $methodName;
         $this->optional = $optional;
+        $this->primary = $primary;
     }
 
     public function name(): string
@@ -47,5 +55,10 @@ final class Column
     public function optional(): bool
     {
         return $this->optional;
+    }
+
+    public function primary(): bool
+    {
+        return $this->primary;
     }
 }

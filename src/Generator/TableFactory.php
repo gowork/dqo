@@ -5,6 +5,7 @@ namespace GW\DQO\Generator;
 use Doctrine\DBAL\Schema\Column as DbalColumn;
 use Doctrine\DBAL\Schema\Table as DbalTable;
 use GW\Value\Wrap;
+use function in_array;
 
 final class TableFactory
 {
@@ -12,13 +13,14 @@ final class TableFactory
     {
         $columns = Wrap::array($dbalTable->getColumns())
             ->map(
-                function (DbalColumn $dbalColumn): Column {
+                function (DbalColumn $dbalColumn) use ($dbalTable): Column {
                     return new Column(
                         $dbalColumn->getName(),
                         $this->camelize($dbalColumn->getName()),
                         $dbalColumn->getName(),
                         $this->type($dbalColumn),
-                        !$dbalColumn->getNotnull()
+                        !$dbalColumn->getNotnull(),
+                        in_array($dbalColumn->getName(), $dbalTable->getPrimaryKeyColumns(), true),
                     );
                 }
             );

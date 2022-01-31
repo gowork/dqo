@@ -5,6 +5,7 @@ namespace GW\DQO\Generator;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Table as DbalTable;
 use GW\Value\Wrap;
+use function dirname;
 
 class GenerateTables
 {
@@ -50,6 +51,12 @@ class GenerateTables
                 return;
             }
 
+            if (!file_exists(dirname($fullPath))) {
+                if (!mkdir($concurrentDirectory = dirname($fullPath)) && !is_dir($concurrentDirectory)) {
+                    throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+                }
+            }
+
             file_put_contents($fullPath, $content);
             $generatedFiles[] = $fullPath;
         };
@@ -76,6 +83,19 @@ class GenerateTables
             ->mapKeys(
                 function (string $key): string {
                     return "{$key}Row.php";
+                }
+            )
+            ->each($save);
+
+        $models
+            ->map(
+                function (Table $table): string {
+                    return $this->renderer->renderQueryFile($table);
+                }
+            )
+            ->mapKeys(
+                function (string $key): string {
+                    return "Query/{$key}Query.php";
                 }
             )
             ->each($save);
