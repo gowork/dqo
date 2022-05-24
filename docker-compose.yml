@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.8"
 
 services:
     develop:
@@ -13,7 +13,9 @@ services:
             - ./:/home/${USER}/current
             - ~/.ssh/id_rsa:/home/${USER}/.ssh/id_rsa
             - ~/.ssh/id_rsa.pub:/home/${USER}/.ssh/id_rsa.pub
-            - ./zsh_history:/home/${USER}/.zsh_history
+            - type: bind
+              source: .zsh_history
+              target: /home/${USER}/.zsh_history
             - ~/.gitconfig:/home/${USER}/.gitconfig
             - ~/.ssh/known_hosts:/home/${USER}/.ssh/known_hosts
 

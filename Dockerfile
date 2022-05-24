@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 ARG USER
 ARG UID
 ARG GID
@@ -18,21 +18,21 @@ RUN apt-get update && \
         zsh
 
 RUN apt-add-repository -y ppa:ondrej/php && apt-get update && apt-get install -y --force-yes \
-	php8.0-cli \
-	php8.0-curl \
-	php8.0-intl \
-	php8.0-mysql \
-	php8.0-xml \
-	php8.0-mbstring \
-	php8.0-bcmath \
-	php8.0-zip \
-	php8.0-opcache \
-	php8.0-bz2 \
-	php8.0-gmp \
-	php8.0-sqlite \
-	php8.0-pgsql \
-    php-xdebug \
-    php8.0-redis
+	php8.1-cli \
+	php8.1-curl \
+	php8.1-intl \
+	php8.1-mysql \
+	php8.1-xml \
+	php8.1-mbstring \
+	php8.1-bcmath \
+	php8.1-zip \
+	php8.1-opcache \
+	php8.1-bz2 \
+	php8.1-gmp \
+	php8.1-sqlite \
+	php8.1-pgsql \
+    php8.1-xdebug \
+    php8.1-redis
 
 RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer
@@ -53,7 +53,7 @@ WORKDIR /home/${USER}
 
 USER ${USER}
 
-RUN git clone git://github.com/robbyrussell/oh-my-zsh.git /home/${USER}/.oh-my-zsh \
+RUN git clone https://github.com/ohmyzsh/ohmyzsh.git /home/${USER}/.oh-my-zsh \
       && cp /home/${USER}/.oh-my-zsh/templates/zshrc.zsh-template /home/${USER}/.zshrc \
       && sed -i.bak 's/robbyrussell/nebirhos/' /home/${USER}/.zshrc
 
