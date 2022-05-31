@@ -3,6 +3,7 @@
 namespace GW\DQO;
 
 use DateTimeImmutable;
+use Dazet\TypeUtil\StringUtil;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -12,7 +13,9 @@ use RuntimeException;
 use function array_merge;
 use function get_class;
 use function is_array;
+use function is_int;
 use function is_object;
+use function is_string;
 
 final class DatabaseSelectBuilder
 {
@@ -155,15 +158,31 @@ final class DatabaseSelectBuilder
         return $copy;
     }
 
-    /**
-     * @return false|string
-     */
-    public function fetchColumn(int $index = 0)
+    public function fetchColumn(int $index = 0): false|string
     {
-        /** @var ResultStatement<mixed> $statement */
         $statement = (clone $this->builder)->setMaxResults(1)->execute();
 
-        return $statement->fetchColumn($index);
+        if (is_int($statement) || is_string($statement)) {
+            throw new RuntimeException("Expected select query");
+        }
+
+        if ($index > 0) {
+            $row = $statement->fetchNumeric();
+
+            if ($row === false) {
+                return false;
+            }
+
+            return StringUtil::toString($row[$index]);
+        }
+
+        $value = $statement->fetchOne();
+
+        if ($value === false) {
+            return false;
+        }
+
+        return StringUtil::toString($value);
     }
 
     public function fetchDate(int $index = 0): ?DateTimeImmutable
