@@ -3,6 +3,7 @@
 namespace GW\DQO;
 
 use DateTimeImmutable;
+use Dazet\TypeUtil\StringUtil;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -12,6 +13,7 @@ use RuntimeException;
 use function array_merge;
 use function get_class;
 use function is_array;
+use function is_int;
 use function is_object;
 
 final class DatabaseSelectBuilder
