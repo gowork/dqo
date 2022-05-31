@@ -158,7 +158,7 @@ final class DatabaseSelectBuilder
         return $copy;
     }
 
-    public function fetchColumn(int $index = 0): false|string
+    public function fetchColumn(int $index = 0): false|string|null
     {
         $statement = (clone $this->builder)->setMaxResults(1)->execute();
 
@@ -178,8 +178,8 @@ final class DatabaseSelectBuilder
 
         $value = $statement->fetchOne();
 
-        if ($value === false) {
-            return false;
+        if ($value === false || $value === null) {
+            return $value;
         }
 
         return StringUtil::toString($value);
