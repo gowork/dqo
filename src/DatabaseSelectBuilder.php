@@ -157,7 +157,7 @@ final class DatabaseSelectBuilder
         return $copy;
     }
 
-    public function fetchColumn(int $index = 0): bool|string
+    public function fetchColumn(int $index = 0): false|string
     {
         $statement = (clone $this->builder)->setMaxResults(1)->execute();
 
