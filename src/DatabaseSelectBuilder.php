@@ -155,15 +155,31 @@ final class DatabaseSelectBuilder
         return $copy;
     }
 
-    /**
-     * @return false|string
-     */
-    public function fetchColumn(int $index = 0)
+    public function fetchColumn(int $index = 0): bool|string
     {
-        /** @var ResultStatement<mixed> $statement */
         $statement = (clone $this->builder)->setMaxResults(1)->execute();
 
-        return $statement->fetchColumn($index);
+        if (is_int($statement)) {
+            throw new RuntimeException("Expected select query");
+        }
+
+        if ($index > 0) {
+            $row = $statement->fetchNumeric();
+
+            if ($row === false) {
+                return false;
+            }
+
+            return StringUtil::toString($row[$index]);
+        }
+
+        $value = $statement->fetchOne();
+
+        if ($value === false) {
+            return false;
+        }
+
+        return StringUtil::toString($value);
     }
 
     public function fetchDate(int $index = 0): ?DateTimeImmutable
