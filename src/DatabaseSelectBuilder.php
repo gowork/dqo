@@ -15,6 +15,7 @@ use function get_class;
 use function is_array;
 use function is_int;
 use function is_object;
+use function is_string;
 
 final class DatabaseSelectBuilder
 {
@@ -161,7 +162,7 @@ final class DatabaseSelectBuilder
     {
         $statement = (clone $this->builder)->setMaxResults(1)->execute();
 
-        if (is_int($statement)) {
+        if (is_int($statement) || is_string($statement)) {
             throw new RuntimeException("Expected select query");
         }
 
