@@ -18,8 +18,7 @@ final class ArrayRow implements Row
         $this->table = $table;
     }
 
-    /** @return bool|float|int|string|null */
-    public function get(string $field)
+    public function get(string $field): bool|float|int|string|null
     {
         return $this->row[$this->table->fieldAlias($field)] ?? null;
     }

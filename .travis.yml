@@ -1,14 +1,14 @@
 language: php
 
 php:
-  - 8.0
+  - 8.1
 
 install:
   - if [[ "$DEPS" = 'high' ]]; then  composer install; fi
   - if [[ "$DEPS" = 'low' ]]; then  composer update --prefer-lowest --prefer-stable; fi
 
 script:
-  - ./vendor/bin/phpstan analyze -l 8 src
+  - ./vendor/bin/phpstan analyze -l 9 src
   - ./vendor/bin/phpunit
   - ./vendor/bin/phpunit --testsuite=integration
 

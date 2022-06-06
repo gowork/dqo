@@ -4,6 +4,5 @@ namespace GW\DQO\Getter;
 
 interface Row
 {
-    /** @return mixed */
-    public function get(string $field);
+    public function get(string $field): float|bool|int|string|null;
 }

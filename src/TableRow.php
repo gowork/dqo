@@ -18,7 +18,7 @@ abstract class TableRow
     private Table $table;
 
     /** @param array<string, mixed>|object $row */
-    public function __construct($row, Table $table)
+    public function __construct(array|object $row, Table $table)
     {
         $this->table = $table;
         $this->row = $this->initGetter($row);
@@ -26,17 +26,20 @@ abstract class TableRow
 
     abstract protected static function getPlatform(): AbstractPlatform;
 
-    /**
-     * @return string|int|null
-     */
-    public function get(string $field)
+    public function get(string $field): bool|float|int|string|null
     {
         return $this->row->get($field);
     }
 
     protected function getNullableString(string $field): ?string
     {
-        return $this->getThrough('\strval', $field);
+        $value = $this->get($field);
+
+        if ($value === null) {
+            return null;
+        }
+
+        return (string)$value;
     }
 
     protected function getString(string $field): string
@@ -46,7 +49,13 @@ abstract class TableRow
 
     protected function getNullableInt(string $field): ?int
     {
-        return $this->getThrough('\intval', $field);
+        $value = $this->get($field);
+
+        if ($value === null) {
+            return null;
+        }
+
+        return (int)$value;
     }
 
     protected function getInt(string $field): int
@@ -61,12 +70,24 @@ abstract class TableRow
 
     protected function getNullableFloat(string $field): ?float
     {
-        return $this->getThrough('floatval', $field);
+        $value = $this->get($field);
+
+        if ($value === null) {
+            return null;
+        }
+
+        return (float)$value;
     }
 
     protected function getNullableBool(string $field): ?bool
     {
-        return $this->getThrough('boolval', $field);
+        $value = $this->get($field);
+
+        if ($value === null) {
+            return null;
+        }
+
+        return (bool)$value;
     }
 
     protected function getBool(string $field): bool
@@ -81,7 +102,7 @@ abstract class TableRow
 
     protected function getNullableDateTime(string $field): ?DateTime
     {
-        return $this->getThrough(Util\DateTimeUtil::mutable, $field);
+        return $this->getThrough(Util\DateTimeUtil::mutable(...), $field);
     }
 
     protected function getDateTimeImmutable(string $field): DateTimeImmutable
@@ -91,24 +112,22 @@ abstract class TableRow
 
     protected function getNullableDateTimeImmutable(string $field): ?DateTimeImmutable
     {
-        return $this->getThrough(Util\DateTimeUtil::immutable, $field);
+        return $this->getThrough(Util\DateTimeUtil::immutable(...), $field);
     }
 
     /**
-     * @param callable $factory function($value): mixed
-     * @return mixed|null
+     * @template T
+     * @param callable(mixed):T $factory function($value): mixed
+     * @return T|null
      */
-    protected function getThrough(callable $factory, string $field)
+    protected function getThrough(callable $factory, string $field): mixed
     {
         $value = $this->get($field);
 
         return $value !== null ? $factory($value) : null;
     }
 
-    /**
-     * @return mixed
-     */
-    protected function getThroughType(string $dc2Type, string $field)
+    protected function getThroughType(string $dc2Type, string $field): mixed
     {
         return Type::getType($dc2Type)->convertToPHPValue($this->getNullableString($field), static::getPlatform());
     }
