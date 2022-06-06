@@ -5,7 +5,7 @@
     "license": "MIT",
     "require": {
         "php": ">=8.1",
-        "doctrine/dbal": "^3.0",
+        "doctrine/dbal": "^3.3",
         "gowork/values": "^0.6",
         "gowork/safe": "^0.2",
         "symfony/console": "^6.0",
