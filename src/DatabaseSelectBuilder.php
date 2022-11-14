@@ -5,7 +5,6 @@ namespace GW\DQO;
 use DateTimeImmutable;
 use Dazet\TypeUtil\StringUtil;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Query\QueryBuilder;
 use GW\Value\ArrayValue;
 use GW\Value\Wrap;
@@ -13,9 +12,7 @@ use RuntimeException;
 use function array_merge;
 use function get_class;
 use function is_array;
-use function is_int;
 use function is_object;
-use function is_string;
 
 final class DatabaseSelectBuilder
 {
@@ -160,11 +157,7 @@ final class DatabaseSelectBuilder
 
     public function fetchColumn(int $index = 0): false|string|null
     {
-        $statement = (clone $this->builder)->setMaxResults(1)->execute();
-
-        if (is_int($statement) || is_string($statement)) {
-            throw new RuntimeException("Expected select query");
-        }
+        $statement = (clone $this->builder)->setMaxResults(1)->executeQuery();
 
         if ($index > 0) {
             $row = $statement->fetchNumeric();
@@ -189,7 +182,7 @@ final class DatabaseSelectBuilder
     {
         $date = $this->fetchColumn($index);
 
-        return $date ? new DateTimeImmutable($date) : null;
+        return is_string($date) ? new DateTimeImmutable($date) : null;
     }
 
     /**
@@ -197,19 +190,19 @@ final class DatabaseSelectBuilder
      */
     public function fetchAll(): array
     {
-        /** @var ResultStatement<mixed> $statement */
-        $statement = (clone $this->builder)->execute();
+        $statement = (clone $this->builder)->executeQuery();
 
-        return $statement->fetchAll();
+        /** @phpstan-ignore-next-line */
+        return $statement->fetchAllAssociative();
     }
 
     /** @return array<string, string|int|float|bool|null>|null */
     public function fetch(): ?array
     {
-        /** @var ResultStatement<mixed> $statement */
-        $statement = (clone $this->builder)->execute();
-        $result = $statement->fetch();
+        $statement = (clone $this->builder)->executeQuery();
+        $result = $statement->fetchAssociative();
 
+        /** @phpstan-ignore-next-line */
         return $result !== false ? $result : null;
     }
 
@@ -262,11 +255,7 @@ final class DatabaseSelectBuilder
         return $copy;
     }
 
-    /**
-     * @param mixed $value
-     * @param string|int|null $type
-     */
-    public function withParameter(string $key, $value, $type = null): self
+    public function withParameter(string $key, mixed $value, int|string $type = null): self
     {
         $copy = clone $this;
         $copy->builder->setParameter($key, $value, $type ?? $this->paramType($value));
@@ -326,11 +315,7 @@ final class DatabaseSelectBuilder
         return $this->startOffset;
     }
 
-    /**
-     * @param mixed $object
-     * @return string|int|null
-     */
-    private function paramType($object)
+    private function paramType(mixed $object): int|string|null
     {
         if (is_array($object)) {
             return Connection::PARAM_STR_ARRAY;

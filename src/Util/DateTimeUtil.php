@@ -7,17 +7,17 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use RuntimeException;
+use Stringable;
+use function gettype;
+use function is_int;
+use function is_string;
 
 final class DateTimeUtil
 {
-    public const mutable = [self::class, 'mutable'];
     public const immutable = [self::class, 'immutable'];
     private const PRECISE_FORMAT = 'Y-m-d H:i:s.u';
 
-    /**
-     * @param DateTimeInterface|string|null $input null means "now"
-     */
-    public static function mutable($input = null): DateTime
+    public static function mutable(mixed $input = null): DateTime
     {
         if ($input instanceof DateTime) {
             return clone $input;
@@ -37,13 +37,22 @@ final class DateTimeUtil
             return $date;
         }
 
-        return new DateTime($input ?? 'now', new DateTimeZone('UTC'));
+        if (is_int($input)) {
+            $input = (string)$input;
+        }
+
+        if ($input === null) {
+            $input = 'now';
+        }
+
+        if (!$input instanceof Stringable && !is_string($input)) {
+            throw new RuntimeException("Cannot create date from input of type " . gettype($input));
+        }
+
+        return new DateTime((string)$input, new DateTimeZone('UTC'));
     }
 
-    /**
-     * @param DateTimeInterface|string|null $input null means "now"
-     */
-    public static function immutable($input = null): DateTimeImmutable
+    public static function immutable(mixed $input = null): DateTimeImmutable
     {
         if ($input instanceof DateTimeImmutable) {
             return $input;
@@ -53,6 +62,18 @@ final class DateTimeUtil
             return DateTimeImmutable::createFromMutable($input);
         }
 
-        return new DateTimeImmutable($input ?? 'now', new DateTimeZone('UTC'));
+        if (is_int($input)) {
+            $input = (string)$input;
+        }
+
+        if ($input === null) {
+            $input = 'now';
+        }
+
+        if (!$input instanceof Stringable && !is_string($input)) {
+            throw new RuntimeException("Cannot create date from input of type " . gettype($input));
+        }
+
+        return new DateTimeImmutable((string)$input, new DateTimeZone('UTC'));
     }
 }

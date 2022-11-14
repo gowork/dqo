@@ -20,7 +20,7 @@ final class TableFactory
                         $dbalColumn->getName(),
                         $this->type($dbalColumn),
                         !$dbalColumn->getNotnull(),
-                        in_array($dbalColumn->getName(), $dbalTable->getPrimaryKeyColumns(), true),
+                        in_array($dbalColumn->getName(), $dbalTable->getPrimaryKey()?->getColumns() ?? [], true),
                     );
                 }
             );
@@ -32,8 +32,8 @@ final class TableFactory
     {
         $type = $dbalColumn->getType();
 
-        if (preg_match('#\(DC2Type:(.+?)\)#i', $dbalColumn->getComment() ?? '', $matches)) {
-            $type = $matches[1];
+        if (preg_match('#\(DC2Type:(.+?)\)#i', $dbalColumn->getComment() ?? '', $matches) === 1) {
+            return $matches[1];
         }
 
         return $type->getName();
