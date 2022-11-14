@@ -2,6 +2,8 @@ name: "Continuous Integration"
 
 on:
     pull_request:
+        branches:
+            - 'feature/**'
         paths:
             - .github/workflows/continuous-integration.yml
             - ci/**
@@ -10,6 +12,8 @@ on:
             - src/**
             - tests/**
     push:
+        branches:
+            - 'feature/**'
         paths:
             - .github/workflows/continuous-integration.yml
             - ci/**
@@ -99,4 +103,4 @@ jobs:
                 uses: "ramsey/composer-install@v2"
 
             -   name: "Run PHPUnit"
-                run: "vendor/bin/phpunit --testsuite=integration"
+                run: "vendor/bin/phpunit -c ci/phpunit/integration.xml --testsuite=integration"
