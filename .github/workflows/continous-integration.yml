@@ -13,7 +13,7 @@ on:
             - tests/**
     push:
         branches:
-            - 'master'
+            - 'feature/**'
         paths:
             - .github/workflows/continuous-integration.yml
             - ci/**

@@ -12,7 +12,7 @@ on:
             - tests/**
     push:
         branches:
-            - 'master'
+            - 'feature/**'
         paths:
             - .github/workflows/static-analysis.yml
             - composer.*
