@@ -4,21 +4,9 @@ on:
     pull_request:
         branches:
             - 'feature/**'
-        paths:
-            - .github/workflows/static-analysis.yml
-            - composer.*
-            - phpstan.neon.dist
-            - src/**
-            - tests/**
     push:
         branches:
             - 'feature/**'
-        paths:
-            - .github/workflows/static-analysis.yml
-            - composer.*
-            - phpstan.neon.dist
-            - src/**
-            - tests/**
 
 jobs:
     static-analysis-phpstan:
