@@ -89,4 +89,4 @@ jobs:
                 uses: "ramsey/composer-install@v2"
 
             -   name: "Run PHPUnit"
-                run: "vendor/bin/phpunit -c ci/phpunit/integration.xml --testsuite=integration"
+                run: "vendor/bin/phpunit -c ci/phpunit/integration.xml"
