@@ -2,6 +2,8 @@ name: "Static Analysis"
 
 on:
     pull_request:
+        branches:
+            - 'feature/**'
         paths:
             - .github/workflows/static-analysis.yml
             - composer.*
@@ -9,6 +11,8 @@ on:
             - src/**
             - tests/**
     push:
+        branches:
+            - 'master'
         paths:
             - .github/workflows/static-analysis.yml
             - composer.*
