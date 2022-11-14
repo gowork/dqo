@@ -182,7 +182,7 @@ final class DatabaseSelectBuilder
     {
         $date = $this->fetchColumn($index);
 
-        return $date ? new DateTimeImmutable($date) : null;
+        return is_string($date) ? new DateTimeImmutable($date) : null;
     }
 
     /**

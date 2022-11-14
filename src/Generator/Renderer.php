@@ -251,7 +251,7 @@ final class Renderer
         $methods = [];
         $uses = [];
 
-        if ($idColumn) {
+        if ($idColumn !== null) {
             $methods[] = $factory->method('single')
                 ->addParam($factory->param($idColumn->methodName())->setType($this->typeDef($idColumn, $this->types->type($idColumn->type()), $uses)))
                 ->setReturnType("?{$table->name()}Row")

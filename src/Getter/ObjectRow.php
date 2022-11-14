@@ -17,6 +17,7 @@ final class ObjectRow implements Row
 
     public function get(string $field): bool|float|int|string|null
     {
+        /** @phpstan-ignore-next-line it's not exactly variable property */
         return $this->row->{$this->table->fieldAlias($field)} ?? null;
     }
 }

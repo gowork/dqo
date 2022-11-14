@@ -32,7 +32,7 @@ final class TableFactory
     {
         $type = $dbalColumn->getType();
 
-        if (preg_match('#\(DC2Type:(.+?)\)#i', $dbalColumn->getComment() ?? '', $matches)) {
+        if (preg_match('#\(DC2Type:(.+?)\)#i', $dbalColumn->getComment() ?? '', $matches) === 1) {
             return $matches[1];
         }
 

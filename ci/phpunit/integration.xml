@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../../vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="../../tests/bootstrap.php"
+         executionOrder="depends,defects"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTodoAnnotatedTests="true"
+         failOnRisky="true"
+         failOnWarning="true"
+         verbose="true"
+         defaultTestSuite="unit">
+
+    <testsuites>
+        <testsuite name="integration">
+            <directory>../../tests/Usage</directory>
+            <exclude>../../tests/Usage/symfony</exclude>
+        </testsuite>
+    </testsuites>
+
+    <php>
+        <env name="POSTGRES_HOST" value="localhost" />
+        <env name="POSTGRES_DATABASE" value="dqo" />
+        <env name="POSTGRES_USER" value="postgres" />
+        <env name="POSTGRES_PASSWORD" value="postgres" />
+        <env name="MYSQL_HOST" value="127.0.0.1" />
+        <env name="MYSQL_DATABASE" value="dqo" />
+        <env name="MYSQL_USER" value="root" />
+        <env name="MYSQL_PASSWORD" value="" />
+    </php>
+</phpunit>
