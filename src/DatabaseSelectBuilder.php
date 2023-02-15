@@ -99,6 +99,16 @@ final class DatabaseSelectBuilder
         return $copy;
     }
 
+    public function rawLeftJoin(string $from, string $join, string $alias, string $condition): self
+    {
+        $this->assertCanJoin();
+
+        $copy = clone $this;
+        $copy->builder->leftJoin($from, $join, $alias, $condition);
+
+        return $copy;
+    }
+
     public function rightJoin(Table $join, string $condition): self
     {
         $this->assertCanJoin();
