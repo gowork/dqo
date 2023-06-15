@@ -4,7 +4,9 @@ namespace GW\DQO;
 
 use DateTimeImmutable;
 use Dazet\TypeUtil\StringUtil;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use GW\Value\ArrayValue;
 use GW\Value\Wrap;
@@ -325,17 +327,17 @@ final class DatabaseSelectBuilder
         return $this->startOffset;
     }
 
-    private function paramType(mixed $object): int|string|null
+    private function paramType(mixed $object): int|string
     {
         if (is_array($object)) {
-            return Connection::PARAM_STR_ARRAY;
+            return ArrayParameterType::STRING;
         }
 
         if (!is_object($object)) {
-            return null;
+            return ParameterType::STRING;
         }
 
-        return $this->types[get_class($object)] ?? null;
+        return $this->types[get_class($object)] ?? ParameterType::STRING;
     }
 
     private function assertCanJoin(): void
