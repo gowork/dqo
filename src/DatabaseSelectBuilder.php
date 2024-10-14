@@ -8,6 +8,7 @@ use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Types\Type;
 use GW\Value\ArrayValue;
 use GW\Value\Wrap;
 use RuntimeException;
@@ -73,7 +74,7 @@ final class DatabaseSelectBuilder
     {
         $copy = clone $this;
         $copy->from = $table;
-        $copy->builder->from($table->table(), $table->alias());
+        $copy->builder = $copy->builder->from($table->table(), $table->alias());
         $copy->registerFieldSelectsForTable($table);
 
         return $copy;
@@ -84,7 +85,7 @@ final class DatabaseSelectBuilder
         $this->assertCanJoin();
 
         $copy = clone $this;
-        $copy->builder->join($this->from->alias(), $join->table(), $join->alias(), $condition);
+        $copy->builder = $copy->builder->join($this->from->alias(), $join->table(), $join->alias(), $condition);
         $copy->registerFieldSelectsForTable($join);
 
         return $copy;
@@ -95,7 +96,7 @@ final class DatabaseSelectBuilder
         $this->assertCanJoin();
 
         $copy = clone $this;
-        $copy->builder->leftJoin($this->from->alias(), $join->table(), $join->alias(), $condition);
+        $copy->builder = $copy->builder->leftJoin($this->from->alias(), $join->table(), $join->alias(), $condition);
         $copy->registerFieldSelectsForTable($join);
 
         return $copy;
@@ -116,7 +117,7 @@ final class DatabaseSelectBuilder
         $this->assertCanJoin();
 
         $copy = clone $this;
-        $copy->builder->rightJoin($this->from->alias(), $join->table(), $join->alias(), $condition);
+        $copy->builder = $copy->builder->rightJoin($this->from->alias(), $join->table(), $join->alias(), $condition);
         $copy->registerFieldSelectsForTable($join);
 
         return $copy;
@@ -131,7 +132,7 @@ final class DatabaseSelectBuilder
         $copy = clone $this;
         $copy->builder->andWhere($condition);
         foreach ($params as $key => $value) {
-            $copy->builder->setParameter($key, $value, $types[$key] ?? $this->paramType($value));
+            $copy->builder = $copy->builder->setParameter($key, $value, $types[$key] ?? $this->paramType($value));
         }
 
         return $copy;
@@ -146,7 +147,7 @@ final class DatabaseSelectBuilder
         $copy = clone $this;
         $copy->builder->andHaving($condition);
         foreach ($params as $key => $value) {
-            $copy->builder->setParameter($key, $value, $types[$key] ?? $this->paramType($value));
+            $copy->builder = $copy->builder->setParameter($key, $value, $types[$key] ?? $this->paramType($value));
         }
 
         return $copy;
@@ -155,7 +156,7 @@ final class DatabaseSelectBuilder
     public function select(string ...$columns): self
     {
         $copy = clone $this;
-        $copy->builder->select(
+        $copy->builder = $copy->builder->select(
             ...array_map(
                 function (string $field): string {
                     return $this->fieldSelect[$field] ?? $field;
@@ -234,10 +235,10 @@ final class DatabaseSelectBuilder
         $copy = clone $this;
         $copy->sliced = $limit !== null;
         $copy->startOffset = $offset;
-        $copy->builder->setFirstResult($offset);
+        $copy->builder = $copy->builder->setFirstResult($offset);
 
         if ($limit !== null) {
-            $copy->builder->setMaxResults($limit);
+            $copy->builder = $copy->builder->setMaxResults($limit);
         }
 
         return $copy;
@@ -246,7 +247,7 @@ final class DatabaseSelectBuilder
     public function randomOrder(): self
     {
         $copy = clone $this;
-        $copy->builder->addOrderBy('RAND()');
+        $copy->builder = $copy->builder->addOrderBy('RAND()');
 
         return $copy;
     }
@@ -254,7 +255,7 @@ final class DatabaseSelectBuilder
     public function orderBy(string $field, string $direction): self
     {
         $copy = clone $this;
-        $copy->builder->addOrderBy($this->sortMap[$field] ?? $field, $direction);
+        $copy->builder = $copy->builder->addOrderBy($this->sortMap[$field] ?? $field, $direction);
 
         return $copy;
     }
@@ -262,15 +263,15 @@ final class DatabaseSelectBuilder
     public function resetOrderBy(): self
     {
         $copy = clone $this;
-        $copy->builder->resetQueryPart('orderBy');
+        $copy->builder = $copy->builder->resetOrderBy();
 
         return $copy;
     }
 
-    public function withParameter(string $key, mixed $value, int|string $type = null): self
+    public function withParameter(string $key, mixed $value, string|ParameterType|Type|ArrayParameterType $type = null): self
     {
         $copy = clone $this;
-        $copy->builder->setParameter($key, $value, $type ?? $this->paramType($value));
+        $copy->builder = $copy->builder->setParameter($key, $value, $type ?? $this->paramType($value));
 
         return $copy;
     }
@@ -294,7 +295,7 @@ final class DatabaseSelectBuilder
     public function groupBy(string $groupBy): self
     {
         $copy = clone $this;
-        $copy->builder->addGroupBy($groupBy);
+        $copy->builder = $copy->builder->addGroupBy($groupBy);
 
         return $copy;
     }
@@ -302,7 +303,7 @@ final class DatabaseSelectBuilder
     public function resetGroupBy(): self
     {
         $copy = clone $this;
-        $copy->builder->resetQueryPart('groupBy');
+        $copy->builder = $copy->builder->resetGroupBy();
 
         return $copy;
     }
@@ -327,7 +328,7 @@ final class DatabaseSelectBuilder
         return $this->startOffset;
     }
 
-    private function paramType(mixed $object): int|string
+    private function paramType(mixed $object): string|ParameterType|ArrayParameterType
     {
         if (is_array($object)) {
             return ArrayParameterType::STRING;

@@ -48,7 +48,7 @@ final class DatabaseSelectBuilderTest extends MySQLTestCase
         $sql = $builder->getSQL();
 
         self::assertEquals(
-            'SELECT MAX(user.id) FROM message message INNER JOIN user user ON message.user_id = user.id',
+            'SELECT MAX(user.id) FROM message INNER JOIN user user ON message.user_id = user.id',
             $sql
         );
     }
@@ -67,7 +67,7 @@ final class DatabaseSelectBuilderTest extends MySQLTestCase
         $rows = $builder->fetchAll();
 
         self::assertEquals(
-            'SELECT user.name as user_name, message.message as message_message FROM message message INNER JOIN user user ON message.user_id = user.id',
+            'SELECT user.name as user_name, message.message as message_message FROM message INNER JOIN user user ON message.user_id = user.id',
             $sql
         );
         self::assertCount(2, $rows);

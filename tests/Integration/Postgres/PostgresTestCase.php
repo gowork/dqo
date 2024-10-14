@@ -5,6 +5,7 @@ namespace tests\GW\DQO\Integration\Postgres;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Tools\DsnParser;
 use GW\DQO\Generator\ClassInfo;
 use tests\GW\DQO\Integration\IntegrationTestCase;
 use function get_class;
@@ -13,21 +14,21 @@ use function sprintf;
 
 abstract class PostgresTestCase extends IntegrationTestCase
 {
-    /** @var Connection */
-    private $conn;
+    private Connection $conn;
 
     protected function setUp(): void
     {
+        $dsnParser = new DsnParser(['pgsql' => 'pdo_pgsql']);
         $this->conn = DriverManager::getConnection(
-            [
-                'url' => sprintf(
+            $dsnParser->parse(
+                sprintf(
                     'pgsql://%s:%s@%s/%s',
                     getenv('POSTGRES_USER'),
                     getenv('POSTGRES_PASSWORD'),
                     getenv('POSTGRES_HOST'),
                     getenv('POSTGRES_DATABASE'),
-                ),
-            ],
+                )
+            ),
             new Configuration(),
         );
     }

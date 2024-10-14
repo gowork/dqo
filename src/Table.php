@@ -4,6 +4,7 @@ namespace GW\DQO;
 
 use GW\Value\Wrap;
 use ReflectionClass;
+
 use function array_values;
 use function strval;
 
@@ -86,6 +87,7 @@ abstract class Table
     /** @return string[] */
     private function resolveTableFields(): array
     {
+        /** @phpstan-ignore-next-line */
         return array_map(strval(...), array_values((new ReflectionClass(static::class))->getConstants()));
     }
 }

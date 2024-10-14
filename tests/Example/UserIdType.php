@@ -11,14 +11,12 @@ final class UserIdType extends Type
     /**
      * Gets the SQL declaration snippet for a field of this type.
      *
-     * @param mixed[] $fieldDeclaration The field declaration.
+     * @param array<string, mixed> $column The field declaration.
      * @param AbstractPlatform $platform The currently used database platform.
-     *
-     * @return string
      */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
-        return $platform->getBinaryTypeDeclarationSQL($fieldDeclaration);
+        return $platform->getBinaryTypeDeclarationSQL($column);
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform): ?UserId
