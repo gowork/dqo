@@ -18,7 +18,6 @@ jobs:
                 os:
                     - "ubuntu-22.04"
                 php-version:
-                    - "8.1"
                     - "8.2"
                     - "8.3"
                 dependencies:
@@ -50,7 +49,6 @@ jobs:
         strategy:
             matrix:
                 php-version:
-                    - "8.1"
                     - "8.2"
                     - "8.3"
 
@@ -58,6 +56,7 @@ jobs:
             postgres:
                 image: "postgres:16"
                 env:
+                    POSTGRES_DB: "dqo"
                     POSTGRES_PASSWORD: "postgres"
 
                 options: >-

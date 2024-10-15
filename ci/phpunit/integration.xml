@@ -7,10 +7,13 @@
          beStrictAboutTodoAnnotatedTests="true"
          failOnRisky="true"
          failOnWarning="true"
-         verbose="true"
-         defaultTestSuite="unit">
+         verbose="true">
 
     <testsuites>
+        <testsuite name="unit">
+            <directory>../../tests</directory>
+            <exclude>../../tests/Usage</exclude>
+        </testsuite>
         <testsuite name="integration">
             <directory>../../tests/Usage</directory>
             <exclude>../../tests/Usage/symfony</exclude>
