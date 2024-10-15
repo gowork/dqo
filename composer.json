@@ -15,7 +15,7 @@
         "symfony/process": "^6.0|^7.0",
         "phpdocumentor/reflection-docblock": "^5.2",
         "open-serializer/type": "^0.1",
-        "nikic/php-parser": "^4.10"
+        "nikic/php-parser": "^5.0"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.7",

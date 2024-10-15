@@ -16,29 +16,29 @@ final class UserQuery extends AbstractDatabaseQuery
         $this->table = new UserTable();
         parent::__construct($builder, $this->table);
     }
-    public function table() : UserTable
+    public function table(): UserTable
     {
         return $this->table;
     }
     /** @return iterable<UserRow> */
-    public function all(string ...$fields) : iterable
+    public function all(string ...$fields): iterable
     {
         $builder = $this->builder()->select(...$fields ? $this->table->select(...$fields) : $this->table->selectAll());
         return new RowIterator($builder, fn(array $raw): UserRow => $this->table->createRow($raw));
     }
-    public function first() : ?UserRow
+    public function first(): ?UserRow
     {
         return [...$this->offsetLimit(0, 1)->all()][0] ?? null;
     }
-    public function single(int $id) : ?UserRow
+    public function single(int $id): ?UserRow
     {
         return $this->withId($id)->first();
     }
-    public function withId(int $id) : self
+    public function withId(int $id): self
     {
         return $this->where("{$this->table->id()} = :id", ['id' => $id]);
     }
-    public function withName(string $name) : self
+    public function withName(string $name): self
     {
         return $this->where("{$this->table->name()} = :name", ['name' => $name]);
     }
