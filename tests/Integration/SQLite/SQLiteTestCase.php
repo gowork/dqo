@@ -5,6 +5,7 @@ namespace tests\GW\DQO\Integration\SQLite;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Tools\DsnParser;
 use GW\DQO\Generator\ClassInfo;
 use tests\GW\DQO\Integration\IntegrationTestCase;
 use function get_class;
@@ -16,7 +17,8 @@ abstract class SQLiteTestCase extends IntegrationTestCase
 
     protected function setUp(): void
     {
-        $this->conn = DriverManager::getConnection(['url' => 'sqlite:///:memory:'], new Configuration());
+        $dsnParser  = new DsnParser(['sqlite' => 'pdo_sqlite']);
+        $this->conn = DriverManager::getConnection($dsnParser->parse('sqlite:///:memory:'), new Configuration());
     }
 
     protected function executeQuery(string $query): void

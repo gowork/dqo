@@ -35,7 +35,7 @@ class GenerateTables
     public function generate(array $filterTables, string $path, bool $overwrite): array
     {
         $models = $models = Wrap::array($filterTables)
-            ->map(fn(string $tableName): DbalTable => $this->connection->getSchemaManager()->listTableDetails($tableName))
+            ->map(fn(string $tableName): DbalTable => $this->connection->createSchemaManager()->introspectTable($tableName))
             ->filter(static fn(DbalTable $table): bool => in_array($table->getName(), $filterTables, true))
             ->toAssocValue()
             ->map(fn(DbalTable $table): Table => $this->tableFactory->buildFromDbalTable($table))

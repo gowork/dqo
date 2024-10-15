@@ -67,9 +67,9 @@ final class NonNullableString extends Type
         return 'test';
     }
 
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
-        return $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
+        return $platform->getStringTypeDeclarationSQL($column);
     }
 
     public function getName(): string
@@ -85,9 +85,9 @@ final class NullableString extends Type
         return 'test';
     }
 
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
-        return $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
+        return $platform->getStringTypeDeclarationSQL($column);
     }
 
     public function getName(): string
@@ -98,17 +98,14 @@ final class NullableString extends Type
 
 final class DocBlockNonNullableString extends Type
 {
-    /**
-     * @return string
-     */
     public function convertToPHPValue($value, AbstractPlatform $platform): string
     {
         return 'test';
     }
 
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
-        return $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
+        return $platform->getStringTypeDeclarationSQL($column);
     }
 
     public function getName(): string
@@ -122,14 +119,14 @@ final class DocBlockNullableString extends Type
     /**
      * @return string|null
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): mixed
     {
         return 'test';
     }
 
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
-        return $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
+        return $platform->getStringTypeDeclarationSQL($column);
     }
 
     public function getName(): string

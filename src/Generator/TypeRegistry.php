@@ -2,7 +2,6 @@
 
 namespace GW\DQO\Generator;
 
-use Doctrine\DBAL\Types\ArrayType;
 use Doctrine\DBAL\Types\BigIntType;
 use Doctrine\DBAL\Types\BinaryType;
 use Doctrine\DBAL\Types\BlobType;
@@ -19,7 +18,6 @@ use Doctrine\DBAL\Types\FloatType;
 use Doctrine\DBAL\Types\GuidType;
 use Doctrine\DBAL\Types\IntegerType;
 use Doctrine\DBAL\Types\JsonType;
-use Doctrine\DBAL\Types\ObjectType;
 use Doctrine\DBAL\Types\SimpleArrayType;
 use Doctrine\DBAL\Types\SmallIntType;
 use Doctrine\DBAL\Types\StringType;
@@ -38,10 +36,8 @@ final class TypeRegistry
 {
     /** @var array<string, string> */
     private static $_typesMap = [
-        ArrayType::class => 'array',
         SimpleArrayType::class => 'array',
         JsonType::class => 'array',
-        ObjectType::class => 'object',
         BooleanType::class => 'bool',
         IntegerType::class => 'int',
         SmallIntType::class => 'int',

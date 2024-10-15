@@ -32,11 +32,11 @@ final class TableFactory
     {
         $type = $dbalColumn->getType();
 
-        if (preg_match('#\(DC2Type:(.+?)\)#i', $dbalColumn->getComment() ?? '', $matches) === 1) {
+        if (preg_match('#\(DC2Type:(.+?)\)#i', $dbalColumn->getComment(), $matches) === 1) {
             return $matches[1];
         }
 
-        return $type->getName();
+        return $type::getTypeRegistry()->lookupName($type);
     }
 
     private function camelize(string $value): string
