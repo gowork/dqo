@@ -61,13 +61,14 @@ final class DatabaseSelectBuilderTest extends MySQLTestCase
         $builder = (new DatabaseSelectBuilder($this->conn()))
             ->from($messageTable)
             ->join($userTable, "{$messageTable->userId()} = {$userTable->id()}")
-            ->select($userTable->name(), $messageTable->message());
+            ->select($userTable->name(), $messageTable->message())
+            ->orderBy($messageTable->id(), 'ASC');
 
         $sql = $builder->getSQL();
         $rows = $builder->fetchAll();
 
         self::assertEquals(
-            'SELECT user.name as user_name, message.message as message_message FROM message INNER JOIN user user ON message.user_id = user.id',
+            'SELECT user.name as user_name, message.message as message_message FROM message INNER JOIN user user ON message.user_id = user.id ORDER BY message.id ASC',
             $sql
         );
         self::assertCount(2, $rows);
@@ -93,12 +94,13 @@ final class DatabaseSelectBuilderTest extends MySQLTestCase
         $builder = (new DatabaseSelectBuilder($this->conn()))
             ->from($messageTable)
             ->join($userTable, "{$messageTable->userId()} = {$userTable->id()}")
-            ->select($userTable->name(), $messageTable->message());
+            ->select($userTable->name(), $messageTable->message())
+            ->orderBy($messageTable->id(), 'ASC');
 
         $sql = $builder->getSQL();
         $rows = $builder->fetchAll();
 
-        self::assertEquals('SELECT u.name as u_name, m.message as m_message FROM message m INNER JOIN user u ON m.user_id = u.id', $sql);
+        self::assertEquals('SELECT u.name as u_name, m.message as m_message FROM message m INNER JOIN user u ON m.user_id = u.id ORDER BY m.id ASC', $sql);
         self::assertCount(2, $rows);
         self::assertEquals(
             [
