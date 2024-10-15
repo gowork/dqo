@@ -33,7 +33,7 @@ final class UsageTest extends TestCase
             $composerFile,
             str_replace(
                 '"name": "gowork/dqo",',
-                '"name": "gowork/dqo", "version": "0.1", ',
+                '"name": "gowork/dqo", "version": "0.1.0", ',
                 self::$originalComposerContent
             )
         );
@@ -48,7 +48,7 @@ final class UsageTest extends TestCase
         );
     }
 
-    function test_real_app()
+    public function test_real_app()
     {
         $env = [
             'DATABASE_URL' => sprintf(
