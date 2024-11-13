@@ -22,7 +22,7 @@ final class DatabaseSelectBuilder
     public const DEFAULT_LIMIT = 20;
     private QueryBuilder $builder;
     private Table $from;
-    /** @var array<string, string> [class => doctrine type, ...] */
+    /** @var array<string, string|ParameterType|Type|ArrayParameterType> [class => doctrine type, ...] */
     private array $types;
     /** @var array<string, string> [model field => query field, ...] */
     private array $sortMap = [];
@@ -31,7 +31,7 @@ final class DatabaseSelectBuilder
     /** @var array<string, string> */
     private array $fieldSelect = [];
 
-    /** @param array<string, string> $types */
+    /** @param array<string, string|ParameterType|Type|ArrayParameterType> $types */
     public function __construct(Connection $connection, array $types = [DateTimeImmutable::class => 'DateTimeImmutable'])
     {
         $this->builder = $connection->createQueryBuilder();
@@ -52,7 +52,7 @@ final class DatabaseSelectBuilder
         return $copy;
     }
 
-    /** @param array<string, string> $types */
+    /** @param array<string, string|ParameterType|Type|ArrayParameterType> $types */
     public function withTypes(array $types): self
     {
         $copy = clone $this;
@@ -125,7 +125,7 @@ final class DatabaseSelectBuilder
 
     /**
      * @param array<string, mixed> $params
-     * @param array<string, string> $types
+     * @param array<string, string|ParameterType|Type|ArrayParameterType> $types
      */
     public function where(string $condition, array $params = [], array $types = []): self
     {
@@ -140,7 +140,7 @@ final class DatabaseSelectBuilder
 
     /**
      * @param array<string, mixed> $params
-     * @param array<string, string> $types
+     * @param array<string, string|ParameterType|Type|ArrayParameterType> $types
      */
     public function having(string $condition, array $params = [], array $types = []): self
     {
@@ -278,7 +278,7 @@ final class DatabaseSelectBuilder
 
     /**
      * @param array<string, mixed> $params
-     * @param array<string|int, string> $types
+     * @param array<string|int, string|ParameterType|Type|ArrayParameterType> $types
      */
     public function withParameters(array $params = [], array $types = []): self
     {
@@ -328,7 +328,7 @@ final class DatabaseSelectBuilder
         return $this->startOffset;
     }
 
-    private function paramType(mixed $object): string|ParameterType|ArrayParameterType
+    private function paramType(mixed $object): string|ParameterType|Type|ArrayParameterType
     {
         if (is_array($object)) {
             return ArrayParameterType::STRING;

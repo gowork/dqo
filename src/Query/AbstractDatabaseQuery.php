@@ -2,7 +2,10 @@
 
 namespace GW\DQO\Query;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
+use Doctrine\DBAL\Types\Type;
 use GW\DQO\DatabaseSelectBuilder;
 use GW\DQO\Table;
 use function in_array;
@@ -36,7 +39,7 @@ abstract class AbstractDatabaseQuery
     /**
      * @return static
      * @param array<string, mixed> $params
-     * @param array<string, string> $types
+     * @param array<string, string|ParameterType|Type|ArrayParameterType> $types
      */
     public function join(Table $join, string $condition, array $params = [], array $types = []): self
     {
@@ -50,7 +53,7 @@ abstract class AbstractDatabaseQuery
     /**
      * @return static
      * @param array<string, mixed> $params
-     * @param array<string, string> $types
+     * @param array<string, string|ParameterType|Type|ArrayParameterType> $types
      */
     public function leftJoin(Table $join, string $condition, array $params = [], array $types = []): self
     {
@@ -76,7 +79,7 @@ abstract class AbstractDatabaseQuery
     /**
      * @return static
      * @param array<string, mixed> $params
-     * @param array<string, string> $types
+     * @param array<string, string|ParameterType|Type|ArrayParameterType> $types
      */
     public function where(string $condition, array $params = [], array $types = []): self
     {
@@ -89,7 +92,7 @@ abstract class AbstractDatabaseQuery
     /**
      * @return static
      * @param array<string, mixed> $params
-     * @param array<string, string> $types
+     * @param array<string, string|ParameterType|Type|ArrayParameterType> $types
      */
     public function having(string $condition, array $params = [], array $types = []): self
     {
