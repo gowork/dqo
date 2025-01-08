@@ -18,21 +18,21 @@ RUN apt-get update && \
         zsh
 
 RUN apt-add-repository -y ppa:ondrej/php && apt-get update && apt-get install -y --force-yes \
-	php8.2-cli \
-	php8.2-curl \
-	php8.2-intl \
-	php8.2-mysql \
-	php8.2-xml \
-	php8.2-mbstring \
-	php8.2-bcmath \
-	php8.2-zip \
-	php8.2-opcache \
-	php8.2-bz2 \
-	php8.2-gmp \
-	php8.2-sqlite \
-	php8.2-pgsql \
-    php8.2-xdebug \
-    php8.2-redis
+	php8.4-cli \
+	php8.4-curl \
+	php8.4-intl \
+	php8.4-mysql \
+	php8.4-xml \
+	php8.4-mbstring \
+	php8.4-bcmath \
+	php8.4-zip \
+	php8.4-opcache \
+	php8.4-bz2 \
+	php8.4-gmp \
+	php8.4-sqlite \
+	php8.4-pgsql \
+    php8.4-xdebug \
+    php8.4-redis
 
 RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer

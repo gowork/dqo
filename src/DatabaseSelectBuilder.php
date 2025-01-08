@@ -268,7 +268,7 @@ final class DatabaseSelectBuilder
         return $copy;
     }
 
-    public function withParameter(string $key, mixed $value, string|ParameterType|Type|ArrayParameterType $type = null): self
+    public function withParameter(string $key, mixed $value, string|ParameterType|Type|ArrayParameterType|null $type = null): self
     {
         $copy = clone $this;
         $copy->builder = $copy->builder->setParameter($key, $value, $type ?? $this->paramType($value));
