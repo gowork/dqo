@@ -10,8 +10,10 @@ use GW\Value\Wrap;
 use OpenSerializer\Type\TypeInfo;
 use PhpParser\Builder\Use_;
 use PhpParser\BuilderFactory;
+use PhpParser\Modifiers;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Const_;
+use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrayItem;
@@ -32,7 +34,6 @@ use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\DeclareDeclare;
@@ -40,6 +41,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Static_;
 use PhpParser\Node\Stmt\StaticVar;
 use PhpParser\PrettyPrinter\Standard;
+
 use function array_map;
 use function array_push;
 use function array_unique;
@@ -47,6 +49,7 @@ use function get_class;
 use function in_array;
 use function sprintf;
 use function ucfirst;
+
 use const PHP_EOL;
 
 final class Renderer
@@ -94,7 +97,7 @@ final class Renderer
                         array_map(
                             static fn(Column $column) => new ClassConst(
                                 [new Const_($column->nameConst(), new String_($column->dbName()))],
-                                Class_::MODIFIER_PUBLIC
+                                Modifiers::PUBLIC
                             ),
                             $table->columns(),
                         )
@@ -139,7 +142,7 @@ final class Renderer
         $prettyPrinter = new Standard();
 
         return $prettyPrinter->prettyPrintFile(
-            [new Declare_([new DeclareDeclare('strict_types', new LNumber(1))]), $node]
+            [new Declare_([new DeclareItem('strict_types', new LNumber(1))]), $node]
         ) . PHP_EOL;
     }
 
@@ -195,7 +198,7 @@ final class Renderer
         $prettyPrinter = new Standard();
 
         return $prettyPrinter->prettyPrintFile(
-                [new Declare_([new DeclareDeclare('strict_types', new LNumber(1))]), $node]
+                [new Declare_([new DeclareItem('strict_types', new LNumber(1))]), $node]
             ) . PHP_EOL;
     }
 
@@ -400,7 +403,7 @@ final class Renderer
                                             'params' => [
                                                 $factory->param('raw')->setType('array')->getNode(),
                                             ],
-                                            'returnType' => "{$table->name()}Row",
+                                            'returnType' => new Name("{$table->name()}Row"),
                                             'expr' => new MethodCall(
                                                 new PropertyFetch(new Variable('this'), 'table'),
                                                 'createRow',
@@ -442,12 +445,12 @@ final class Renderer
         $prettyPrinter = new Standard();
 
         return $prettyPrinter->prettyPrintFile(
-                [new Declare_([new DeclareDeclare('strict_types', new LNumber(1))]), $node]
+                [new Declare_([new DeclareItem('strict_types', new LNumber(1))]), $node]
             ) . PHP_EOL;
     }
 
     /** @param string[] $uses */
-    private function typeDef(Column $column, TypeInfo $type, array &$uses = []): string
+    private function typeDef(Column $column, TypeInfo $type, array &$uses = []): Name
     {
         $phpType = self::TYPE_RETURN[$column->type()] ?? 'string';
 
@@ -459,7 +462,7 @@ final class Renderer
             $uses[] = $class->fullName();
         }
 
-        return sprintf('%s%s', $column->optional() ? '?' : '', $phpType);
+        return new Name(sprintf('%s%s', $column->optional() ? '?' : '', $phpType));
     }
 
     private function valueReturn(Table $table, Column $column, TypeInfo $type): Return_

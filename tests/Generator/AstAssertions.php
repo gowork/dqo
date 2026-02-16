@@ -16,7 +16,7 @@ trait AstAssertions
 
     protected static function assertAstEquals(string $expectedFile, string $generatedCode): void
     {
-        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+        $parser = (new ParserFactory())->createForHostVersion();
         $astExpected = $parser->parse(file_get_contents($expectedFile));
         $ast = $parser->parse($generatedCode);
 
