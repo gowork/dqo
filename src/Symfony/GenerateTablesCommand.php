@@ -6,6 +6,7 @@ use Exception;
 use GW\DQO\Formatter\Formatter;
 use GW\DQO\Generator\GenerateTables;
 use GW\Safe\SafeConsoleInput;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,9 +14,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand('dqo:generate-tables')]
 final class GenerateTablesCommand extends Command
 {
-    protected static $defaultName = 'dqo:generate-tables';
     private GenerateTables $generateTables;
     private Formatter $formatter;
 
