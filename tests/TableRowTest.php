@@ -4,6 +4,7 @@ namespace tests\GW\DQO;
 
 use DateTimeImmutable;
 use GW\Value\Wrap;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use tests\GW\DQO\Example\TableRowTest\RichRow;
 use tests\GW\DQO\Example\TableRowTest\RichTable;
@@ -17,20 +18,16 @@ class TableRowTest extends TestCase
         $this->table = new RichTable();
     }
 
-    /**
-     * @dataProvider rawData
-     */
-    function test_return_raw_data_from_array(string $field, $rawValue)
+    #[DataProvider('rawData')]
+    public function test_return_raw_data_from_array(string $field, mixed $rawValue): void
     {
         $row = new RichRow([$this->table->fieldAlias($field) => $rawValue], $this->table);
 
         self::assertEquals($rawValue, $row->get($field));
     }
 
-    /**
-     * @dataProvider rawData
-     */
-    function test_return_raw_data_from_stdClass(string $field, $rawValue)
+    #[DataProvider('rawData')]
+    public function test_return_raw_data_from_stdClass(string $field, mixed $rawValue): void
     {
         $data = new \stdClass();
         $data->{$this->table->fieldAlias($field)} = $rawValue;
@@ -39,7 +36,7 @@ class TableRowTest extends TestCase
         self::assertEquals($row->get($field), $rawValue);
     }
 
-    function test_datetime_immutable()
+    public function test_datetime_immutable(): void
     {
         $date = '2000-01-01 12:00:01';
         $row1 = $this->buildRow([RichTable::DATETIME => $date]);
@@ -49,7 +46,7 @@ class TableRowTest extends TestCase
         self::assertNull($row2->datetimeOrNull());
     }
 
-    function test_int()
+    public function test_int(): void
     {
         $row1 = $this->buildRow([RichTable::INT => 123]);
         self::assertEquals(123, $row1->int());
@@ -64,7 +61,7 @@ class TableRowTest extends TestCase
         self::assertNull($row3->intOrNull());
     }
 
-    function test_bool()
+    public function test_bool(): void
     {
         $row1 = $this->buildRow([RichTable::INT => 1]);
         self::assertTrue($row1->bool());
@@ -83,7 +80,7 @@ class TableRowTest extends TestCase
         self::assertNull($row4->boolOrNull());
     }
 
-    function test_get_through_factory()
+    public function test_get_through_factory(): void
     {
         $row1 = $this->buildRow([RichTable::INT => 12]);
         self::assertEquals(1200, $row1->boolOrNull());
@@ -95,7 +92,7 @@ class TableRowTest extends TestCase
         self::assertNull($row3->boolOrNull());
     }
 
-    function test_get_through_doctrine_type()
+    public function test_get_through_doctrine_type(): void
     {
         $row1 = $this->buildRow([RichTable::STRING => '{"message":"Hello World"}']);
         self::assertEquals(['message' => 'Hello World'], $row1->jsonOrNull());
@@ -107,7 +104,7 @@ class TableRowTest extends TestCase
         self::assertNull($row3->jsonOrNull());
     }
 
-    public function rawData(): array
+    public static function rawData(): iterable
     {
         return [
             [RichTable::INT, 123],
