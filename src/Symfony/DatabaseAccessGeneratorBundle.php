@@ -7,8 +7,4 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 final class DatabaseAccessGeneratorBundle extends Bundle
 {
-    public function build(ContainerBuilder $container): void
-    {
-        parent::build($container);
-    }
 }

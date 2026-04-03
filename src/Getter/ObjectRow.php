@@ -4,15 +4,12 @@ namespace GW\DQO\Getter;
 
 use GW\DQO\Table;
 
-final class ObjectRow implements Row
+final readonly class ObjectRow implements Row
 {
-    private object $row;
-    private Table $table;
-
-    public function __construct(object $row, Table $table)
-    {
-        $this->row = $row;
-        $this->table = $table;
+    public function __construct(
+        private object $row,
+        private Table $table,
+    ) {
     }
 
     public function get(string $field): bool|float|int|string|null

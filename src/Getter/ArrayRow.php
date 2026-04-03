@@ -5,20 +5,16 @@ namespace GW\DQO\Getter;
 use ArrayAccess;
 use GW\DQO\Table;
 
-final class ArrayRow implements Row
+final readonly class ArrayRow implements Row
 {
-    /** @var array<string, mixed>|ArrayAccess<string, mixed> */
-    private $row;
-    private Table $table;
-
-    /** @param array<string, mixed>|ArrayAccess<string, mixed> $row */
-    public function __construct($row, Table $table)
-    {
-        $this->row = $row;
-        $this->table = $table;
+    /** @param array<string, float|bool|int|string|null>|ArrayAccess<string, float|bool|int|string|null> $row */
+    public function __construct(
+        private array|ArrayAccess $row,
+        private Table $table,
+    ) {
     }
 
-    public function get(string $field): bool|float|int|string|null
+    public function get(string $field): float|bool|int|string|null
     {
         return $this->row[$this->table->fieldAlias($field)] ?? null;
     }

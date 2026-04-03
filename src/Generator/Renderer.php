@@ -28,11 +28,11 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\InterpolatedStringPart;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
-use PhpParser\Node\Scalar\Encapsed;
-use PhpParser\Node\Scalar\EncapsedStringPart;
-use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\Int_;
+use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\StaticVar;
 use PhpParser\Node\Stmt\ClassConst;
@@ -141,7 +141,7 @@ final class Renderer
         $prettyPrinter = new Standard();
 
         return $prettyPrinter->prettyPrintFile(
-            [new Declare_([new DeclareItem('strict_types', new LNumber(1))]), $node]
+            [new Declare_([new DeclareItem('strict_types', new Int_(1))]), $node]
         ) . PHP_EOL;
     }
 
@@ -197,7 +197,7 @@ final class Renderer
         $prettyPrinter = new Standard();
 
         return $prettyPrinter->prettyPrintFile(
-                [new Declare_([new DeclareItem('strict_types', new LNumber(1))]), $node]
+                [new Declare_([new DeclareItem('strict_types', new Int_(1))]), $node]
             ) . PHP_EOL;
     }
 
@@ -241,7 +241,7 @@ final class Renderer
         $prettyPrinter = new Standard();
 
         return $prettyPrinter->prettyPrintFile(
-                [new Declare_([new DeclareItem('strict_types', new LNumber(1))]), $node]
+                [new Declare_([new DeclareItem('strict_types', new Int_(1))]), $node]
             ) . PHP_EOL;
     }
 
@@ -290,13 +290,13 @@ final class Renderer
                                 new Variable('this'),
                                 'where',
                                 $factory->args([
-                                    new Encapsed(
+                                    new InterpolatedString(
                                         [
                                             new MethodCall(
                                                 new PropertyFetch(new Variable('this'), 'table'),
                                                 $column->methodName(),
                                             ),
-                                            new EncapsedStringPart(' = :' . $column->methodName()),
+                                            new InterpolatedStringPart(' = :' . $column->methodName()),
                                         ]
                                     ),
                                     new Array_(
@@ -424,13 +424,13 @@ final class Renderer
                                             new Array_([
                                                 new ArrayItem(new MethodCall(
                                                     new MethodCall(new Variable('this'), 'offsetLimit', [
-                                                        new Arg(new LNumber(0)),
-                                                        new Arg(new LNumber(1)),
+                                                        new Arg(new Int_(0)),
+                                                        new Arg(new Int_(1)),
                                                     ]),
                                                     'all',
                                                 ), unpack: true),
                                             ], ['kind' => Array_::KIND_SHORT]),
-                                            new LNumber(0),
+                                            new Int_(0),
                                         ),
                                         new ConstFetch(new Name('null')),
                                     ),
@@ -444,7 +444,7 @@ final class Renderer
         $prettyPrinter = new Standard();
 
         return $prettyPrinter->prettyPrintFile(
-                [new Declare_([new DeclareItem('strict_types', new LNumber(1))]), $node]
+                [new Declare_([new DeclareItem('strict_types', new Int_(1))]), $node]
             ) . PHP_EOL;
     }
 

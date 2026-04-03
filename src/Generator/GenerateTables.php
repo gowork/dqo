@@ -5,19 +5,16 @@ namespace GW\DQO\Generator;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Table as DbalTable;
 use GW\Value\Wrap;
+
 use function dirname;
 
 class GenerateTables
 {
-    private Connection $connection;
-    private TableFactory $tableFactory;
-    private Renderer $renderer;
-
-    public function __construct(Connection $connection, TableFactory $tableFactory, Renderer $renderer)
-    {
-        $this->connection = $connection;
-        $this->tableFactory = $tableFactory;
-        $this->renderer = $renderer;
+    public function __construct(
+        private Connection $connection,
+        private TableFactory $tableFactory,
+        private Renderer $renderer,
+    ) {
     }
 
     public function onNamespace(string $namespace): self
@@ -34,8 +31,12 @@ class GenerateTables
      */
     public function generate(array $filterTables, string $path, bool $overwrite): array
     {
-        $models = $models = Wrap::array($filterTables)
-            ->map(fn(string $tableName): DbalTable => $this->connection->createSchemaManager()->introspectTable($tableName))
+        $models = Wrap::array($filterTables)
+            ->map(
+                fn(string $tableName): DbalTable => $this->connection->createSchemaManager()->introspectTable(
+                    $tableName,
+                ),
+            )
             ->filter(static fn(DbalTable $table): bool => in_array($table->getName(), $filterTables, true))
             ->toAssocValue()
             ->map(fn(DbalTable $table): Table => $this->tableFactory->buildFromDbalTable($table))
@@ -65,12 +66,12 @@ class GenerateTables
             ->map(
                 function (Table $table): string {
                     return $this->renderer->renderTableFile($table);
-                }
+                },
             )
             ->mapKeys(
                 function (string $key): string {
                     return "{$key}Table.php";
-                }
+                },
             )
             ->each($save);
 
@@ -78,12 +79,12 @@ class GenerateTables
             ->map(
                 function (Table $table): string {
                     return $this->renderer->renderRowFile($table);
-                }
+                },
             )
             ->mapKeys(
                 function (string $key): string {
                     return "{$key}Row.php";
-                }
+                },
             )
             ->each($save);
 
@@ -91,12 +92,12 @@ class GenerateTables
             ->map(
                 function (Table $table): string {
                     return $this->renderer->renderQueryFile($table);
-                }
+                },
             )
             ->mapKeys(
                 function (string $key): string {
                     return "Query/{$key}Query.php";
-                }
+                },
             )
             ->each($save);
 
