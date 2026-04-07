@@ -16,12 +16,12 @@ final class RowIterator implements IteratorAggregate
 {
     public const DEFAULT_CHUNK_SIZE = 400;
     private DatabaseSelectBuilder $builder;
-    /** @var callable(array<string,mixed> $raw):T */
+    /** @var callable(array<string,bool|float|int|string|null> $raw):T */
     private $hydrator;
     private int $chunkSize;
     private int $startOffset;
 
-    /** @param callable(array<string,mixed> $raw):T $hydrator */
+    /** @param callable(array<string,bool|float|int|string|null> $raw):T $hydrator */
     public function __construct(
         DatabaseSelectBuilder $builder,
         callable $hydrator,
