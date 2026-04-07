@@ -17,7 +17,7 @@ abstract class TableRow
     private Row $row;
     private Table $table;
 
-    /** @param array<string, mixed>|object $row */
+    /** @param array<string, float|bool|int|string|null>|object $row */
     public function __construct(array|object $row, Table $table)
     {
         $this->table = $table;
@@ -132,8 +132,8 @@ abstract class TableRow
         return Type::getType($dc2Type)->convertToPHPValue($this->getNullableString($field), static::getPlatform());
     }
 
-    /** @param array<string, mixed>|ArrayAccess<string, mixed>|object $row */
-    private function initGetter($row): Row
+    /** @param array<string, float|bool|int|string|null>|ArrayAccess<string, float|bool|int|string|null>|object $row */
+    private function initGetter(mixed $row): Row
     {
         if (is_array($row) || $row instanceof ArrayAccess) {
             return new ArrayRow($row, $this->table);

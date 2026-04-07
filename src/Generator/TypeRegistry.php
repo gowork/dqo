@@ -35,7 +35,7 @@ use function get_class;
 final class TypeRegistry
 {
     /** @var array<string, string> */
-    private static $_typesMap = [
+    private static array $_typesMap = [
         SimpleArrayType::class => 'array',
         JsonType::class => 'array',
         BooleanType::class => 'bool',
@@ -68,6 +68,7 @@ final class TypeRegistry
         );
 
         $dbalType = Type::getType($name);
+        /** @var ReflectionClass<object> $classInfo */
         $classInfo = new ReflectionClass($dbalType);
         $methodInfo = $classInfo->getMethod('convertToPHPValue');
         $typeInfo = $typeResolver->resolveMethodType($classInfo, $methodInfo);
